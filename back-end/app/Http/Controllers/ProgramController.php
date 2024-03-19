@@ -40,7 +40,7 @@ class ProgramController extends Controller
 
     // Validate incoming request data
     $validatedData = $request->validate([
-        'id_major' => 'required|exists:majors,id_majors',
+        'id_major' => 'required|exists:majors,id_major',
         'content' => 'nullable|string',
         'name_program' => 'nullable|string',
     ]);
@@ -78,7 +78,7 @@ class ProgramController extends Controller
     {
         $program = Program::findOrFail($id);
         $program->id_user = $request->input('id_user');
-        $program->id_majors = $request->input('id_major');
+        $program->id_major = $request->input('id_major');
         $program->content = $request->input('content');
         $program->name_program = $request->input('name_program');
         $program->status = $request->input('status', true); 
@@ -89,7 +89,7 @@ class ProgramController extends Controller
 
     public function updateStatus(Request $request)
     {
-        $id_programs = $request->input('id_programs', []);
+        $id_programs = $request->input('id_program', []);
 
         foreach ($id_programs as $id_program) {
             $program = Program::findOrFail($id_program);
