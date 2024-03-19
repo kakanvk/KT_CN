@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,8 +13,13 @@ class ProgramController extends Controller
     // Lấy tất cả các bản ghi
     public function getAll()
     {
-        $programs = Program::where('status', 1)->get();
-        return response()->json(['programs' => $programs], 200);
+        try {
+            $programs = Program::where('status', 1)->get();
+            return response()->json(['programs' => $programs], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => "Error", $th->getMessage()], 500);
+
+        }
     }
 
     public function getAllhidden()
@@ -21,7 +27,7 @@ class ProgramController extends Controller
         $programs = Program::where('status', 0)->get();
         return response()->json(['programs' => $programs], 200);
     }
-    
+
 
     // Lấy thông tin của một bản ghi theo ID
     public function getDetails($id)
@@ -32,37 +38,37 @@ class ProgramController extends Controller
 
     // Thêm một bản ghi mới
     public function saveProgram(Request $request)
-{
-    if (!$request->has('user_info')) {
-        $user_info = $request->user_info;
-    }
-    // error_log('Input data: ',$user_info);
+    {
+        if (!$request->has('user_info')) {
+            $user_info = $request->user_info;
+        }
+        // error_log('Input data: ',$user_info);
 
-    // Validate incoming request data
-    $validatedData = $request->validate([
-        'id_major' => 'required|exists:majors,id_major',
-        'content' => 'nullable|string',
-        'name_program' => 'nullable|string',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        $program = Program::create([
-            'id_user' => $user_info->id_user,
-            'id_major' => $request->input('id_major'),
-            'content' => $request->input('content'),
-            'name_program' => $request->input('name_program'),
+        // Validate incoming request data
+        $validatedData = $request->validate([
+            'id_major' => 'required|exists:majors,id_major',
+            'content' => 'nullable|string',
+            'name_program' => 'nullable|string',
         ]);
 
-        DB::commit();
-        
-        return response()->json(['message' => 'Program created successfully', 'program' => $program], 201);
-    } catch (\Exception $e) {
-        DB::rollback();
-        return response()->json(['message' => 'Save failed', 'error' => $e->getMessage()], 500);
+        try {
+            DB::beginTransaction();
+
+            $program = Program::create([
+                'id_user' => $user_info->id_user,
+                'id_major' => $request->input('id_major'),
+                'content' => $request->input('content'),
+                'name_program' => $request->input('name_program'),
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Program created successfully', 'program' => $program], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Save failed', 'error' => $e->getMessage()], 500);
+        }
     }
-}
 
     // Xóa một bản ghi
     public function delete($id)
@@ -81,7 +87,7 @@ class ProgramController extends Controller
         $program->id_major = $request->input('id_major');
         $program->content = $request->input('content');
         $program->name_program = $request->input('name_program');
-        $program->status = $request->input('status', true); 
+        $program->status = $request->input('status', true);
         $program->save();
 
         return response()->json(['message' => 'Program updated successfully', 'program' => $program], 200);
@@ -93,7 +99,7 @@ class ProgramController extends Controller
 
         foreach ($id_programs as $id_program) {
             $program = Program::findOrFail($id_program);
-            $program->status = $request->input('status', true); 
+            $program->status = $request->input('status', true);
             $program->save();
         }
 
