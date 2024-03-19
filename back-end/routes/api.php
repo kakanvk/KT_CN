@@ -9,7 +9,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImageUploadController;
-
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\MajorsController;
 /*;
 use App
 |--------------------------------------------------------------------------
@@ -160,3 +161,33 @@ Route::get('/categories', [CategoryController::class, 'getAll']);
 Route::get('/category/{id_category}', [CategoryController::class, 'get']);
 
 // Route::post('/admin/authentication', [AuthController::class, 'UserAuthentication']);
+
+//program
+
+Route::middleware(['check.jwt'])->group(function () {
+    Route::get('/admin/programs', [ProgramController::class, 'getAll']);
+
+    Route::get('/admin/programs/all/hidden', [ProgramController::class, 'getAllhidden']);
+
+    Route::get('/admin/programs/{id}', [ProgramController::class, 'getDetails']);
+
+    Route::post('/admin/programs', [ProgramController::class, 'saveProgram']);
+
+    Route::delete('/admin/programs/{id}', [ProgramController::class, 'delete']);
+
+    Route::put('/admin/programs/{id}', [ProgramController::class, 'update']);
+
+    Route::put('/admin/programs/all/status', [ProgramController::class, 'updateStatus']);
+});
+
+
+
+Route::get('/admin/majors', [MajorsController::class, 'getAll']);
+
+Route::post('/admin/majors', [MajorsController::class, 'create']);
+
+Route::get('/admin/majors/{id}', [MajorsController::class, 'getMajorsById']);
+
+Route::put('/admin/majors/{id}', [MajorsController::class, 'update']);
+
+Route::delete('/admin/majors/soft-list/delete', [MajorsController::class, 'checkDeleteMany']); //not ok
