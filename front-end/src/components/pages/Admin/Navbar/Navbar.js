@@ -56,6 +56,17 @@ function Navbar(props) {
             ),
         },
         {
+            text: "Quản lý chương trình",
+            link: "/admin/program",
+            icon: (
+                <i
+                    className={`fa-regular fa-images mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
             text: "Quản lý danh mục",
             link: "/admin/category",
             icon: (

@@ -216,11 +216,22 @@ const CreatePost = (props) => {
             <div className="CreateNews flex flex-col gap-7 items-start">
                 <div className="flex items-start justify-between w-full">
                     <Breadcrumbs underline="hover">
-                        <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
+                    <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
+                    {TypeNews === "News" ? 
+                        <>
                         <BreadcrumbItem>
                             <Link to="/admin/post">Quản lý bài viết</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>Thêm bài viết</BreadcrumbItem>
+                        </> 
+                        : 
+                        <>
+                            <BreadcrumbItem>
+                                <Link to="/admin/post">Quản lý chương trình</Link>
+                            </BreadcrumbItem>
+                            <BreadcrumbItem>Thêm chương trình</BreadcrumbItem>
+                        </>
+                    };  
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">

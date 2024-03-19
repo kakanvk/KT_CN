@@ -26,6 +26,7 @@ import {
     UpdateAdmissionStatusVi, 
     UpdateAdmissionStatusEn
 } from "../../../../service/AdmissionNewsService";
+import { GetAllPrograms, SaveProgramsAll } from "../../../../service/ProgramService";
 
 const Post = (props) => {
     const { successNoti, errorNoti, setSpinning, TypeNews} = props;
@@ -40,6 +41,9 @@ const Post = (props) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const [deleteId, setDeleteId] = useState(null);
+
+    const [programListData, setProgramListData] = useState([]);
+
 
     const columns = [
         {
@@ -260,6 +264,92 @@ const Post = (props) => {
         },
     ];
 
+    const program_columns = [
+        {
+            title: "Tên chương trình",
+            dataIndex: "name_program",
+        },
+        {
+            title: (
+                <div className="flex items-center justify-center w-full">
+                   Trạng thái
+                </div>),
+            
+            dataIndex: "status",
+            render: (record) => (
+                <div className="flex items-center justify-center w-full">
+                    <Switch
+                        size="sm"
+                        isSelected={record.value}
+                        classNames={{
+                            wrapper: "mr-0",
+                        }}
+                        onClick={() => handleUpdateStatus_en(record.id)}
+                        className="scale-80"
+                    ></Switch>
+                </div>
+            )
+
+        },
+        {
+            title: "Thời gian",
+            dataIndex: "date",
+            render: (record) => (
+                <div className="text-[12px] flex flex-col gap-3">
+                <div>
+                    <span className="opacity-70">Ngày tạo:</span>
+                    <p className="font-medium text-[13px]">
+                        {record.created_at}
+                    </p>
+                </div>
+                <div>
+                    <span className="opacity-70">Cập nhật lần cuối:</span>
+                    <p className="font-medium text-[13px]">
+                        {record.updated_at}
+                    </p>
+                </div>
+            </div>
+            ),
+        },
+        
+        {
+            title: "Chuyên ngành (Tiếng Việt)",
+            dataIndex: "major_name_vi",
+        },
+        {
+            title: "Hành động",
+            dataIndex: "action",
+            render: (_id) => (
+                <div className="flex flex-col items-center justify-center w-full gap-2">
+                    <Tooltip title="Chỉnh sửa">
+                        <Button
+                            isIconOnly
+                            variant="light"
+                            radius="full"
+                            size="sm"
+                            as={Link}
+                            to={TypeNews === "News" ? `update/${_id}` : `update/${_id}`}
+
+                        >
+                            <i className="fa-solid fa-pen"></i>
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Xoá">
+                        <Button
+                            isIconOnly
+                            variant="light"
+                            radius="full"
+                            size="sm"
+                            onClick={() => { onOpen(); setDeleteId(_id);}}
+                        >
+                            <i className="fa-solid fa-trash-can"></i>
+                        </Button>
+                    </Tooltip>
+                </div>
+            ),
+        },
+    ];
+
     const rowSelection = {
         selectedRowKeys,
         onChange: (selectedRowKeys, selectedRows) => {
@@ -315,20 +405,7 @@ const Post = (props) => {
             const response = await UpdateStatuses(putData);
             await getNews();
             successNoti("Cập nhật thành công");
-        } else if (TypeNews === "admissionNews") {
-            const checkValueVI = getValueOfVISelectedRow();
-            const checkValueEN = getValueOfENSelectedRow();
-
-            const putData = {
-                id_new: selectedRowKeys,
-                lang: lang,
-                status: lang === "vi" ? !checkValueVI : !checkValueEN
-            }
-            console.log(putData);
-            const response = await UpdateAdmissionStatuses(putData);
-            await getNewsAdmission();
-            successNoti("Cập nhật thành công");
-        }
+        } 
         setSpinning(false);
     };
 
@@ -523,12 +600,50 @@ const Post = (props) => {
             setSpinning(false);
         }
     }
+
+    const getProgram = async () => {
+        setSpinning(true);
+        try {
+            const response = await GetAllPrograms();
+    
+            const updatedProgramData = response.data.map((Program) => {
+                return {
+                    key: Program.id_program,
+                    name_program: Program.name_program,
+                    content: Program.content,
+
+
+                    status: {
+                        value: Program.status,
+                        id: Program.id_Program,
+                    },
+                    
+                
+                    date: {
+                        created_at: moment(Program.created_at).format("DD/MM/YYYY HH:mm"),
+                        updated_at: moment(Program.updated_at).format("DD/MM/YYYY HH:mm"),
+                    },
+                    major_name_vi: Program.major_name_vi,
+                    major_name_en: Program.major_name_en,
+                    action: Program.id_program,
+                };
+            });
+            setProgramListData(updatedProgramData);
+
+            console.table(updatedProgramData);
+            console.log(updatedProgramData);
+            } catch (error) {
+        } finally {
+            setSpinning(false);
+        }
+    };
+    
     useEffect(() => {
+        
         if(TypeNews === "News") {
             getNews();
-        } else if (TypeNews === "admissionNews"){
-           const response = getNewsAdmission();
-           console.log(response);
+        } else if(TypeNews === "program") {
+            getProgram();  
         }
         getCategory();
     }, []);
@@ -632,15 +747,27 @@ const Post = (props) => {
                     </Tooltip>
                 </div>
             </div>
-            <Button
-                color="primary"
-                radius="sm"
-                as={Link}
-                to={TypeNews === "News" ? "create" : "createAdmissions"}
+           {TypeNews === "News" ? 
+                <Button
+                    color="primary"
+                    radius="sm"
+                    as={Link}
+                    to={"create"}
 
-            >
-                Tạo bài viết mới
-            </Button>
+                >
+                    Tạo bài viết mới
+                </Button>
+                :
+                <Button
+                    color="primary"
+                    radius="sm"
+                    as={Link}
+                    to={"create"}
+
+                >
+                    Tạo chương trình
+                </Button>
+            }
             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
                     <p className="text-sm font-medium">
@@ -731,17 +858,36 @@ const Post = (props) => {
                 </div>
             )}
             <div className="ListNews w-full">
-                <Table
-                    bordered
-                    loading={loading}
-                    rowSelection={{
-                        type: "checkbox",
-                        ...rowSelection,
-                    }}
-                    columns={columns}
-                    dataSource={newsListData}
-                    className="w-full"
-                />
+                {   TypeNews ==="News"? <>
+                        <Table
+                            bordered
+                            loading={loading}
+                            rowSelection={{
+                                type: "checkbox",
+                                ...rowSelection,
+                            }}
+
+                            columns={ columns}
+                            dataSource={newsListData}
+                            className="w-full"
+                        />
+                    </>
+                    : 
+                    <>
+                        <Table
+                            bordered
+                            loading={loading}
+                            rowSelection={{
+                                type: "checkbox",
+                                ...rowSelection,
+                            }}
+
+                            columns={ program_columns }
+                            dataSource={ programListData }
+                            className="w-full"
+                        />
+                    </>
+                }   
             </div>
         </div>
     );

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Program;
+use App\Models\Major;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
@@ -12,9 +13,14 @@ class ProgramController extends Controller
     // Lấy tất cả các bản ghi
     public function getAll()
     {
-        $programs = Program::where('status', 1)->get();
-        return response()->json(['programs' => $programs], 200);
+        $programs = Program::join('majors', 'program.id_major', '=', 'majors.id_major')
+                            ->where('program.status', 1)
+                            ->select('program.*', 'majors.name_vi as major_name_vi', 'majors.name_en as major_name_en')
+                            ->get();
+        
+        return response()->json($programs, 200);
     }
+
 
     public function getAllhidden()
     {
@@ -89,14 +95,28 @@ class ProgramController extends Controller
 
     public function updateStatus(Request $request)
     {
-        $id_programs = $request->input('id_program', []);
 
-        foreach ($id_programs as $id_program) {
-            $program = Program::findOrFail($id_program);
-            $program->status = $request->input('status', true); 
-            $program->save();
+        try {
+            $validatedData = $request->validate([
+                'id_program' => 'required|array',
+                'status' => 'required|boolean',
+            ]);
+
+            $id_programs = $validatedData['id_program'];
+            $status = $validatedData['status'];
+
+            foreach ($id_programs as $id_program) {
+                $program = Program::findOrFail($id_program);
+                $program->status = $status; 
+                $program->timestamps = false;
+                $program->save();
+            }
+            return response()->json([
+                'message' => 'Cập nhật trạng thái thành công',
+                'id_programs' => $id_programs
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái', 'error' => $e->getMessage()], 500);
         }
-
-        return response()->json(['message' => 'Program status updated successfully'], 200);
     }
 }

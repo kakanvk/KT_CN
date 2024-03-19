@@ -47,14 +47,18 @@ function Admin(props) {
         <Routes>
           <Route path="/post" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
           <Route path="/postAdmissions" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
+          <Route path="/program" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"program"} />} />
+
           <Route path="/post/stored" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
           <Route path="/postAdmissions/storedAdmissions" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
 
           <Route path="/post/create" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"News"}/>} />
           <Route path="/postAdmissions/createAdmissions" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"admissionNews"}/>} />
-          
+          <Route path="/program/create" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"program"}/>} />
+
           <Route path="/post/update/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"News"}/>} />
           <Route path="/postAdmissions/updateAdmissions/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"admissionNews"}/>} />
+          <Route path="/program/update/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"program"}/>} />
 
          
           <Route path="/category" element={<CategoryManager successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
