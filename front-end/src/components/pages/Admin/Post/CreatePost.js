@@ -13,34 +13,38 @@ import ImgCrop from "antd-img-crop";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { SaveDataNews } from "../../../../service/NewsService";
 import { getAllCategories } from "../../../../service/CategoryService";
-import { getAllDepartments } from "../../../../service/DepartmentService";
-import { SaveAdmissionNews } from "../../../../service/AdmissionNewsService";
+
 import "./Post.css";
 import { Link } from "react-router-dom";
 import imageCompression from "browser-image-compression";
+import { getAllMajors } from "../../../../service/MajorService";
+import { SaveProgramsAll } from "../../../../service/ProgramService";
+
+
 
 const { Option } = Select;
 
 const CreatePost = (props) => {
     const { setCollapsedNav, TypeNews } = props;
-
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("");
-    const [selectedDepartments, setSelectedDepartments] = useState("");
+    const [SelectedMajors, setSelectedMajors] = useState("");
 
     const [CategoryData, setCategoryData] = useState([]);
-    const [type_university, setTypeUniversity] = useState([]);
-    const [departments, setDepartments] = useState([]);
+    const [MajorsData, setMajorsData] = useState([]);
+
+    
     const [titleEN, setTitleEN] = useState("");
     const [titleVI, setTitleVI] = useState("");
+    const [nameProgram, setNameProgram] = useState("");
+    const [contentProgram, setContentProgram] = useState("");
+
     const [contentEN, setContentEN] = useState("");
     const [contentVI, setContentVI] = useState("");
-    
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
 
-    const [fileList, setFileList] = useState([]);
 
     //hangle database
     const getCategorys = async () => {
@@ -49,33 +53,17 @@ const CreatePost = (props) => {
                 const response = await getAllCategories();
                 console.log("News data:", response.data);
                 setCategoryData(response.data);
-            } else {
-                const StringCatagory = [
-                    { id: 1, type_university_vi: "Sau đại học", type_university_en: "SporHigher educationts"},
-                    { id: 2, type_university_vi: "Đại học", type_university_en: "Undergraduate"},
-                ];
-                setTypeUniversity(StringCatagory);
-                departmentAll();
-            }
+            } else if(TypeNews === "program") {
+                const response = await getAllMajors();
+                console.log("News data:", response.data);
+                setMajorsData(response.data);
+            } 
         } catch (error) {
             console.error("Error fetching news:", error);
         }
     };
     
-    const departmentAll = async () =>{
-        try {
-            const response = await getAllDepartments();
-            console.log("departments data:", response.data);
-            setDepartments(response.data);
-        } catch (error) {
-            console.error("Error fetching departments:", error);
-        }
-    };
-
-
-
-
-    const SaveData = () => {
+    const SaveData = async () => {
         if(TypeNews === "News") {
             const title_vi = titleVI !== "" ? titleVI : null;
             const title_en = titleEN !== "" ? titleEN : null;
@@ -88,44 +76,27 @@ const CreatePost = (props) => {
                 thumbnail: imageUrl
             };
         
-            SaveDataNews(data)
-                .then((response) => {
-                    console.log("Phản hồi từ máy chủ:", response);
-                })
-                .catch((error) => {
-                    console.error("Lỗi khi gửi dữ liệu:", error);
-                });
-        } else { 
-            const title_vi = titleVI !== "" ? titleVI : null;
-            const title_en = titleEN !== "" ? titleEN : null;
-            const university_vi = selectedCategory === 1 ? type_university[0].type_university_vi : type_university[1].type_university_vi;
-            const university_en = selectedCategory === 1 ? type_university[0].type_university_en : type_university[1].type_university_en;
-            console.log("university_vi:", university_vi);
-            console.log("university_en:", university_en);
+           await SaveDataNews(data)
 
+        } else if(TypeNews === "program") { 
+            if (!SelectedMajors || !contentProgram || !nameProgram) {
+                console.error("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
             const data = {
-                id_department: selectedDepartments,
-                title_en: title_en,
-                title_vi: title_vi,
-                content_en: contentEN,
-                content_vi: contentVI,
-                thumbnail: imageUrl,
-                type_university_vi: university_vi,
-                type_university_en: university_en,
+                id_major: SelectedMajors,
+                content: contentProgram,
+                name_program: nameProgram,
             };
-            console.log(data);
-            SaveAdmissionNews(data)
-                .then((response) => {
-                    console.log("Phản hồi từ máy chủ:", response);
-                })
-                .catch((error) => {
-                    console.error("Lỗi khi gửi dữ liệu:", error);
-                });
+            
+            await  SaveProgramsAll(data)
+            console.table(data);
         }      
     };
 
     useEffect(() => {
         getCategorys();
+        console.log("dhudn", MajorsData);
         const handleResize = () => {
             if (window.innerWidth < 1024) {
                 setLayout("col");
@@ -156,14 +127,20 @@ const CreatePost = (props) => {
         setContentVI(data);
     };
 
+    const handleProgramChange = (event, editor) => {
+        const data = editor.getData();
+        setContentProgram(data);
+    };
+
+
     const handleCategoryChange = (value, option) => {
         setSelectedCategory(value);
     };
 
-    const handleDepartmentsChange = (value, option) => {
-        
-        setSelectedDepartments(value);
+    const handleMajorsChange = (value, option) => {
+        setSelectedMajors(value);
     };
+
     //hangle Layout 
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
@@ -275,36 +252,40 @@ const CreatePost = (props) => {
                 </div>
 
                 <div className="flex w-full gap-8">
-                    <div className="flex flex-1 flex-col gap-2 w-full">
-                        <p className="text-sm">
-                            Ảnh bìa bài viết{" "}
-                            <span className="text-red-500 font-bold">*</span>
-                        </p>
-                        <ImgCrop
-                            aspect={4 / 3}
-                            modalTitle="Cắt hình ảnh"
-                            rotationSlider
-                            showReset
-                        >
-                            <Upload
-                                name="avatar"
-                                listType="picture-card"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                action={`${process.env.REACT_APP_API_DOMAIN}/admin/upload-image-`}
-                                beforeUpload={beforeUpload}
-                                onChange={handleChange}
-                                withCredentials
+                    {TypeNews === "News" ? (
+                        <div className="flex flex-1 flex-col gap-2 w-full">
+                        
+                            <p className="text-sm">
+                                Ảnh bìa bài viết{" "}
+                                <span className="text-red-500 font-bold">*</span>
+                            </p>
+                            <ImgCrop
+                                aspect={4 / 3}
+                                modalTitle="Cắt hình ảnh"
+                                rotationSlider
+                                showReset
                             >
-                                {imageUrl ? (
-                                    <img src={imageUrl} alt="avatar" />
-                                ) : (
-                                    uploadButton
-                                )}
-                            </Upload>
-                        </ImgCrop>
-                    </div>
-
+                                <Upload
+                                    name="avatar"
+                                    listType="picture-card"
+                                    className="avatar-uploader"
+                                    showUploadList={false}
+                                    action={`${process.env.REACT_APP_API_DOMAIN}/admin/upload-image-`}
+                                    beforeUpload={beforeUpload}
+                                    onChange={handleChange}
+                                    withCredentials
+                                >
+                                    {imageUrl ? (
+                                        <img src={imageUrl} alt="avatar" />
+                                    ) : (
+                                        uploadButton
+                                    )}
+                                </Upload>
+                            </ImgCrop>
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
                     <div className="flex flex-1 flex-col gap-2 w-full">
                     {TypeNews === "News" ? (
                             <div>
@@ -329,55 +310,34 @@ const CreatePost = (props) => {
                             </div>
                         ) : (
                             <div>
-                                <div>
-                                    <p className="text-sm">
-                                        Thể loại{" "}
-                                        <span className="text-red-500 font-bold">*</span>
-                                    </p>
-                                    <Select
-                                        defaultValue="Chọn loại"
-                                        onChange={handleCategoryChange}
-                                        size="large"
-                                    >
-                                        {type_university.map((type) => (
-                                            <Option 
-                                                key={type.id}
-                                                value={type.id}
-                                            >
-                                                {type.type_university_vi}({type.type_university_en})
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                                <div>
-                                    <p className="text-sm">
-                                        Chọn Bộ Môn{" "}
-                                        <span className="text-red-500 font-bold">*</span>
-                                    </p>
-                                    <Select
-                                        defaultValue="Chọn loại"
-                                        onChange={handleDepartmentsChange}
-                                        size="large"
-                                    >
-                                        {departments.map((departments) => (
-                                            <Option
-                                                key={departments.id_department}
-                                                value={departments.id_department}
-                                            >
-                                                {departments.name_department_vi}({departments.name_department_en})
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
+                                <p className="text-sm">
+                                    Thể loại{" "}
+                                    <span className="text-red-500 font-bold">*</span>
+                                </p>
+                                <Select
+                                    defaultValue="Chọn loại"
+                                    onChange={handleMajorsChange}
+                                    size="large"
+                                >
+                                    {MajorsData.map((Majors) => (
+                                        <Option
+                                            key={Majors.id_major}
+                                            value={Majors.id_major}
+                                        >
+                                            {Majors.name_vi} ({Majors.name_en})
+                                        </Option>
+                                    ))}
+                                </Select>
                             </div>
                         )}
                     </div>
                 </div>
-
+                {TypeNews === "News" ? (
                 <div
                     className={`flex w-full gap-${layout === "col" ? "10" : "8"
                         } flex-${layout}`}
                 >
+
                     <div
                         className={`${layout === "col" ? "w-full" : "w-[40%]"
                             } flex-1 flex flex-col gap-6`}
@@ -465,10 +425,66 @@ const CreatePost = (props) => {
                                 Bài viết tiếng Anh là không bắt buộc
                             </div>
                         </div>
-                    </div>
+
+
+
+                    </div> 
                 </div>
+                ) : (
+                    <div className={`flex w-full gap-${layout === "col" ? "10" : "8"} flex-${layout}`}>
+                    <div
+                        className={`${layout === "col" ? "w-full" : "w-[60%]"
+                            } flex-1 flex flex-col gap-6`}
+                    >
+                        <Input
+                            label={
+                                <p>
+                                    Nhập tên chương trình{" "}
+                                    <span className="text-red-500 font-bold">
+                                        *
+                                    </span>
+                                </p>
+                            }
+                            placeholder="Nhập tên chương trình"
+                            labelPlacement="outside"
+                            startContent={
+                                <Avatar
+                                    className="w-5 h-5"
+                                    src="https://flagcdn.com/vn.svg"
+                                />
+                            }
+                            isClearable
+                            radius="sm"
+                            value={nameProgram}
+                            onValueChange={setNameProgram}
+                        />
+
+                        <div className="flex flex-col gap-2">
+                            <p className="text-sm">
+                                Nội dung chương trình đào tạo{" "}
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
+                            </p>
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={items[0].children}
+                                onChange={(event, editor) => {
+                                    handleProgramChange(event, editor);
+                                }}
+                                config={{
+                                    ckfinder: {
+                                        uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
+                                    },
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    </div>
+                )}
                 <Button onClick={SaveData} color="primary" radius="sm">
-                    <span className="font-medium">Tạo bài viết</span>
+                    <span className="font-medium">{TypeNews === "News" ? "Tạo bài viết" : "Tạo chương trình"}</span>
                 </Button>
             </div>
         </div>
