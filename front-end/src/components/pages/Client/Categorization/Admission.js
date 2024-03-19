@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Pagination } from "antd";
-import { Link } from "react-router-dom";
-
+import { List, Pagination } from "antd";
+import { Link, useParams } from "react-router-dom";
 import { Tooltip, Spinner, Image } from "@nextui-org/react";
-import { formatDateTime, formatTimeAgo } from "../../../../service/DateService";
 import i18next from "i18next";
-import { GetNewViEn } from "../../../../service/NewsService";
+import { formatDateTime, formatTimeAgo } from "../../../../service/DateService";
+import { GetNewAdmission } from "../../../../service/AdmissionNewsService";
 
 const Admission = () => {
-    const { t } = useTranslation();
-
+    const { id } = useParams();
     const [newsData, setNewsData] = useState([]);
     const [newsDataFitlered, setNewsDataFiltered] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(8);
+    const [pageSize, setPageSize] = useState(10);
 
     const [loading, setLoading] = useState(false);
 
     const getNews = async () => {
         setLoading(true);
+
         try {
-            const response = await GetNewViEn();
+            const response = await GetNewAdmission();
             setNewsData(response.data);
+            console.log("new data", newsData);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching news:", error);
@@ -67,95 +66,67 @@ const Admission = () => {
     );
 
     return (
-        <div className="Home p-5">
-            <div className="Home_link_ret">
-                <Link to="https://ret.tvu.edu.vn/">
-                    <img
-                        alt="example"
-                        src="https://ktcn.tvu.edu.vn/ht96_image/thongbao/call_for_papers.jpg"
-                    />
-                </Link>
-            </div>
-
-            <div>
-                <h1>{t("News.text_new_1")}</h1>
-            </div>
-
-            <div className="News w-full">
-                <div className="grid gap-2 w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
-                    {newsDataFitlered.length === 0 ? (
-                        <Spinner size="md" />
-                    ) : (
-                        currentItems.map((news) => (
-                            <Link
-                                key={news.id_new}
-                                className="w-full flex flex-col gap-3 group/news p-4 hover:bg-gray-100 rounded"
-                                to={`/news-detail/${news.id_new}`}
-                            >
-                                <Image
-                                    loading="lazy"
-                                    src={news.thumbnail}
-                                    classNames={{
-                                        img: "aspect-[4/3] rounded w-full",
-                                    }}
-                                    radius="none"
-                                />
-                                <h2 className="font-medium text-justify">
-                                    {i18next.language === "vi"
-                                        ? news.title_vi
-                                        : news.title_en}
-                                </h2>
-                                <div className="flex items-center gap-5 text-gray-400">
-                                    <Tooltip
-                                        content={formatDateTime(
-                                            news.created_at,
-                                            i18next.language
-                                        )}
-                                        radius="sm"
-                                        color="primary"
-                                        showArrow
-                                    >
-                                        <p>
-                                            <i className="fa-regular fa-clock mr-2"></i>
-                                            {formatTimeAgo(
+        <>
+            <div className="Home p-5 bg-gray-300">
+                <div className="News w-full">
+                    <div className="grid gap-2 ml-4 sm:px-5 ml-[12px] bg-gray-50 p-3 rounded-md">
+                        <h1 className="w-full p-3 border-[#e95a13] border-l-8 border-y-2  border-r-2 mb-4 text-left text-[#e95a13] font-bold">
+                            {/* {console.log("new data", newsData)} */}
+                            {i18next.language === "vi"
+                                ? newsData[0]?.name_department_vi
+                                : newsData[0]?.name_department_en}
+                        </h1>
+                        {newsDataFitlered.length === 0 ? (
+                            <Spinner size="md" />
+                        ) : (
+                            currentItems.map((news) => (
+                                <Link
+                                    key={news.id_new}
+                                    className="w-full flex flex-col gap-3 border-b-2 py-2 hover:bg-gray-100 rounded"
+                                    to={`/newsAdmissions-detail/${news.id_new}`}
+                                >
+                                    <h2 className="font-medium text-justify">
+                                        {i18next.language === "vi"
+                                            ? news.title_vi
+                                            : news.title_en}
+                                    </h2>
+                                    <div className="flex items-center gap-5 text-gray-400">
+                                        <Tooltip
+                                            content={formatDateTime(
                                                 news.created_at,
                                                 i18next.language
                                             )}
-                                        </p>
-                                    </Tooltip>
-                                    <Tooltip
-                                        content={
-                                            i18next.language === "vi"
-                                                ? "Lượt xem"
-                                                : "View"
-                                        }
-                                        radius="sm"
-                                        color="primary"
-                                        showArrow
-                                    >
-                                        <p>
-                                            <i className="fa-regular fa-eye mr-2"></i>
-                                            {news.view_count}
-                                        </p>
-                                    </Tooltip>
-                                </div>
-                            </Link>
-                        ))
-                    )}
+                                            radius="sm"
+                                            color="primary"
+                                            showArrow
+                                        >
+                                            <p>
+                                                <i className="fa-regular fa-clock mr-2"></i>
+                                                {formatTimeAgo(
+                                                    news.created_at,
+                                                    i18next.language
+                                                )}
+                                            </p>
+                                        </Tooltip>
+                                    </div>
+                                </Link>
+                            ))
+                        )}
+                        <div className="flex items-center justify-center w-full m-5">
+                            <Pagination
+                                onShowSizeChange={(current, size) =>
+                                    onShowSizeChange(current, size)
+                                }
+                                onChange={(page) => onPageChange(page)}
+                                defaultCurrent={1}
+                                total={newsDataFitlered.length}
+                                pageSize={pageSize}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="flex items-center justify-center w-full m-5">
-                <Pagination
-                    onShowSizeChange={(current, size) =>
-                        onShowSizeChange(current, size)
-                    }
-                    onChange={(page) => onPageChange(page)}
-                    defaultCurrent={1}
-                    total={newsDataFitlered.length}
-                    pageSize={pageSize}
-                />
-            </div>
-        </div>
+        </>
     );
 };
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { List, Pagination } from "antd";
-import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import { Tooltip, Spinner, Image } from "@nextui-org/react";
 import i18next from "i18next";
@@ -8,7 +7,6 @@ import { getAllNewByCategory } from "../../../../service/CategoryService";
 import { formatDateTime, formatTimeAgo } from "../../../../service/DateService";
 
 const DetailListNews = () => {
-    const { t } = useTranslation();
     const { id } = useParams();
     const [newsData, setNewsData] = useState([]);
     const [newsDataFitlered, setNewsDataFiltered] = useState([]);
@@ -23,7 +21,7 @@ const DetailListNews = () => {
         try {
             const response = await getAllNewByCategory(id);
             setNewsData(response.data);
-            console.log("new data",newsData);
+            console.log("new data", newsData);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching news:", error);
@@ -69,16 +67,22 @@ const DetailListNews = () => {
 
     return (
         <>
-            <div className="Home p-5">
+            <div className="Home p-5 bg-gray-300">
                 <div className="News w-full">
-                    <div className="grid gap-2 ml-4 sm:px-5 ml-[12px]">
+                    <div className="grid gap-2 ml-4 sm:px-5 ml-[12px] bg-gray-50 p-3 rounded-md">
+                        <h1 className="w-full p-3 border-[#e95a13] border-l-8 border-y-2  border-r-2 mb-4 text-left text-[#e95a13] font-bold">
+                            {/* {console.log("new data", newsData)} */}
+                            {i18next.language === "vi"
+                                ? newsData[0]?.category_name_vi
+                                : newsData[0]?.category_name_en}
+                        </h1>
                         {newsDataFitlered.length === 0 ? (
                             <Spinner size="md" />
                         ) : (
                             currentItems.map((news) => (
                                 <Link
                                     key={news.id_new}
-                                    className="w-full flex flex-col gap-3 border-4 border-y-brown-500 hover:bg-gray-100 rounded"
+                                    className="w-full flex flex-col gap-3 border-b-2 py-2 hover:bg-gray-100 rounded"
                                     to={`/newsAdmissions-detail/${news.id_new}`}
                                 >
                                     <h2 className="font-medium text-justify">
@@ -108,18 +112,18 @@ const DetailListNews = () => {
                                 </Link>
                             ))
                         )}
+                        <div className="flex items-center justify-center w-full m-5">
+                            <Pagination
+                                onShowSizeChange={(current, size) =>
+                                    onShowSizeChange(current, size)
+                                }
+                                onChange={(page) => onPageChange(page)}
+                                defaultCurrent={1}
+                                total={newsDataFitlered.length}
+                                pageSize={pageSize}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="flex items-center justify-center w-full m-5">
-                    <Pagination
-                        onShowSizeChange={(current, size) =>
-                            onShowSizeChange(current, size)
-                        }
-                        onChange={(page) => onPageChange(page)}
-                        defaultCurrent={1}
-                        total={newsDataFitlered.length}
-                        pageSize={pageSize}
-                    />
                 </div>
             </div>
         </>

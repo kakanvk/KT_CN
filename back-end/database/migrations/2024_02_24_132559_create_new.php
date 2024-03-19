@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id('id_new'); 
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_category'); 
+            $table->unsignedBigInteger('id_category');
+            $table->integer('updated_by');
             $table->string('title_vi');
             $table->string('title_en');
             $table->text('content_vi')->nullable();
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->boolean('status_vi')->default(true);
             $table->boolean('status_en')->default(true);
-            // $table->boolean('status')->default(true); 
+            $table->boolean('is_deleted')->default(true);
             $table->timestamps();
         });
 

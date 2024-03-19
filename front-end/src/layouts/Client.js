@@ -40,13 +40,15 @@ function Client() {
                             element={<DetailListNews />}
                         />
                         {/* //DetailListNews */}
+                        <Route path="student-set" element={<StudentSet />} />
                         <Route
-                            path="student-set"
-                            element={<StudentSet />}
+                            path="/news-detail/:id"
+                            element={<NewsDetail TypeNews={"News"} />}
                         />
-                        <Route path="/news-detail/:id" element={<NewsDetail TypeNews={"News"} />}/>
-                        <Route path="/newsAdmissions-detail/:id" element={<NewsDetail TypeNews={"admissionNews"} />}/>
-
+                        <Route
+                            path="/newsAdmissions-detail/:id"
+                            element={<NewsDetail TypeNews={"admissionNews"} />}
+                        />
                     </Routes>
                 </div>
             </div>

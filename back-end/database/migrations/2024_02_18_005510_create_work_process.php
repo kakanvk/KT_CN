@@ -12,10 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id('id_department');
-            $table->string('name_department_vi', 100);
-            $table->string('name_department_en', 100);
+        Schema::create('work_process', function (Blueprint $table) {
+            $table->id('id_work_process');
+            $table->string('time', 50);// duoi dang 2000-2010
+            $table->string('academic_institution')->nullable();
+            $table->string('address')->nullable();
+            $table->string('position')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('work_process');
     }
 };

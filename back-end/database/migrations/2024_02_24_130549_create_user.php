@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('email')->unique();
             $table->integer('role');
-            $table->timestamps(); // Thêm cột created_at và updated_at
+            $table->timestamps();
         });
     }
 

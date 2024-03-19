@@ -198,9 +198,26 @@ class NewsController extends Controller
     public function getAllByCategory($category_id)
     {
         try {
-            $news = News::where('id_category', $category_id)
-                ->where('news.is_deleted', '=', 0)
+            $news = News::join('categories', 'news.id_category', '=', 'categories.id_category')
+                ->select(
+                    'news.id_new',
+                    'news.title_vi',
+                    'news.title_en',
+                    'news.content_en',
+                    'news.content_vi',
+                    'news.view_count',
+                    'news.updated_at',
+                    'news.created_at',
+                    'news.thumbnail',
+                    'news.id_category',
+                    'categories.name_en as category_name_en',
+                    'categories.name_vi as category_name_vi',
+                    'news.status_vi',
+                    'news.status_en',
+                )
                 ->orderBy('news.created_at')
+                ->where('news.id_category', '=', $category_id)
+                ->where('news.is_deleted', '=', 0)
                 ->get();
 
             if ($news->isEmpty()) {
@@ -217,14 +234,14 @@ class NewsController extends Controller
         try {
             $categoryIds = [3, 4, 5, 6, 7, 9, 10];
             $newsCollection = collect();
-    
+
             foreach ($categoryIds as $categoryId) {
                 $news = News::where('id_category', $categoryId)
                     ->where('is_deleted', '=', 0)
                     ->orderBy('created_at')
                     ->take(6)
                     ->get();
-    
+
                 $newsCollection = $newsCollection->concat($news);
             }
     
@@ -237,7 +254,7 @@ class NewsController extends Controller
             if ($newsCollection->isEmpty()) {
                 return response()->json(['message' => 'Không có tin tức nào trong các danh mục này.'], 404);
             }
-    
+
             return response()->json($newsCollection, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Đã xảy ra lỗi khi lấy dữ liệu tin tức: ' . $e->getMessage()], 500);
