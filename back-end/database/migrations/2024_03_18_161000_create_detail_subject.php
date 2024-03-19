@@ -21,9 +21,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::table('detail_subject', function (Blueprint $table) {
-
-        });
+        
     }
 
     /**
