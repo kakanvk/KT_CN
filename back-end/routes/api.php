@@ -3,6 +3,13 @@
 use App\Http\Controllers\AdmissionNewsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DetailResearchProjectController;
+use App\Http\Controllers\DetailSubjectController;
+use App\Http\Controllers\ResearchProjectController;
+use App\Http\Controllers\ScientificArticleController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\WorkProcessController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -11,6 +18,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\MajorsController;
+
 /*;
 use App
 |--------------------------------------------------------------------------
@@ -181,7 +189,7 @@ Route::middleware(['check.jwt'])->group(function () {
 });
 
 
-
+//majors
 Route::get('/admin/majors', [MajorsController::class, 'getAll']);
 
 Route::post('/admin/majors', [MajorsController::class, 'create']);
@@ -191,3 +199,56 @@ Route::get('/admin/majors/{id}', [MajorsController::class, 'getMajorsById']);
 Route::put('/admin/majors/{id}', [MajorsController::class, 'update']);
 
 Route::delete('/admin/majors/soft-list/delete', [MajorsController::class, 'checkDeleteMany']); //not ok
+
+//subject
+Route::get('/subjects', [SubjectController::class, 'getSubjects']);
+
+Route::get('/subjects/{id}', [SubjectController::class, 'getSubjectById']);
+
+Route::post('/subjects', [SubjectController::class, 'createSubject']);
+
+Route::put('/subjects/{id}', [SubjectController::class, 'updateSubject']);
+
+Route::delete('/subjects/{id}', [SubjectController::class, 'deleteSubject']);
+
+// detail_subject
+Route::get('/detail-subject', [DetailSubjectController::class, 'getAll']);
+Route::get('/detail-subject/subject/{id}', [DetailSubjectController::class, 'showByIdSubject']);
+Route::get('/detail-subject/teacher/{id}', [DetailSubjectController::class, 'showByIdTeacher']);
+Route::post('/detail-subject', [DetailSubjectController::class, 'create']);
+Route::put('/detail-subject/teacher/{id}', [DetailSubjectController::class, 'updateBySubject']);
+
+// detail_subject
+Route::get('/detail-research-project', [DetailResearchProjectController::class, 'getAll']);
+Route::get('/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'showByIdResearchProject']);
+Route::get('/detail-research-project/teacher/{id}', [DetailResearchProjectController::class, 'showByIdTeacher']);
+Route::post('/detail-research-project', [DetailResearchProjectController::class, 'create']);
+Route::put('/detail-research-project1/research-project/{id}', [DetailResearchProjectController::class, 'updateByResearchProject']);//loi
+
+//teacher
+Route::post('/teacher', [TeacherController::class, 'create']);
+
+Route::get('/teacher', [TeacherController::class, 'getAll']);
+
+Route::put('/teacher/{id}', [TeacherController::class, 'update']);
+
+// work process
+Route::get('work-process', [WorkProcessController::class, 'getAll']);
+Route::get('work-process/{id}', [WorkProcessController::class, 'getById']);
+Route::post('work-process/', [WorkProcessController::class, 'create']);
+Route::put('work-process/{id}', [WorkProcessController::class, 'update']);
+Route::delete('work-process/{id}', [WorkProcessController::class, 'destroy']);
+
+//scientific_article
+Route::get('scientific-article', [ScientificArticleController::class, 'getAll']);
+Route::get('scientific-article/{id}', [ScientificArticleController::class, 'getById']);
+Route::post('scientific-article/', [ScientificArticleController::class, 'create']);
+Route::put('scientific-article/{id}', [ScientificArticleController::class, 'update']);
+Route::delete('scientific-article/{id}', [ScientificArticleController::class, 'destroy']);
+
+// research project
+Route::get('research-project', [ResearchProjectController::class, 'getAll']);
+Route::get('research-project/{id}', [ResearchProjectController::class, 'getById']);
+Route::post('research-project/', [ResearchProjectController::class, 'create']);
+Route::put('research-project/{id}', [ResearchProjectController::class, 'update']);
+Route::delete('research-project/{id}', [ResearchProjectController::class, 'destroy']);

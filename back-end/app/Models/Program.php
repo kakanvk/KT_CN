@@ -26,6 +26,6 @@ class Program extends Model
 
     public function majors()
     {
-        return $this->belongsTo(Majors::class, 'id_major');
+        return $this->belongsTo(Major::class, 'id_major');
     }
 }

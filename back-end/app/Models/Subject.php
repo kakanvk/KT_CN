@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subject extends Model
 {
-    protected $table = 'program'; // Tên của bảng trong cơ sở dữ liệu
+    protected $table = 'subjects'; // Tên của bảng trong cơ sở dữ liệu
 
-    protected $primaryKey = 'id_program'; // Tên của cột khóa chính
+    protected $primaryKey = 'id_subject'; // Tên của cột khóa chính
 
     protected $fillable = [
+        'id_subject',
         'id_major',
         'name_vi',
         'name_en',
@@ -21,6 +22,6 @@ class Subject extends Model
 
     public function majors()
     {
-        return $this->belongsTo(Majors::class, 'id_major');
+        return $this->belongsTo(Major::class, 'id_major');
     }
 }

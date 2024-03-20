@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Major;
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,11 +43,10 @@ class ProgramController extends Controller
         if (!$request->has('user_info')) {
             $user_info = $request->user_info;
         }
-        // error_log('Input data: ',$user_info);
 
         // Validate incoming request data
         $validatedData = $request->validate([
-            'id_major' => 'required|exists:majors,id_major',
+            'id_major' => 'required|integer',
             'content' => 'nullable|string',
             'name_program' => 'nullable|string',
         ]);
@@ -54,21 +54,31 @@ class ProgramController extends Controller
         try {
             DB::beginTransaction();
 
+            $major = Major::find($validatedData['id_major']);
+            error_log($major);
+            if (!$major) {
+                return response()->json(['message' => 'Invalid id_major provided'], 400);
+            }
+
+            // Tạo chương trình mới
             $program = Program::create([
-                'id_user' => $user_info->id_user,
-                'id_major' => $request->input('id_major'),
-                'content' => $request->input('content'),
-                'name_program' => $request->input('name_program'),
+                'id_user' => optional($user_info)->id_user,
+                'id_major' => $validatedData['id_major'],
+                'content' => $validatedData['content'],
+                'name_program' => $validatedData['name_program'],
             ]);
 
             DB::commit();
 
+            // Trả về phản hồi thành công với dữ liệu chương trình mới
             return response()->json(['message' => 'Program created successfully', 'program' => $program], 201);
         } catch (\Exception $e) {
+            // Nếu có lỗi, rollback giao dịch và trả về thông báo lỗi
             DB::rollback();
             return response()->json(['message' => 'Save failed', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     // Xóa một bản ghi
     public function delete($id)

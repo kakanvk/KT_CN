@@ -9,13 +9,13 @@ class Detail_subject extends Model
     protected $table = 'detail_subject';
 
     protected $fillable = [
-        'id_major',
+        'id_subject',
         'id_teacher',
     ];
 
     public function majors()
     {
-        return $this->belongsTo(Subject::class, 'id_major', 'id_major');
+        return $this->belongsTo(Subject::class, 'id_subject', 'id_subject');
     }
 
     public function teacher()
