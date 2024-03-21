@@ -26,11 +26,10 @@ import {
     UpdateAdmissionStatusVi, 
     UpdateAdmissionStatusEn
 } from "../../../../service/AdmissionNewsService";
-import { GetAllPrograms, SaveProgramsAll } from "../../../../service/ProgramService";
+import { GetAllPrograms, PutStatusOneProgram, UpdateStatusesProgram } from "../../../../service/ProgramService";
 
 const Post = (props) => {
     const { successNoti, errorNoti, setSpinning, TypeNews} = props;
-
     const [newsListData, setNewsListData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -284,7 +283,7 @@ const Post = (props) => {
                         classNames={{
                             wrapper: "mr-0",
                         }}
-                        onClick={() => handleUpdateStatus_en(record.id)}
+                        onClick={() => PutStatusOneProgram(record.id_program)}
                         className="scale-80"
                     ></Switch>
                 </div>
@@ -376,6 +375,18 @@ const Post = (props) => {
 
         return checkValueVI;
     };
+    const getValueOfStatusProgramSelectedRow = () => {
+        const selectedRows = programListData.filter((news) =>
+            selectedRowKeys.includes(news.key)
+        );
+        const countVITrue = selectedRows.filter(
+            (row) => row.status.value
+        ).length;
+        const checkValue =
+            countVITrue === selectedRowKeys.length ? true : false;
+            console.table (checkValue)
+        return checkValue;
+    };
 
     const getValueOfENSelectedRow = () => {
         const selectedRows = newsListData.filter((news) =>
@@ -405,9 +416,21 @@ const Post = (props) => {
             const response = await UpdateStatuses(putData);
             await getNews();
             successNoti("Cập nhật thành công");
-        } 
+        } else if (TypeNews === "program") {
+            const checkValue = getValueOfStatusProgramSelectedRow();
+            const putData = {
+                id_program: selectedRowKeys,
+                status: checkValue
+            }
+            const response = await UpdateStatusesProgram(putData);
+            await getProgram();
+            successNoti("Cập nhật thành công");
+
+        }
         setSpinning(false);
     };
+
+
 
     const handleSoftDelete = async () => {
         setSpinning(true);
@@ -422,13 +445,7 @@ const Post = (props) => {
             setSpinning(false);
             successNoti("Xoá thành công");
             handleUnSelect();
-            } else if (TypeNews === "admissionNews"){
-                const response = await softDeleteNewsAdmissionByIds(putData);
-                await getNewsAdmission();
-                setSpinning(false);
-                successNoti("Xoá thành công");
-                handleUnSelect();
-            }
+            } 
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -449,12 +466,6 @@ const Post = (props) => {
                 setSpinning(false);
                 successNoti("Xoá thành công");
                 handleUnSelect();
-                } else if (TypeNews === "admissionNews"){
-                    const response = await softDeleteNewsAdmissionByIds(putData);
-                    await getNewsAdmission();
-                    setSpinning(false);
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
                 }
         } catch (error) {
             setSpinning(false);
@@ -464,6 +475,7 @@ const Post = (props) => {
     };
 
     const getCategory = async () => {
+       
         try {
             const response = await GetAllCategories();
 
@@ -473,11 +485,13 @@ const Post = (props) => {
                     text: news.name_vi,
                 };
             });
-
             // console.log("Category data:", newsCategoryData);
             setCategoryData(newsCategoryData);
+            setLoading(false);
+
         } catch (error) {
             console.error("Error fetching news:", error);
+
         }
     };
 
@@ -615,7 +629,7 @@ const Post = (props) => {
 
                     status: {
                         value: Program.status,
-                        id: Program.id_Program,
+                        id_program: Program.id_program,
                     },
                     
                 
@@ -639,13 +653,19 @@ const Post = (props) => {
     };
     
     useEffect(() => {
-        
+        setLoading(true);
         if(TypeNews === "News") {
             getNews();
+            setLoading(false);
+
         } else if(TypeNews === "program") {
             getProgram();  
+            setLoading(false);
+
         }
         getCategory();
+
+
     }, []);
 
     const handleUpdateStatus_vi = async (id) => {
@@ -661,18 +681,7 @@ const Post = (props) => {
                 setSpinning(false);
                 errorNoti("Cập nhật thất bại");
             }
-        } else if(TypeNews === "admissionNews"){ 
-            try {
-                const response = await UpdateAdmissionStatusVi(id);
-                await getNewsAdmission();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-            } catch (error) {
-                console.error("error update: ", error);
-                setSpinning(false);
-                errorNoti("Cập nhật thất bại");
-            } 
-        }
+        } 
     };
 
     const handleUpdateStatus_en = async (id) => {
@@ -688,18 +697,7 @@ const Post = (props) => {
                 setSpinning(false);
                 errorNoti("Cập nhật thất bại");
             }
-        } else if(TypeNews === "admissionNews"){ 
-            try {
-                const response = await UpdateAdmissionStatusEn(id);
-                await getNewsAdmission();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-            } catch (error) {
-                console.error("error update: ", error);
-                setSpinning(false);
-                errorNoti("Cập nhật thất bại");
-            }
-        }
+        } 
     };
 
     return (
@@ -728,7 +726,7 @@ const Post = (props) => {
                             isIconOnly
                             radius="full"
                             variant="light"
-                            onClick={() => getNews()}
+                            onClick={() => TypeNews === "News" ? getNews() : getProgram()}
                         >
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
@@ -768,12 +766,13 @@ const Post = (props) => {
                     Tạo chương trình
                 </Button>
             }
-            {selectedRowKeys.length !== 0 && (
+             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
                     <p className="text-sm font-medium">
                         <i className="fa-solid fa-circle-check mr-3 text-emerald-500"></i>{" "}
                         Đã chọn {selectedRow.length} bài viết
                     </p>
+                    {TypeNews === "News" ? (
                     <div className="flex items-center gap-2">
                         <Tooltip
                             title={`${getValueOfVISelectedRow() ? "Ẩn" : "Hiện"
@@ -855,6 +854,63 @@ const Post = (props) => {
                             </Button>
                         </Tooltip>
                     </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                        <Tooltip
+                            title={`${getValueOfStatusProgramSelectedRow() ? "Ẩn" : "Hiện"
+                                } ${selectedRowKeys.length} bài viết`}
+                            getPopupContainer={() =>
+                                document.querySelector(".Quick__Option")
+                            }
+                        >
+                            <Switch
+                                size="sm"
+                                className="scale-80"
+                                
+                                classNames={{
+                                    base: "flex-row-reverse gap-2",
+                                    wrapper: "mr-0",
+                                }}
+                                onClick={() => {
+                                    handleUpdateStatuses();
+                                }}
+                            >
+                                <Avatar
+                                    alt="English"
+                                    className="w-6 h-6"
+                                    src="https://flagcdn.com/gb.svg"
+                                />
+                            </Switch>
+                        </Tooltip>
+                        <Tooltip
+                            title={`Xoá ${selectedRowKeys.length} bài viết`}
+                            getPopupContainer={() =>
+                                document.querySelector(".Quick__Option")
+                            }
+                        >
+                            <Button isIconOnly variant="light" radius="full" onClick={onOpen}>
+                                <i className="fa-solid fa-trash-can"></i>
+                            </Button>
+                        </Tooltip>
+                        <Tooltip
+                            title="Bỏ chọn"
+                            getPopupContainer={() =>
+                                document.querySelector(".Quick__Option")
+                            }
+                        >
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                radius="full"
+                                onClick={() => {
+                                    handleUnSelect();
+                                }}
+                            >
+                                <i className="fa-solid fa-xmark text-[18px]"></i>
+                            </Button>
+                        </Tooltip>
+                        </div>
+                    )}
                 </div>
             )}
             <div className="ListNews w-full">

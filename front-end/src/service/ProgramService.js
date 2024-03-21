@@ -13,10 +13,22 @@ const GetAllPrograms=()=>{
 const PutProgramsByID=(id, data)=>{
     return axiosInstance.put(`/admin/programs/${id}`,data);
 }
+
+const PutStatusOneProgram =(id)=>{
+    return axiosInstance.put(`/admin/programs/${id}/update/one/status`);
+}
+
+const UpdateStatusesProgram =(data)=>{
+    console.table(data);
+    return axiosInstance.put(`/admin/programs/all/status`,data);
+}
+
 export {
     SaveProgramsAll,
     GetProgramsByID,
     PutProgramsByID,
-    GetAllPrograms
+    GetAllPrograms,
+    PutStatusOneProgram,
+    UpdateStatusesProgram
 };
 

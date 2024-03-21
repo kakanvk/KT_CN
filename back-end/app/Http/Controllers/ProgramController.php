@@ -101,7 +101,7 @@ class ProgramController extends Controller
                 'id_program' => 'required|array',
                 'status' => 'required|boolean',
             ]);
-
+            error_log("kfckkkkkkkkkkkkkkkk".$request);
             $id_programs = $validatedData['id_program'];
             $status = $validatedData['status'];
 
@@ -119,4 +119,27 @@ class ProgramController extends Controller
             return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái', 'error' => $e->getMessage()], 500);
         }
     }
+    public function updateOneStatus($id)
+    {
+        try {
+
+            $program = Program::find($id);
+
+            if ($program) {
+                $program->status = !$program->status;
+                $program->timestamps = false;
+                $program->save();
+
+                return response()->json([
+                    'message' => 'Cập nhật trạng thái thành công ',
+                    'id_program' => $id
+                ], 200);
+            } else {
+                return response()->json(['message' => 'Id không chính xác'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái'], 500);
+        }
+    }
+
 }

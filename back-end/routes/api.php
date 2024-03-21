@@ -176,6 +176,7 @@ Route::middleware(['check.jwt'])->group(function () {
     Route::delete('/admin/programs/{id}', [ProgramController::class, 'delete']);
 
     Route::put('/admin/programs/{id}', [ProgramController::class, 'update']);
+    Route::put('/admin/programs/{id}/update/one/status', [ProgramController::class, 'updateOneStatus']);
 
     Route::put('/admin/programs/all/status', [ProgramController::class, 'updateStatus']);
 });
