@@ -48,12 +48,12 @@ class AuthController extends Controller
                 } else {
                     $user->UID = $UID;
                     $user->save();
-    
+
                     if ($user->photoURL !== $photoURL) {
                         $user->photoURL = $photoURL;
                         $user->save();
                     }
-    
+
                     if ($user->name !== $displayName) {
                         $user->name = $displayName;
                         $user->save();
@@ -70,7 +70,7 @@ class AuthController extends Controller
                 return response()->json("Error", 500);
             }
         } catch (QueryException $e) {
-            return response()->json("Database error", 500);
+            return response()->json(["Database error", $e->getMessage()], 500);
         } catch (\Exception $e) {
             return response()->json("Unexpected error", 500);
         }
