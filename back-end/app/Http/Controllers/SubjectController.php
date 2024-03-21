@@ -10,7 +10,7 @@ class SubjectController extends Controller
     public function getSubjects()
     {
         $subjects = Subject::with('majors')->get();
-        return response()->json(['subjects' => $subjects], 200);
+        return response()->json($subjects, 200);
     }
 
     public function getSubjectById($id)

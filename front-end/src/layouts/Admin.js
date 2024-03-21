@@ -22,6 +22,7 @@ import UpdateProgram from "../components/pages/Admin/ProgramManager/UpdateProgra
 import Major from "../components/pages/Admin/MajorManager/Major.js";
 import CreateMajors from "../components/pages/Admin/MajorManager/CreateMajors.js";
 import UpdateMajors from "../components/pages/Admin/MajorManager/UpdateMajors.js";
+import Subject from "../components/pages/Admin/SubjectManager/Subject.js";
 
 function Admin(props) {
 
@@ -57,6 +58,11 @@ function Admin(props) {
           <Route path="/major" element={<Major successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/major/create" element={<CreateMajors successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/major/update/:id" element={<UpdateMajors collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti}/>} />
+          
+          <Route path="/subject" element={<Subject successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+
+
+
 
           <Route path="/post/stored" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
           <Route path="/postAdmissions/storedAdmissions" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />

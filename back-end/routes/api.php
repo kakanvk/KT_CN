@@ -209,11 +209,11 @@ Route::get('/subjects', [SubjectController::class, 'getSubjects']);
 
 Route::get('/subjects/{id}', [SubjectController::class, 'getSubjectById']);
 
-Route::post('/subjects', [SubjectController::class, 'createSubject']);
+Route::post('admin/subjects', [SubjectController::class, 'createSubject']);
 
-Route::put('/subjects/{id}', [SubjectController::class, 'updateSubject']);
+Route::put('admin/subjects/{id}', [SubjectController::class, 'updateSubject']);
 
-Route::delete('/subjects/{id}', [SubjectController::class, 'deleteSubject']);
+Route::delete('admin/subjects/{id}', [SubjectController::class, 'deleteSubject']);
 
 // detail_subject
 Route::get('/detail-subject', [DetailSubjectController::class, 'getAll']);

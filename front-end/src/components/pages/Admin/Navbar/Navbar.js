@@ -89,6 +89,17 @@ function Navbar(props) {
             ),
         },
         {
+            text: "Quản lý môn học",
+            link: "/admin/subject",
+            icon: (
+                <i
+                    className={`fa-solid fa-pen-clip mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
             text: "Quản lý người dùng",
             link: "/admin/user",
             icon: (
