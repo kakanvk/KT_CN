@@ -4,6 +4,7 @@ use App\Http\Controllers\AdmissionNewsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DetailResearchProjectController;
+use App\Http\Controllers\DetailScientificArticleController;
 use App\Http\Controllers\DetailSubjectController;
 use App\Http\Controllers\ResearchProjectController;
 use App\Http\Controllers\ScientificArticleController;
@@ -218,12 +219,19 @@ Route::get('/detail-subject/teacher/{id}', [DetailSubjectController::class, 'sho
 Route::post('/detail-subject', [DetailSubjectController::class, 'create']);
 Route::put('/detail-subject/teacher/{id}', [DetailSubjectController::class, 'updateBySubject']);
 
-// detail_subject
+// detail research project
 Route::get('/detail-research-project', [DetailResearchProjectController::class, 'getAll']);
 Route::get('/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'showByIdResearchProject']);
 Route::get('/detail-research-project/teacher/{id}', [DetailResearchProjectController::class, 'showByIdTeacher']);
 Route::post('/detail-research-project', [DetailResearchProjectController::class, 'create']);
-Route::put('/detail-research-project1/research-project/{id}', [DetailResearchProjectController::class, 'updateByResearchProject']);//loi
+Route::put('/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'updateByResearchProject']);//loi
+
+// detail scientific article
+Route::get('/detail-scientific-article', [DetailScientificArticleController::class, 'getAll']);
+Route::get('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'showByIdScientificArticle']);
+Route::get('/detail-scientific-article/teacher/{id}', [DetailScientificArticleController::class, 'showByIdTeacher']);
+Route::post('/detail-scientific-article', [DetailScientificArticleController::class, 'create']);
+Route::put('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);//loi
 
 //teacher
 Route::post('/teacher', [TeacherController::class, 'create']);

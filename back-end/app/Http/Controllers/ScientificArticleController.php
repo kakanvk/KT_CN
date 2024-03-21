@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Scientific_article;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +17,29 @@ class ScientificArticleController extends Controller
 
     public function getById($id)
     {
-        $scientificArticle = Scientific_article::find($id);
+        $scientificArticle = Scientific_article::join('detail_scientific_article', 'scientific_article.id_scientific_article', '=', 'detail_scientific_article.id_scientific')
+            ->join('teachers', 'detail_scientific_article.id_teacher', '=', 'teachers.id_teacher')
+            ->select(
+                'scientific_article.id_scientific_article',
+                'scientific_article.title',
+                'scientific_article.publication_date',
+                'scientific_article.publishers',
+                'scientific_article.abstract',
+                'scientific_article.link',
+                DB::raw('GROUP_CONCAT(teachers.id_teacher) as id_teacher'),
+                DB::raw('GROUP_CONCAT(teachers.name_teacher) as name_teacher')
+            )
+            ->groupBy(
+                'scientific_article.id_scientific_article',
+                'scientific_article.title',
+                'scientific_article.publication_date',
+                'scientific_article.publishers',
+                'scientific_article.abstract',
+                'scientific_article.link'
+            )
+            ->where('scientific_article.id_scientific_article', $id)
+            ->get();
+
         if (!$scientificArticle) {
             return response()->json(['message' => 'Scientific article not found'], 404);
         }
