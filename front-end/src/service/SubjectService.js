@@ -9,18 +9,15 @@ const getSubjectByID = (id) => {
 };
 
 const postSubject = (data) => {
-    return axiosInstance.get(`/admin/subjects`,data);
+    return axiosInstance.post(`/admin/subjects`,data);
 };
 
 const updateSubject = (id, data) => {
     return axiosInstance.put(`/admin/subjects/${id}`,data);
 }
 
-const deleteSubject = (id) => {
-    return axiosInstance.delete(`admin/subjects/${id}`);
-}
-const softDeleteCategoryByIds=()=>{
-    return axiosInstance.get();
+const deleteSubject = (data) => {
+    return axiosInstance.delete(`admin/subjects/soft-list/delete`,{params: data});
 }
 
-export { getAllsubjects, getSubjectByID, postSubject, updateSubject, deleteSubject ,softDeleteCategoryByIds};
+export { getAllsubjects, getSubjectByID, postSubject, updateSubject, deleteSubject};

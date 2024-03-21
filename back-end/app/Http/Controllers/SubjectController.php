@@ -72,18 +72,29 @@ class SubjectController extends Controller
         }
     }
 
-    public function deleteSubject($id)
+    public function deleteManySubject(Request $request)
     {
-        $subject = Subject::find($id);
-        if (!$subject) {
-            return response()->json(['message' => 'Subject not found'], 404);
-        }
-
         try {
-            $subject->delete();
-            return response()->json(['message' => 'Subject deleted successfully'], 200);
+            $validatedData = $request->validate([
+                'id_subject' => 'required|array',
+            ]);
+
+            $id_subject_list = $validatedData['id_subject'];
+            error_log($request);
+            foreach ($id_subject_list as $id_subject) {
+
+                    $Subject = Subject::find($id_subject);
+                    if ($Subject) {
+                        $Subject->delete();
+                    }
+                
+            }
+            return response()->json([
+                'message' => 'Xóa thành công',
+                'id_subject_list' => $id_subject_list
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete subject', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
         }
     }
 }

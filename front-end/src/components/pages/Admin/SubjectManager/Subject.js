@@ -17,13 +17,13 @@ import {
     useDisclosure
 } from "@nextui-org/react";
 
-import { getAllsubjects, softDeleteCategoryByIds} from "../../../../service/SubjectService";
+import { getAllsubjects, deleteSubject} from "../../../../service/SubjectService";
 
 const Subject = (props) => {
 
     const { successNoti, errorNoti, setSpinning, TypeCategory} = props;
 
-    const [categoryData, setCategoryData] = useState([]);
+    const [subjectData, setSubjectData] = useState([]);
 
     const [selectedRow, setSelectedRow] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -35,7 +35,7 @@ const Subject = (props) => {
     const columns = [
         {
             title:
-                <p className="flex gap-2">Tên danh mục
+                <p className="flex gap-2">Tên môn học
                     <Avatar
                         alt="Việt Nam"
                         className="w-5 h-5"
@@ -49,7 +49,7 @@ const Subject = (props) => {
         },
         {
             title:
-                <p className="flex gap-2">Tên danh mục
+                <p className="flex gap-2">Tên môn học
                     <Avatar
                         alt="Việt Nam"
                         className="w-5 h-5"
@@ -63,7 +63,7 @@ const Subject = (props) => {
         },
         {
             title:
-                <p className="flex gap-2">Tên gì đó
+                <p className="flex gap-2">Đối tượng nghiên cứu
                     
                 </p>,
             dataIndex: "study_object",
@@ -73,7 +73,7 @@ const Subject = (props) => {
         },
         {
             title:
-                <p className="flex gap-2">Năm gì đó
+                <p className="flex gap-2">Đầu năm
                     
                 </p>,
             dataIndex: "beginning_year",
@@ -83,7 +83,7 @@ const Subject = (props) => {
         },
         {
             title:
-                <p className="flex gap-2">tên gì đó
+                <p className="flex gap-2">Thể chế
                     
                 </p>,
             dataIndex: "institutions",
@@ -93,7 +93,7 @@ const Subject = (props) => {
         },
         {
             title:
-                <p className="flex gap-2">majors
+                <p className="flex gap-2">Tên chuyên ngành
                     
                 </p>,
             dataIndex: "majors",
@@ -158,41 +158,39 @@ const Subject = (props) => {
     const handleSoftDelete = async () => {
         setSpinning(true);
         const putData = {
-            id_category: selectedRowKeys,
-            deleted: true,
+            id_subject: selectedRowKeys,
         }
         try {
-            const response = await softDeleteCategoryByIds(putData);
+            const response = await deleteSubject(putData);
             setSpinning(false);
-            getCategory();
+            getSubject();
             successNoti("Xoá thành công");
             handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
-            console.error("Error fetching news:", error);
+            console.error("Error fetching subject:", error);
         }
     };
 
     const handleSoftDeleteById = async (_id) => {
         setSpinning(true);
         const putData = {
-            id_category: [_id],
-            deleted: true,
+            id_subject: [_id],
         }
         try {
-            const response = await softDeleteCategoryByIds(putData);
+            const response = await deleteSubject(putData);
             setSpinning(false);
-            getCategory();
+            getSubject();
             successNoti("Xoá thành công");
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
-            console.error("Error fetching news:", error);
+            console.error("Error fetching subject:", error);
         }
     };
 
-    const getCategory = async () => {
+    const getSubject = async () => {
         setSpinning(true);
         try {
             const response = await getAllsubjects();
@@ -213,17 +211,17 @@ const Subject = (props) => {
                 };
             });
 
-            setCategoryData(newsCategoryData);
+            setSubjectData(newsCategoryData);
 
             setSpinning(false);
         } catch (error) {
-            console.error("Error fetching news:", error);
+            console.error("Error fetching subject:", error);
             setSpinning(false);
         }
     };
 
     useEffect(() => {
-        getCategory();
+        getSubject();
     }, []);
 
     return (
@@ -244,7 +242,7 @@ const Subject = (props) => {
             <div className="flex items-start justify-between w-full">
                 <Breadcrumbs underline="hover">
                     <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                    <BreadcrumbItem>Quản lý danh mục</BreadcrumbItem>
+                    <BreadcrumbItem>Quản lý môn học</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="flex gap-2">
                     <Tooltip title="Làm mới">
@@ -252,7 +250,7 @@ const Subject = (props) => {
                             isIconOnly
                             radius="full"
                             variant="light"
-                            onClick={() => getCategory()}
+                            onClick={() => getSubject()}
                         >
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
@@ -266,18 +264,18 @@ const Subject = (props) => {
                 as={Link}
                 to="create"
             >
-                Tạo danh mục mới
+                Tạo môn học mới
             </Button>
 
             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
                     <p className="text-sm font-medium">
                         <i className="fa-solid fa-circle-check mr-3 text-emerald-500"></i>{" "}
-                        Đã chọn {selectedRow.length} danh mục
+                        Đã chọn {selectedRow.length} môn học
                     </p>
                     <div className="flex items-center gap-2">
                         <Tooltip
-                            title={`Xoá ${selectedRowKeys.length} danh mục`}
+                            title={`Xoá ${selectedRowKeys.length} môn học`}
                             getPopupContainer={() =>
                                 document.querySelector(".Quick__Option")
                             }
@@ -314,7 +312,7 @@ const Subject = (props) => {
                         ...rowSelection,
                     }}
                     columns={columns}
-                    dataSource={categoryData}
+                    dataSource={subjectData}
                     className="w-full"
                 />
             </div>

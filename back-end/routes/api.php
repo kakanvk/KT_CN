@@ -213,7 +213,7 @@ Route::post('admin/subjects', [SubjectController::class, 'createSubject']);
 
 Route::put('admin/subjects/{id}', [SubjectController::class, 'updateSubject']);
 
-Route::delete('admin/subjects/{id}', [SubjectController::class, 'deleteSubject']);
+Route::delete('admin/subjects/soft-list/delete', [SubjectController::class, 'deleteManySubject']);
 
 // detail_subject
 Route::get('/detail-subject', [DetailSubjectController::class, 'getAll']);

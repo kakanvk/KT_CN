@@ -19,15 +19,6 @@ import {
 
 import { getAllNewsForAdmin, softDeleteNewsByIds, UpdateStatusVi, UpdateStatusEn, GetAllCategories, UpdateStatuses } from "../../../../service/NewsService";
 
-import {
-    getAllNewsAdmissionForAdmin,
-    softDeleteNewsAdmissionByIds,
-    UpdateAdmissionStatuses,
-    UpdateAdmissionStatusVi,
-    UpdateAdmissionStatusEn
-} from "../../../../service/AdmissionNewsService";
-import { GetAllPrograms, PutStatusOneProgram, UpdateStatusesProgram } from "../../../../service/ProgramService";
-
 const Post = (props) => {
     const { successNoti, errorNoti, setSpinning, TypeNews } = props;
     const [newsListData, setNewsListData] = useState([]);
@@ -40,8 +31,6 @@ const Post = (props) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const [deleteId, setDeleteId] = useState(null);
-
-    const [programListData, setProgramListData] = useState([]);
 
 
     const columns = [

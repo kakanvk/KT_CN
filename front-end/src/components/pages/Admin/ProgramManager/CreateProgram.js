@@ -24,7 +24,7 @@ import { SaveProgramsAll } from "../../../../service/ProgramService";
 const { Option } = Select;
 
 const CreateProgram = (props) => {
-    const { setCollapsedNav, TypeNews } = props;
+    const { successNoti, errorNoti, setCollapsedNav, TypeNews } = props;
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -57,19 +57,22 @@ const CreateProgram = (props) => {
     };
 
     const SaveData = async () => {
-        if (!SelectedMajors || !contentProgram || !nameProgram) {
-            console.error("Vui lòng điền đầy đủ thông tin.");
-            return;
+        try {
+            if (!SelectedMajors || !contentProgram || !nameProgram) {
+                throw new Error("Vui lòng điền đầy đủ thông tin.");
+            }
+            const data = {
+                id_major: SelectedMajors,
+                content: contentProgram,
+                name_program: nameProgram,
+            };
+            await SaveProgramsAll(data);
+            successNoti("Tạo chương trình thành công");
+        } catch (error) {
+            errorNoti(error.message);
         }
-        const data = {
-            id_major: SelectedMajors,
-            content: contentProgram,
-            name_program: nameProgram,
-        };
-
-        await SaveProgramsAll(data)
-        console.table(data);
     };
+    
 
     useEffect(() => {
         getCategorys();
