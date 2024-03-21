@@ -51,9 +51,31 @@ class MajorsController extends Controller
 
     public function checkDeleteMany(Request $request)
     {
-        $ids = $request->input('ids', []);
-        Major::whereIn('id', $ids)->delete();
 
-        return response()->json(['message' => 'Selected majors soft-deleted successfully'], 200);
+        try {
+            $validatedData = $request->validate([
+                'id_major' => 'required|array',
+            ]);
+
+            $id_major_list = $validatedData['id_major'];
+            error_log($request);
+            foreach ($id_major_list as $id_major) {
+
+                    $Major = Major::find($id_major);
+                    if ($Major) {
+                        $Major->delete();
+                    }
+                
+            }
+
+            return response()->json([
+                'message' => 'Xóa thành công',
+                'id_major_list' => $id_major_list
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
+        }
     }
+
+    
 }

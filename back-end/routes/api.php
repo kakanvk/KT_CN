@@ -177,6 +177,7 @@ Route::middleware(['check.jwt'])->group(function () {
     Route::delete('/admin/programs/delete/list', [ProgramController::class, 'updateManyDeleted']);
 
     Route::put('/admin/programs/{id}', [ProgramController::class, 'update']);
+
     Route::put('/admin/programs/{id}/update/one/status', [ProgramController::class, 'updateOneStatus']);
 
     Route::put('/admin/programs/all/status', [ProgramController::class, 'updateStatus']);
@@ -186,9 +187,9 @@ Route::middleware(['check.jwt'])->group(function () {
 
 Route::get('/admin/majors', [MajorsController::class, 'getAll']);
 
-Route::post('/admin/majors', [MajorsController::class, 'create']);
-
 Route::get('/admin/majors/{id}', [MajorsController::class, 'getMajorsById']);
+
+Route::post('/admin/majors', [MajorsController::class, 'create']);
 
 Route::put('/admin/majors/{id}', [MajorsController::class, 'update']);
 

@@ -27,7 +27,6 @@ const DeleteProgramById =(id)=>{
 }
 
 const DeleteListProgram =(data)=>{
-    console.log('cnnnnnnnnnnn',data);
     return axiosInstance.delete(`/admin/programs/delete/list`,{params: data});
 }
 
