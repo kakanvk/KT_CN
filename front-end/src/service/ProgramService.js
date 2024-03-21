@@ -19,9 +19,18 @@ const PutStatusOneProgram =(id)=>{
 }
 
 const UpdateStatusesProgram =(data)=>{
-    console.table(data);
     return axiosInstance.put(`/admin/programs/all/status`,data);
 }
+
+const DeleteProgramById =(id)=>{
+    return axiosInstance.delete(`/admin/programs/${id}`);
+}
+
+const DeleteListProgram =(data)=>{
+    console.log('cnnnnnnnnnnn',data);
+    return axiosInstance.delete(`/admin/programs/delete/list`,{params: data});
+}
+
 
 export {
     SaveProgramsAll,
@@ -29,6 +38,8 @@ export {
     PutProgramsByID,
     GetAllPrograms,
     PutStatusOneProgram,
-    UpdateStatusesProgram
+    UpdateStatusesProgram,
+    DeleteProgramById,
+    DeleteListProgram
 };
 

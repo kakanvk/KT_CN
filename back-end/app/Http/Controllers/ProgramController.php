@@ -14,7 +14,6 @@ class ProgramController extends Controller
     public function getAll()
     {
         $programs = Program::join('majors', 'program.id_major', '=', 'majors.id_major')
-                            ->where('program.status', 1)
                             ->select('program.*', 'majors.name_vi as major_name_vi', 'majors.name_en as major_name_en')
                             ->get();
         
@@ -101,7 +100,6 @@ class ProgramController extends Controller
                 'id_program' => 'required|array',
                 'status' => 'required|boolean',
             ]);
-            error_log("kfckkkkkkkkkkkkkkkk".$request);
             $id_programs = $validatedData['id_program'];
             $status = $validatedData['status'];
 
@@ -141,5 +139,29 @@ class ProgramController extends Controller
             return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái'], 500);
         }
     }
+    public function updateManyDeleted(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'id_program' => 'required|array',
+            ]);
 
+            $id_program_list = $validatedData['id_program'];
+
+            foreach ($id_program_list as $id_program) {
+                $news = Program::find($id_program);
+
+                if ($news) {
+                    $news->delete();
+                }
+            }
+
+            return response()->json([
+                'message' => 'Cập nhật trạng thái xóa thành công',
+                'id_program_list' => $id_program_list
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái', 'error' => $e->getMessage()], 500);
+        }
+    }
 }
