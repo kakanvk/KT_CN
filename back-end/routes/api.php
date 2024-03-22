@@ -249,7 +249,7 @@ Route::delete('work-process/{id}', [WorkProcessController::class, 'destroy']);
 
 //scientific_article
 Route::get('scientific-article', [ScientificArticleController::class, 'getAll']);
-Route::get('scientific-article/{id}', [ScientificArticleController::class, 'getById']);
+Route::get('scientific-article/{id}', [ScientificArticleController::class, 'getById']);//ok
 Route::post('scientific-article/', [ScientificArticleController::class, 'create']);
 Route::put('scientific-article/{id}', [ScientificArticleController::class, 'update']);
 Route::delete('scientific-article/{id}', [ScientificArticleController::class, 'destroy']);
