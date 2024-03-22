@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import moment from 'moment';
-import {
-    Breadcrumbs,
-    BreadcrumbItem,
-    Button,
-    Input, 
-} from "@nextui-org/react";
+import moment from "moment";
+import dayjs from "dayjs";
+import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
 import { Select, Tooltip } from "antd";
-import { DatePicker, Space } from 'antd';
+import { DatePicker, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { getAllMajors } from "../../../../service/MajorService";
-import { getSubjectByID, updateSubject } from "../../../../service/SubjectService";
+import {
+    getSubjectByID,
+    updateSubject,
+} from "../../../../service/SubjectService";
 const { Option } = Select;
 const UpdateSubject = (props) => {
     const { id } = useParams();
@@ -20,11 +19,10 @@ const UpdateSubject = (props) => {
     const [institutions, setInstitutions] = useState("");
     const [studyObject, setStudyObject] = useState("");
     const [selectedMajor, setSelectedMajor] = useState("");
-    const [selectedYear, setSelectedYear] = useState();
+    const [selectedYear, setSelectedYear] = useState(2000);
     const [MajorsData, setMajorsData] = useState([]);
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
-
 
     //hangle database
     const getMajors = async () => {
@@ -39,7 +37,14 @@ const UpdateSubject = (props) => {
     const getDetailSubject = async () => {
         try {
             const response = await getSubjectByID(id);
-            const { majors, name_vi, name_en, study_object, beginning_year, institutions } = response.data.subject;
+            const {
+                majors,
+                name_vi,
+                name_en,
+                study_object,
+                beginning_year,
+                institutions,
+            } = response.data.subject;
 
             setNameVi(name_vi);
             setNameEn(name_en);
@@ -47,25 +52,32 @@ const UpdateSubject = (props) => {
             setSelectedYear(beginning_year);
             setInstitutions(institutions);
             setSelectedMajor(majors.id_major);
-
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
     };
 
-    const functionGetyear = (selectedYear) => {
-        if (!selectedYear) return null; 
-        const date = moment(selectedYear, 'YYYY'); 
-        if (date.isValid()) {
-            return date; 
-        } else {
-            return null; 
-        }
-    };
-    
+    // const functionGetyear = (selectedYear) => {
+    //     if (!selectedYear) return null;
+    //     console.log("xx", selectedYear);
+    //     const date = moment(selectedYear, "YYYY");
+    //     if (date.isValid()) {
+    //         return date;
+    //     } else {
+    //         return null;
+    //     }
+    // };
+
     const UpdateData = async () => {
         try {
-            if (!selectedMajor || !nameVi || !nameEn || !studyObject || !selectedYear || !institutions) {
+            if (
+                !selectedMajor ||
+                !nameVi ||
+                !nameEn ||
+                !studyObject ||
+                !selectedYear ||
+                !institutions
+            ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
@@ -75,9 +87,9 @@ const UpdateSubject = (props) => {
                 name_en: nameEn,
                 study_object: studyObject,
                 beginning_year: selectedYear,
-                institutions: institutions
-            }
-            await updateSubject(id, data)
+                institutions: institutions,
+            };
+            await updateSubject(id, data);
             console.table(data);
             successNoti("Chỉnh sửa môn học thành công");
         } catch (error) {
@@ -117,6 +129,7 @@ const UpdateSubject = (props) => {
 
     //////note
     const onChangeYear = (date, dateString) => {
+        console.log("year1", selectedYear);
         setSelectedYear(dateString);
     };
 
@@ -172,7 +185,6 @@ const UpdateSubject = (props) => {
                             }
                             placeholder="Nhập tên môn học"
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={nameVi}
@@ -189,7 +201,6 @@ const UpdateSubject = (props) => {
                             }
                             placeholder="Nhập tên môn học"
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={nameEn}
@@ -206,7 +217,6 @@ const UpdateSubject = (props) => {
                             }
                             placeholder="Nhập đối tượng"
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={studyObject}
@@ -223,7 +233,6 @@ const UpdateSubject = (props) => {
                             }
                             placeholder="Nhập thể chế"
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={institutions}
@@ -234,7 +243,9 @@ const UpdateSubject = (props) => {
                         <div>
                             <p className="text-sm">
                                 Chuyên ngành{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Select
                                 defaultValue="Chọn chuyên ngành"
@@ -251,23 +262,24 @@ const UpdateSubject = (props) => {
                                     </Option>
                                 ))}
                             </Select>
-
                         </div>
                         <div>
                             <p className="text-sm">
                                 Năm bắt đầu{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
                                     className="w-[300px] h-[42px] mt-1"
                                     onChange={onChangeYear}
                                     picker="year"
-                                    value={functionGetyear(selectedYear)}
+                                    format="YYYY"
+                                    value={dayjs().year(selectedYear)}
                                 />
                             </Space>
                         </div>
-
                     </div>
                 </div>
 

@@ -12,6 +12,7 @@ import Admission from "../components/pages/Client/Categorization/Admission";
 import StudentSet from "../components/pages/Client/StudentSet/StudentSet";
 // import NewsDetail from '../components/pages/Client/NewsDetail/NewsDetail';
 import DetailListNews from "../components/pages/Client/Categorization/DetailListNews";
+import { DetailScientificArticle } from "../components/pages/Client/ScientificArticle/DetailScientificArticle";
 function Client() {
     return (
         <div className="Client">
@@ -48,6 +49,10 @@ function Client() {
                         <Route
                             path="/newsAdmissions-detail/:id"
                             element={<NewsDetail TypeNews={"admissionNews"} />}
+                        />
+                        <Route
+                            path="/scientific-article/:id"
+                            element={<DetailScientificArticle />}
                         />
                     </Routes>
                 </div>

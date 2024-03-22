@@ -17,12 +17,13 @@ class ScientificArticleController extends Controller
 
     public function getById($id)
     {
+        error_log("ok");
         $scientificArticle = Scientific_article::join('detail_scientific_article', 'scientific_article.id_scientific_article', '=', 'detail_scientific_article.id_scientific')
             ->join('teachers', 'detail_scientific_article.id_teacher', '=', 'teachers.id_teacher')
             ->select(
                 'scientific_article.id_scientific_article',
                 'scientific_article.title',
-                'scientific_article.publication_date',
+                DB::raw("DATE_FORMAT(scientific_article.publication_date, '%d/%m/%Y') AS publication_date"),
                 'scientific_article.publishers',
                 'scientific_article.abstract',
                 'scientific_article.link',
@@ -43,7 +44,7 @@ class ScientificArticleController extends Controller
         if (!$scientificArticle) {
             return response()->json(['message' => 'Scientific article not found'], 404);
         }
-        return response()->json(['scientific_article' => $scientificArticle], 200);
+        return response()->json($scientificArticle, 200);
     }
 
     public function update(Request $request, $id)
