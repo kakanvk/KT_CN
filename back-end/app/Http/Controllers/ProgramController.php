@@ -14,14 +14,13 @@ class ProgramController extends Controller
     // Lấy tất cả các bản ghi
     public function getAll()
     {
-        try {
-            $programs = Program::where('status', 1)->get();
-            return response()->json(['programs' => $programs], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => "Error", $th->getMessage()], 500);
-
-        }
+        $programs = Program::join('majors', 'program.id_major', '=', 'majors.id_major')
+                            ->select('program.*', 'majors.name_vi as major_name_vi', 'majors.name_en as major_name_en')
+                            ->get();
+        
+        return response()->json($programs, 200);
     }
+
 
     public function getAllhidden()
     {
@@ -105,14 +104,74 @@ class ProgramController extends Controller
 
     public function updateStatus(Request $request)
     {
-        $id_programs = $request->input('id_program', []);
 
-        foreach ($id_programs as $id_program) {
-            $program = Program::findOrFail($id_program);
-            $program->status = $request->input('status', true);
-            $program->save();
+        try {
+            $validatedData = $request->validate([
+                'id_program' => 'required|array',
+                'status' => 'required|boolean',
+            ]);
+            $id_programs = $validatedData['id_program'];
+            $status = $validatedData['status'];
+
+            foreach ($id_programs as $id_program) {
+                $program = Program::findOrFail($id_program);
+                $program->status = $status; 
+                $program->timestamps = false;
+                $program->save();
+            }
+            return response()->json([
+                'message' => 'Cập nhật trạng thái thành công',
+                'id_programs' => $id_programs
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái', 'error' => $e->getMessage()], 500);
         }
+    }
+    public function updateOneStatus($id)
+    {
+        try {
 
-        return response()->json(['message' => 'Program status updated successfully'], 200);
+            $program = Program::find($id);
+
+            if ($program) {
+                $program->status = !$program->status;
+                $program->timestamps = false;
+                $program->save();
+
+                return response()->json([
+                    'message' => 'Cập nhật trạng thái thành công ',
+                    'id_program' => $id
+                ], 200);
+            } else {
+                return response()->json(['message' => 'Id không chính xác'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái'], 500);
+        }
+    }
+    public function updateManyDeleted(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'id_program' => 'required|array',
+            ]);
+
+            $id_program_list = $validatedData['id_program'];
+
+            foreach ($id_program_list as $id_program) {
+                $news = Program::find($id_program);
+
+                if ($news) {
+                    $news->delete();
+                }
+            }
+
+            return response()->json([
+                'message' => 'Cập nhật trạng thái xóa thành công',
+                'id_program_list' => $id_program_list
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật trạng thái', 'error' => $e->getMessage()], 500);
+        }
     }
 }

@@ -17,19 +17,10 @@ import {
     ModalFooter, useDisclosure
 } from "@nextui-org/react";
 
-import { getAllNewsForAdmin, softDeleteNewsByIds, UpdateStatusVi, UpdateStatusEn, GetAllCategories, UpdateStatuses} from "../../../../service/NewsService";
-
-import { 
-    getAllNewsAdmissionForAdmin, 
-    softDeleteNewsAdmissionByIds,
-    UpdateAdmissionStatuses,
-    UpdateAdmissionStatusVi, 
-    UpdateAdmissionStatusEn
-} from "../../../../service/AdmissionNewsService";
+import { getAllNewsForAdmin, softDeleteNewsByIds, UpdateStatusVi, UpdateStatusEn, GetAllCategories, UpdateStatuses } from "../../../../service/NewsService";
 
 const Post = (props) => {
-    const { successNoti, errorNoti, setSpinning, TypeNews} = props;
-
+    const { successNoti, errorNoti, setSpinning, TypeNews } = props;
     const [newsListData, setNewsListData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -40,6 +31,7 @@ const Post = (props) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const [deleteId, setDeleteId] = useState(null);
+
 
     const columns = [
         {
@@ -250,7 +242,7 @@ const Post = (props) => {
                             variant="light"
                             radius="full"
                             size="sm"
-                            onClick={() => { onOpen(); setDeleteId(_id);}}
+                            onClick={() => { onOpen(); setDeleteId(_id); }}
                         >
                             <i className="fa-solid fa-trash-can"></i>
                         </Button>
@@ -259,6 +251,7 @@ const Post = (props) => {
             ),
         },
     ];
+
 
     const rowSelection = {
         selectedRowKeys,
@@ -287,6 +280,7 @@ const Post = (props) => {
         return checkValueVI;
     };
 
+
     const getValueOfENSelectedRow = () => {
         const selectedRows = newsListData.filter((news) =>
             selectedRowKeys.includes(news.key)
@@ -302,35 +296,22 @@ const Post = (props) => {
 
     const handleUpdateStatuses = async (lang) => {
         setSpinning(true);
-        if (TypeNews === 'News') { 
-            const checkValueVI = getValueOfVISelectedRow();
-            const checkValueEN = getValueOfENSelectedRow();
+        const checkValueVI = getValueOfVISelectedRow();
+        const checkValueEN = getValueOfENSelectedRow();
 
-            const putData = {
-                id_new: selectedRowKeys,
-                lang: lang,
-                status: lang === "vi" ? !checkValueVI : !checkValueEN
-            }
-            console.log(putData);
-            const response = await UpdateStatuses(putData);
-            await getNews();
-            successNoti("Cập nhật thành công");
-        } else if (TypeNews === "admissionNews") {
-            const checkValueVI = getValueOfVISelectedRow();
-            const checkValueEN = getValueOfENSelectedRow();
-
-            const putData = {
-                id_new: selectedRowKeys,
-                lang: lang,
-                status: lang === "vi" ? !checkValueVI : !checkValueEN
-            }
-            console.log(putData);
-            const response = await UpdateAdmissionStatuses(putData);
-            await getNewsAdmission();
-            successNoti("Cập nhật thành công");
+        const putData = {
+            id_new: selectedRowKeys,
+            lang: lang,
+            status: lang === "vi" ? !checkValueVI : !checkValueEN
         }
+        console.log(putData);
+        const response = await UpdateStatuses(putData);
+        await getNews();
+        successNoti("Cập nhật thành công");
         setSpinning(false);
     };
+
+
 
     const handleSoftDelete = async () => {
         setSpinning(true);
@@ -339,19 +320,11 @@ const Post = (props) => {
             deleted: true,
         }
         try {
-            if (TypeNews === 'News') {
             const response = await softDeleteNewsByIds(putData);
             await getNews();
             setSpinning(false);
             successNoti("Xoá thành công");
             handleUnSelect();
-            } else if (TypeNews === "admissionNews"){
-                const response = await softDeleteNewsAdmissionByIds(putData);
-                await getNewsAdmission();
-                setSpinning(false);
-                successNoti("Xoá thành công");
-                handleUnSelect();
-            }
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -366,19 +339,11 @@ const Post = (props) => {
             deleted: true,
         }
         try {
-            if (TypeNews === 'News') {
-                const response = await softDeleteNewsByIds(putData);
-                await getNews();
-                setSpinning(false);
-                successNoti("Xoá thành công");
-                handleUnSelect();
-                } else if (TypeNews === "admissionNews"){
-                    const response = await softDeleteNewsAdmissionByIds(putData);
-                    await getNewsAdmission();
-                    setSpinning(false);
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                }
+            const response = await softDeleteNewsByIds(putData);
+            await getNews();
+            setSpinning(false);
+            successNoti("Xoá thành công");
+            handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -387,6 +352,7 @@ const Post = (props) => {
     };
 
     const getCategory = async () => {
+
         try {
             const response = await GetAllCategories();
 
@@ -396,11 +362,13 @@ const Post = (props) => {
                     text: news.name_vi,
                 };
             });
-
             // console.log("Category data:", newsCategoryData);
             setCategoryData(newsCategoryData);
+            setLoading(false);
+
         } catch (error) {
             console.error("Error fetching news:", error);
+
         }
     };
 
@@ -465,125 +433,38 @@ const Post = (props) => {
         }
     };
 
-    const getNewsAdmission = async ()=>{
-        setSpinning(true);
-        try {
-            const response = await getAllNewsAdmissionForAdmin();
-
-            console.log(response.data)
-
-            const updatedNewsData = response.data.map((news) => {
-                return {
-                    key: news.id_admission_news,
-                    thumbnail: news.thumbnail,
-                    name_group: {
-                        thumbnail: news.thumbnail,
-                        title_vi: news.vi.title_vi,
-                        title_en: news.en.title_en,
-                    },
-                    status_vi: {
-                        value: news.vi.status_vi,
-                        id: news.id_admission_news,
-                    },
-                    status_en: {
-                        value: news.en.status_en,
-                        id: news.id_admission_news,
-                    },
-                    view_count: news.view_count,
-                    category: {
-                        en: news.en.category_name_en,
-                        vi: news.vi.category_name_vi,
-                        id: news.id_category,
-                    },
-                    date: {
-                        created_at: moment(news.created_at).format(
-                            "DD/MM/YYYY HH:mm"
-                        ),
-                        create_by: {
-                            email: news.user.email,
-                            photoURL: news.user.photoURL,
-                            name: news.user.name
-                        },
-                        updated_at: moment(news.updated_at).format(
-                            "DD/MM/YYYY HH:mm"
-                        ),
-                        update_by: {
-                            email: news.user_update.email,
-                            photoURL: news.user_update.photoURL,
-                            name: news.user_update.name
-                        }
-                    },
-                    action: news.id_admission_news,
-                };
-            });
-            setNewsListData(updatedNewsData);
-            setSpinning(false);
-        } catch (error) {
-            console.error("Error fetching news:", error);
-            setSpinning(false);
-        }
-    }
     useEffect(() => {
-        if(TypeNews === "News") {
-            getNews();
-        } else if (TypeNews === "admissionNews"){
-           const response = getNewsAdmission();
-           console.log(response);
-        }
+        setLoading(true);
+        getNews();
+        setLoading(false);
         getCategory();
     }, []);
 
     const handleUpdateStatus_vi = async (id) => {
         setSpinning(true);
-        if (TypeNews === "News") {
-            try {
-                const response = await UpdateStatusVi(id);
-                await getNews();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-            } catch (error) {
-                console.error("error update: ", error);
-                setSpinning(false);
-                errorNoti("Cập nhật thất bại");
-            }
-        } else if(TypeNews === "admissionNews"){ 
-            try {
-                const response = await UpdateAdmissionStatusVi(id);
-                await getNewsAdmission();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-            } catch (error) {
-                console.error("error update: ", error);
-                setSpinning(false);
-                errorNoti("Cập nhật thất bại");
-            } 
+        try {
+            const response = await UpdateStatusVi(id);
+            await getNews();
+            setSpinning(false);
+            successNoti("Cập nhật thành công");
+        } catch (error) {
+            console.error("error update: ", error);
+            setSpinning(false);
+            errorNoti("Cập nhật thất bại");
         }
     };
 
     const handleUpdateStatus_en = async (id) => {
         setSpinning(true);
-        if(TypeNews === "News") {
-            try {
-                const response = await UpdateStatusEn(id);
-                await getNews();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-            } catch (error) {
-                console.error("error update: ", error);
-                setSpinning(false);
-                errorNoti("Cập nhật thất bại");
-            }
-        } else if(TypeNews === "admissionNews"){ 
-            try {
-                const response = await UpdateAdmissionStatusEn(id);
-                await getNewsAdmission();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-            } catch (error) {
-                console.error("error update: ", error);
-                setSpinning(false);
-                errorNoti("Cập nhật thất bại");
-            }
+        try {
+            const response = await UpdateStatusEn(id);
+            await getNews();
+            setSpinning(false);
+            successNoti("Cập nhật thành công");
+        } catch (error) {
+            console.error("error update: ", error);
+            setSpinning(false);
+            errorNoti("Cập nhật thất bại");
         }
     };
 
@@ -636,7 +517,7 @@ const Post = (props) => {
                 color="primary"
                 radius="sm"
                 as={Link}
-                to={TypeNews === "News" ? "create" : "createAdmissions"}
+                to={"create"}
 
             >
                 Tạo bài viết mới
@@ -738,6 +619,7 @@ const Post = (props) => {
                         type: "checkbox",
                         ...rowSelection,
                     }}
+
                     columns={columns}
                     dataSource={newsListData}
                     className="w-full"

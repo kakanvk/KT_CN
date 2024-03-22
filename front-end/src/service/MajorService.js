@@ -9,8 +9,23 @@ const getMajorsByID =(id)=>{
 }
 
 
+const deletedListMajors = (data)=>{
+    console.log("cehck",data);
+    return axiosInstance.delete(`/admin/majors/soft-list/delete`, {params:data});
+}
+
+const saveMajor = (data)=>{
+    return axiosInstance.post(`/admin/majors`, data);
+}
+
+const updateMajor = (id, data)=>{
+    return axiosInstance.put(`/admin/majors/${id}`, data);
+}
 
 export {
     getAllMajors,
-    getMajorsByID
+    getMajorsByID,
+    deletedListMajors,
+    saveMajor,
+    updateMajor
 };

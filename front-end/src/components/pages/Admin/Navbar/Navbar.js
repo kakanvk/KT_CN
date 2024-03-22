@@ -56,6 +56,17 @@ function Navbar(props) {
             ),
         },
         {
+            text: "Quản lý chương trình",
+            link: "/admin/program",
+            icon: (
+                <i
+                    className={`fa-regular fa-images mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
             text: "Quản lý danh mục",
             link: "/admin/category",
             icon: (
@@ -67,8 +78,19 @@ function Navbar(props) {
             ),
         },
         {
-            text: "Quản lý bộ môn",
-            link: "/admin/department",
+            text: "Quản lý chuyên ngành",
+            link: "/admin/major",
+            icon: (
+                <i
+                    className={`fa-solid fa-pen-clip mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
+            text: "Quản lý môn học",
+            link: "/admin/subject",
             icon: (
                 <i
                     className={`fa-solid fa-pen-clip mr-${

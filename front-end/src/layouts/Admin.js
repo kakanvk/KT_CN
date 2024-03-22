@@ -16,7 +16,15 @@ import UpdateCategory from "../components/pages/Admin/CategoryManager/UpdateCate
 import DepartmentManager from "../components/pages/Admin/DepartmentManager/DepartmentManager.js";
 import UpdateDepartment from "../components/pages/Admin/DepartmentManager/UpdateDepartment.js";
 import CreateDepartment from "../components/pages/Admin/DepartmentManager/CreateDepartment.js";
-
+import Program from "../components/pages/Admin/ProgramManager/Program.js";
+import CreateProgram from "../components/pages/Admin/ProgramManager/CreateProgram.js";
+import UpdateProgram from "../components/pages/Admin/ProgramManager/UpdateProgram.js";
+import Major from "../components/pages/Admin/MajorManager/Major.js";
+import CreateMajors from "../components/pages/Admin/MajorManager/CreateMajors.js";
+import UpdateMajors from "../components/pages/Admin/MajorManager/UpdateMajors.js";
+import Subject from "../components/pages/Admin/SubjectManager/Subject.js";
+import CreateSubject from "../components/pages/Admin/SubjectManager/CreateSubject.js";
+import UpdateSubject from "../components/pages/Admin/SubjectManager/UpdateSubject.js"; 
 function Admin(props) {
 
   const [collapsedNav, setCollapsedNav] = useState(false);
@@ -46,21 +54,32 @@ function Admin(props) {
       <div className='Admin-Content flex-1 h-full overflow-auto p-5 px-7'>
         <Routes>
           <Route path="/post" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
-          <Route path="/postAdmissions" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
           <Route path="/post/stored" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
-          <Route path="/postAdmissions/storedAdmissions" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
-
           <Route path="/post/create" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"News"}/>} />
-          <Route path="/postAdmissions/createAdmissions" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"admissionNews"}/>} />
-          
           <Route path="/post/update/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"News"}/>} />
-          <Route path="/postAdmissions/updateAdmissions/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"admissionNews"}/>} />
 
-         
+          <Route path="/program" element={<Program successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+          <Route path="/program/create" element={<CreateProgram collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"program"}/>} />
+          <Route path="/program/update/:id" element={<UpdateProgram collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"program"}/>} />
+
+          <Route path="/major" element={<Major successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+          <Route path="/major/create" element={<CreateMajors successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+          <Route path="/major/update/:id" element={<UpdateMajors collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti}/>} />
+          
+          <Route path="/subject" element={<Subject successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+          <Route path="/subject/create" element={<CreateSubject collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+          <Route path="/subject/update/:id" element={<UpdateSubject collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti}/>} />
+
+          <Route path="/postAdmissions" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
+          <Route path="/postAdmissions/createAdmissions" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"admissionNews"}/>} />
+          <Route path="/postAdmissions/storedAdmissions" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
+          <Route path="/postAdmissions/updateAdmissions/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"admissionNews"}/>} />
+   
           <Route path="/category" element={<CategoryManager successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
-          <Route path="/department" element={<DepartmentManager successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/category/create" element={<PostCategory successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/category/update/:id" element={<UpdateCategory successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+
+          <Route path="/department" element={<DepartmentManager successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/department/update/:id" element={<UpdateDepartment successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/department/create" element={<CreateDepartment successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
 

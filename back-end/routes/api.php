@@ -183,8 +183,11 @@ Route::middleware(['check.jwt'])->group(function () {
     Route::post('/admin/programs', [ProgramController::class, 'saveProgram']);
 
     Route::delete('/admin/programs/{id}', [ProgramController::class, 'delete']);
+    Route::delete('/admin/programs/delete/list', [ProgramController::class, 'updateManyDeleted']);
 
     Route::put('/admin/programs/{id}', [ProgramController::class, 'update']);
+
+    Route::put('/admin/programs/{id}/update/one/status', [ProgramController::class, 'updateOneStatus']);
 
     Route::put('/admin/programs/all/status', [ProgramController::class, 'updateStatus']);
 });
@@ -193,9 +196,9 @@ Route::middleware(['check.jwt'])->group(function () {
 //majors
 Route::get('/admin/majors', [MajorsController::class, 'getAll']);
 
-Route::post('/admin/majors', [MajorsController::class, 'create']);
-
 Route::get('/admin/majors/{id}', [MajorsController::class, 'getMajorsById']);
+
+Route::post('/admin/majors', [MajorsController::class, 'create']);
 
 Route::put('/admin/majors/{id}', [MajorsController::class, 'update']);
 
@@ -206,11 +209,11 @@ Route::get('/subjects', [SubjectController::class, 'getSubjects']);
 
 Route::get('/subjects/{id}', [SubjectController::class, 'getSubjectById']);
 
-Route::post('/subjects', [SubjectController::class, 'createSubject']);
+Route::post('admin/subjects', [SubjectController::class, 'createSubject']);
 
-Route::put('/subjects/{id}', [SubjectController::class, 'updateSubject']);
+Route::put('admin/subjects/{id}', [SubjectController::class, 'updateSubject']);
 
-Route::delete('/subjects/{id}', [SubjectController::class, 'deleteSubject']);
+Route::delete('admin/subjects/soft-list/delete', [SubjectController::class, 'deleteManySubject']);
 
 // detail_subject
 Route::get('/detail-subject', [DetailSubjectController::class, 'getAll']);
