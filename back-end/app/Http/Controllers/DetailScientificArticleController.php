@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Detail_scientific_article;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 
 class DetailScientificArticleController extends Controller
@@ -61,25 +62,43 @@ class DetailScientificArticleController extends Controller
 
     public function updateByScientificArticle(Request $request, $id)
     {
-        try {
-            $detailScientificArticle = Detail_scientific_article::where('id_scientific', $id)->first();
+        $validatedData = $request->validate([
+            'id_scientific' => 'required|integer',
+            'id_teacher' => 'required|array',
+        ]);
 
-            if (!$detailScientificArticle) {
-                return response()->json(['message' => 'Detail research_project not found'], 404);
+        try {
+            // Begin transaction
+            DB::beginTransaction();
+
+            // Lấy danh sách id_teacher cũ của id_scientific từ cơ sở dữ liệu
+            $existingTeachers = Detail_scientific_article::where('id_scientific', $validatedData['id_scientific'])
+                ->pluck('id_teacher')
+                ->toArray();
+
+            // so sánh array
+            $teachersToRemove = array_diff($existingTeachers, $validatedData['id_teacher']);
+            $teachersToAdd = array_diff($validatedData['id_teacher'], $existingTeachers);
+
+            // Xóa
+            Detail_scientific_article::where('id_scientific', $validatedData['id_scientific'])
+                ->whereIn('id_teacher', $teachersToRemove)
+                ->delete();
+
+            // lưu
+            foreach ($teachersToAdd as $teacherId) {
+                Detail_scientific_article::create([
+                    'id_scientific' => $validatedData['id_scientific'],
+                    'id_teacher' => $teacherId,
+                ]);
             }
 
-            $validatedData = $request->validate([
-                'id_scientific' => 'required|integer|exists:scientific_article,id_scientific',
-                'id_teacher' => 'required|integer|exists:teachers,id_teacher',
-            ]);
+            DB::commit();
 
-            $detailScientificArticle->update($validatedData);
-
-            return response()->json(['message' => 'Detail research_project updated successfully', 'data' => $detailScientificArticle], 200);
-        } catch (ValidationException $e) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $e->validator->errors()], 400);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Failed', 'errors' => $th->getMessage()], 500);
+            return response()->json(['message' => 'Detail scientific article updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Failed to update detail scientific article', 'error' => $e->getMessage()], 500);
         }
     }
 
