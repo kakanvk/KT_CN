@@ -12,7 +12,7 @@ class Detail_scientific_article extends Model
         'id_teacher',
     ];
 
-    public function majors()
+    public function ScientificArticle()
     {
         return $this->belongsTo(Scientific_article::class, 'id_scientific', 'id_scientific');
     }

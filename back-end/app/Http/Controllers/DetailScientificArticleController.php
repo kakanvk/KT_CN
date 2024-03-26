@@ -33,13 +33,14 @@ class DetailScientificArticleController extends Controller
     public function showByIdScientificArticle($id)
     {
         error_log("hung");
-        $detailScientificArticle = Detail_scientific_article::with('Teacher')->find($id);
+        $detailScientificArticle = Detail_scientific_article::where('id_scientific', $id)
+            ->get();
 
         if (!$detailScientificArticle) {
             return response()->json(['message' => 'Detail scientific article not found'], 404);
         }
 
-        $teachers = $detailScientificArticle->Teacher->pluck('id_teacher')->toArray();
+        $teachers = $detailScientificArticle->pluck('id_teacher')->toArray();
 
         return response()->json([
             'Detail_scientific_article' => $detailScientificArticle,
@@ -62,19 +63,35 @@ class DetailScientificArticleController extends Controller
     public function getAll()
     {
         $detailScientificArticle = Detail_scientific_article::all();
-        
+
         return response()->json(['Detail_scientific_article' => $detailScientificArticle], 200);
     }
 
     public function updateByScientificArticle(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'id_teacher' => 'required|array',
+            'id_teacher' => 'nullable|array',
         ]);
 
         try {
-            DB::beginTransaction();
 
+            if ($validatedData['id_teacher'] == []) {
+
+                try {
+                    // Tìm tất cả các bản ghi trong bảng detail_scientific_article có id_scientific tương ứng
+                    $deletedRows = Detail_scientific_article::where('id_scientific', $id)->delete();
+
+                    if ($deletedRows > 0) {
+                        return response()->json(['message' => 'Deleted successfully'], 200);
+                    } else {
+                        return response()->json(['message' => 'No records found to delete'], 404);
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['message' => 'Failed to delete', 'error' => $e->getMessage()], 500);
+                }
+            }
+
+            DB::beginTransaction();
             // Lấy danh sách id_teacher cũ của id_scientific từ cơ sở dữ liệu
             $existingTeachers = Detail_scientific_article::where('id_scientific', $id)
                 ->pluck('id_teacher')
@@ -103,6 +120,23 @@ class DetailScientificArticleController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Failed to update detail scientific article', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function deleteByScientificId(Request $request, $id)
+    {
+        try {
+            // Tìm tất cả các bản ghi trong bảng detail_scientific_article có id_scientific tương ứng
+            $deletedRows = Detail_scientific_article::where('id_scientific', $id)->delete();
+
+            if ($deletedRows > 0) {
+                return response()->json(['message' => 'Deleted successfully'], 200);
+            } else {
+                return response()->json(['message' => 'No records found to delete'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete', 'error' => $e->getMessage()], 500);
         }
     }
 }

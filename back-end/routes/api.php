@@ -237,7 +237,8 @@ Route::get('/detail-scientific-article', [DetailScientificArticleController::cla
 Route::get('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'showByIdScientificArticle']);
 Route::get('/detail-scientific-article/teacher/{id}', [DetailScientificArticleController::class, 'showByIdTeacher']);
 Route::post('/admin/detail-scientific-article', [DetailScientificArticleController::class, 'create']);
-Route::put('/admin/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);//loi
+Route::delete('/admin/detail-scientific-article/{id}', [DetailScientificArticleController::class, 'deleteByScientificId']);
+Route::put('/admin/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);
 Route::delete('/admin/detail-scientific-article/delete', [DetailScientificArticleController::class, 'deleteManyDetailScientificArticle']);
 
 //teacher

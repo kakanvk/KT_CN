@@ -12,7 +12,7 @@ class Detail_research_project extends Model
         'id_teacher',
     ];
 
-    public function majors()
+    public function ResearchProjects()
     {
         return $this->belongsTo(Research_projects::class, 'id_research_project', 'id_research_project');
     }

@@ -13,7 +13,7 @@ class Detail_subject extends Model
         'id_teacher',
     ];
 
-    public function majors()
+    public function Subject()
     {
         return $this->belongsTo(Subject::class, 'id_subject', 'id_subject');
     }
