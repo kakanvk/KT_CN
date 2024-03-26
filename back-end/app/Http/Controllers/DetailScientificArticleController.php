@@ -33,13 +33,13 @@ class DetailScientificArticleController extends Controller
     public function showByIdScientificArticle($id)
     {
         error_log("hung");
-        $detailScientificArticle = Detail_scientific_article::with('Teacher')->find($id);
+        $detailScientificArticle = Detail_scientific_article::where('id_scientific', $id)->get();
 
         if (!$detailScientificArticle) {
             return response()->json(['message' => 'Detail scientific article not found'], 404);
         }
 
-        $teachers = $detailScientificArticle->Teacher->pluck('id_teacher')->toArray();
+        $teachers = $detailScientificArticle->pluck('id_teacher')->toArray();
 
         return response()->json([
             'Detail_scientific_article' => $detailScientificArticle,

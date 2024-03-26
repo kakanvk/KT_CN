@@ -24,7 +24,6 @@ const getByIdscientific_article = (id) => {
 };
 
 const getone = (id) => {
-    console.log("getone", id);
     return axiosInstance.get(`scientific-article/getone/${id}`);
 };
 
