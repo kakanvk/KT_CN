@@ -63,16 +63,14 @@ class DetailScientificArticleController extends Controller
     public function updateByScientificArticle(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'id_scientific' => 'required|integer',
             'id_teacher' => 'required|array',
         ]);
 
         try {
-            // Begin transaction
             DB::beginTransaction();
 
             // Lấy danh sách id_teacher cũ của id_scientific từ cơ sở dữ liệu
-            $existingTeachers = Detail_scientific_article::where('id_scientific', $validatedData['id_scientific'])
+            $existingTeachers = Detail_scientific_article::where('id_scientific', $id)
                 ->pluck('id_teacher')
                 ->toArray();
 
@@ -81,14 +79,14 @@ class DetailScientificArticleController extends Controller
             $teachersToAdd = array_diff($validatedData['id_teacher'], $existingTeachers);
 
             // Xóa
-            Detail_scientific_article::where('id_scientific', $validatedData['id_scientific'])
+            Detail_scientific_article::where('id_scientific', $id)
                 ->whereIn('id_teacher', $teachersToRemove)
                 ->delete();
 
             // lưu
             foreach ($teachersToAdd as $teacherId) {
                 Detail_scientific_article::create([
-                    'id_scientific' => $validatedData['id_scientific'],
+                    'id_scientific' => $id,
                     'id_teacher' => $teacherId,
                 ]);
             }

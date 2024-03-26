@@ -234,7 +234,7 @@ Route::get('/detail-scientific-article', [DetailScientificArticleController::cla
 Route::get('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'showByIdScientificArticle']);
 Route::get('/detail-scientific-article/teacher/{id}', [DetailScientificArticleController::class, 'showByIdTeacher']);
 Route::post('/detail-scientific-article', [DetailScientificArticleController::class, 'create']);
-Route::put('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);//loi
+Route::put('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);
 
 //teacher
 Route::post('/teacher', [TeacherController::class, 'create']);
