@@ -1,9 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Table, Tooltip } from "antd";
 import {
-    Avatar,
     BreadcrumbItem,
     Breadcrumbs,
     Button,
@@ -11,91 +9,68 @@ import {
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalFooter, 
+    ModalFooter,
     useDisclosure
 } from "@nextui-org/react";
 
-import { getAllsubjects, deleteSubject} from "../../../../service/SubjectService";
-import { deleteDetailListByIdSubject } from "../../../../service/DetailSubjectService";
+import { deleteListScientificArticle } from "../../../../service/ScientificAricleService";
+import { deleteListDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
+import { getAllResearchProject } from "../../../../service/ResearchProjectService";
 
-const Subject = (props) => {
-
-    const { successNoti, setSpinning} = props;
-
-    const [subjectData, setSubjectData] = useState([]);
-
+const ResearchProjects = (props) => {
+    const { successNoti, setSpinning } = props;
+    const [researchProjectData, setResearchProjectData] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
     const [deleteId, setDeleteId] = useState(null);
-
     const columns = [
         {
             title:
-                <p className="flex gap-2">Tên môn học
-                    <Avatar
-                        alt="Việt Nam"
-                        className="w-5 h-5"
-                        src="https://flagcdn.com/vn.svg"
-                    />
+                <p className="flex gap-2">Bài báo khoa học
+
                 </p>,
-            dataIndex: "name_vi",
+            dataIndex: "title",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Tên môn học
-                    <Avatar
-                        alt="Việt Nam"
-                        className="w-5 h-5"
-                        src="https://flagcdn.com/gb.svg"
-                    />
+                <p className="flex gap-2">status_date
+
                 </p>,
-            dataIndex: "name_en",
+            dataIndex: "status_date",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Đối tượng nghiên cứu
-                    
+                <p className="flex gap-2">investigator
+
                 </p>,
-            dataIndex: "study_object",
+            dataIndex: "investigator",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Đầu năm
-                    
+                <p className="flex gap-2">status
+
                 </p>,
-            dataIndex: "beginning_year",
+            dataIndex: "status",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Thể chế
-                    
+                <p className="flex gap-2">link
+
                 </p>,
-            dataIndex: "institutions",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
-        },
-        {
-            title:
-                <p className="flex gap-2">Tên chuyên ngành
-                    
-                </p>,
-            dataIndex: "majors",
+            dataIndex: "link",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
@@ -122,7 +97,7 @@ const Subject = (props) => {
                             <i className="fa-solid fa-pen"></i>
                         </Button>
 
-                        
+
                     </Tooltip>
                     <Tooltip title="Xoá">
                         <Button
@@ -155,23 +130,22 @@ const Subject = (props) => {
     };
 
     const handleSoftDelete = async () => {
-        setSpinning(true);
+        setSpinning(true);     
         const putData = {
-            id_subject: selectedRowKeys,
+            id_research_project: selectedRowKeys,
         }
-        try { 
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-
+        try {
+            deleteListDetailScientificArticle(putData)
+            .then(response => {
+                deleteListScientificArticle(putData)
+                setSpinning(false);
+                getResearchProject();
+                successNoti("Xoá thành công");
+                handleUnSelect();
+            })
+            .catch(error => {
+                console.error("Error save subject:", error);
+            });
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -182,21 +156,20 @@ const Subject = (props) => {
     const handleSoftDeleteById = async (_id) => {
         setSpinning(true);
         const putData = {
-            id_subject: [_id],
+            id_research_project: [_id],
         }
         try {
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-                
+            deleteListDetailScientificArticle(putData)
+            .then(response => {
+                deleteListScientificArticle(putData)
+                setSpinning(false);
+                getResearchProject();
+                successNoti("Xoá thành công");
+                handleUnSelect();
+            })
+            .catch(error => {
+                console.error("Error save subject:", error);
+            });
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -204,28 +177,26 @@ const Subject = (props) => {
         }
     };
 
-    const getSubject = async () => {
+    const getResearchProject = async () => {
         setSpinning(true);
         try {
-            const response = await getAllsubjects();
-            console.log(response.data);
-
-            const newsCategoryData = response.data.map((subject) => {
+            const response = await getAllResearchProject();
+            console.log(response.data.Research_projects);
+            const Scientific_Article_Data = response.data.Research_projects.map((items) => {
                 return {
-                    key: subject.id_subject,
-                    name_vi: subject.name_vi,
-                    name_en: subject.name_en,
-                    study_object: subject.study_object,
-                    beginning_year: subject.beginning_year,
-                    institutions: subject.institutions,
-                    majors: subject.majors.name_vi,
-                    created_at: subject.created_at,
-                    updated_at: subject.updated_at,
-                    action: subject.id_subject,
+                    key: items.id_research_project,
+                    title: items.title,
+                    status_date: items.status_date,
+                    investigator: items.investigator,
+                    status: items.status,
+                    link: items.link,
+                    created_at: items.created_at,
+                    updated_at: items.updated_at,
+                    action: items.id_research_project,
                 };
             });
 
-            setSubjectData(newsCategoryData);
+            setResearchProjectData(Scientific_Article_Data);
 
             setSpinning(false);
         } catch (error) {
@@ -235,7 +206,7 @@ const Subject = (props) => {
     };
 
     useEffect(() => {
-        getSubject();
+        getResearchProject();
     }, []);
 
     return (
@@ -256,7 +227,7 @@ const Subject = (props) => {
             <div className="flex items-start justify-between w-full">
                 <Breadcrumbs underline="hover">
                     <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                    <BreadcrumbItem>Quản lý môn học</BreadcrumbItem>
+                    <BreadcrumbItem>Quản lý dự án nghiên cứu</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="flex gap-2">
                     <Tooltip title="Làm mới">
@@ -264,12 +235,12 @@ const Subject = (props) => {
                             isIconOnly
                             radius="full"
                             variant="light"
-                            onClick={() => getSubject()}
+                            onClick={() => getResearchProject()}
                         >
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-                    
+
                 </div>
             </div>
             <Button
@@ -278,18 +249,17 @@ const Subject = (props) => {
                 as={Link}
                 to="create"
             >
-                Tạo môn học mới
+                Tạo dự án nghiên cứu
             </Button>
-
             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
                     <p className="text-sm font-medium">
                         <i className="fa-solid fa-circle-check mr-3 text-emerald-500"></i>{" "}
-                        Đã chọn {selectedRow.length} môn học
+                        Đã chọn {selectedRow.length} dự án
                     </p>
                     <div className="flex items-center gap-2">
                         <Tooltip
-                            title={`Xoá ${selectedRowKeys.length} môn học`}
+                            title={`Xoá ${selectedRowKeys.length} dự án`}
                             getPopupContainer={() =>
                                 document.querySelector(".Quick__Option")
                             }
@@ -326,7 +296,7 @@ const Subject = (props) => {
                         ...rowSelection,
                     }}
                     columns={columns}
-                    dataSource={subjectData}
+                    dataSource={researchProjectData}
                     className="w-full"
                 />
             </div>
@@ -334,7 +304,7 @@ const Subject = (props) => {
     );
 };
 
-export default Subject;
+export default ResearchProjects;
 
 function ConfirmAction(props) {
 

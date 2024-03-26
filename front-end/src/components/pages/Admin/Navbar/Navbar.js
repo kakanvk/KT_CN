@@ -100,8 +100,41 @@ function Navbar(props) {
             ),
         },
         {
+            text: "Quản lý quá trình làm việc",
+            link: "/admin/work-process",
+            icon: (
+                <i
+                    className={`fa-solid fa-pen-clip mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        }, 
+        {
             text: "Quản lý người dùng",
             link: "/admin/user",
+            icon: (
+                <i
+                    className={`fa-regular fa-user mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
+            text: "Quản lý bài báo khoa học",
+            link: "/admin/scientific-article",
+            icon: (
+                <i
+                    className={`fa-regular fa-user mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
+            text: "Quản lý dự án nghiên cứu",
+            link: "/admin/research-projects",
             icon: (
                 <i
                     className={`fa-regular fa-user mr-${

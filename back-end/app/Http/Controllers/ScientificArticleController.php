@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Scientific_article;
+use App\Models\Detail_scientific_article;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -15,6 +17,35 @@ class ScientificArticleController extends Controller
         return response()->json(['scientific_articles' => $scientificArticles], 200);
     }
 
+    public function getScientificArticlesById($id)
+    {
+        $scientificArticle = Detail_scientific_article::with('Teacher')->find($id);
+
+        if (!$scientificArticle) {
+            return response()->json(['message' => 'Detail scientific article not found'], 404);
+        }
+        
+        $teachers = $scientificArticle->Teacher->pluck('id_teacher')->toArray();
+        
+        return response()->json([
+            'scientific_article' => $scientificArticle,
+            'teachers' => $teachers,
+        ], 200);
+    }
+
+    public function getone($id)
+    {
+        $scientificArticle = Scientific_article::find($id);
+
+        if (!$scientificArticle) {
+            return response()->json(['message' => 'scientific article not found'], 404);
+        }
+    
+        return response()->json([
+            'scientific_article' => $scientificArticle,
+        ], 200);
+    }
+
     public function getById($id)
     {
         error_log("ok");
@@ -24,6 +55,7 @@ class ScientificArticleController extends Controller
                 'scientific_article.id_scientific_article',
                 'scientific_article.title',
                 DB::raw("DATE_FORMAT(scientific_article.publication_date, '%d/%m/%Y') AS publication_date"),
+                'scientific_article.publication_date as publication_date_old',
                 'scientific_article.publishers',
                 'scientific_article.abstract',
                 'scientific_article.link',
@@ -73,19 +105,27 @@ class ScientificArticleController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function DeleteMany(Request $request)
     {
         try {
-            $scientificArticle = Scientific_article::find($id);
-            if (!$scientificArticle) {
-                return response()->json(['message' => 'Scientific article not found'], 404);
+            $validatedData = $request->validate([
+                'id_scientific_article' => 'required|array',
+            ]);
+
+            $id_scientific_article_list = $validatedData['id_scientific_article'];
+            error_log($request);
+            foreach ($id_scientific_article_list as $id_scientific_article) {
+                    $scientific_article = Scientific_article::find($id_scientific_article);
+                    if ($scientific_article) {
+                        $scientific_article->delete();
+                    }
             }
-
-            $scientificArticle->delete();
-            return response()->json(['message' => 'Scientific article deleted successfully'], 200);
-
+            return response()->json([
+                'message' => 'Xóa thành công',
+                'id_scientific_article' => $id_scientific_article
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete scientific article', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -99,9 +139,10 @@ class ScientificArticleController extends Controller
                 'abstract' => 'required|string',
                 'link' => 'nullable|string',
             ]);
-
+            
             $scientificArticle = Scientific_article::create($validatedData);
-            return response()->json(['message' => 'Scientific article created successfully', 'scientific_article' => $scientificArticle], 201);
+            $id_scientific = $scientificArticle->id_scientific_article;            
+            return response()->json(['id_scientific' => $id_scientific], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->validator->errors()], 400);
         } catch (\Exception $e) {

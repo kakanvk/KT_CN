@@ -25,6 +25,15 @@ import UpdateMajors from "../components/pages/Admin/MajorManager/UpdateMajors.js
 import Subject from "../components/pages/Admin/SubjectManager/Subject.js";
 import CreateSubject from "../components/pages/Admin/SubjectManager/CreateSubject.js";
 import UpdateSubject from "../components/pages/Admin/SubjectManager/UpdateSubject.js"; 
+import WorkProcess from "../components/pages/Admin/WorkProcessManager/WorkProcess.js";
+import CreateWorkProcess from "../components/pages/Admin/WorkProcessManager/CreateWorkProcess.js";
+import UpdateWorkProcess from "../components/pages/Admin/WorkProcessManager/UpdateWorkProcess.js";
+import ScientificArticle from "../components/pages/Admin/ScientificArticleManager/ScientificArticle.js";
+import CreateScientificArticle from "../components/pages/Admin/ScientificArticleManager/CreateScientificArticle.js";
+import UpdateScientificArticle from "../components/pages/Admin/ScientificArticleManager/UpdateScientificArticle.js";
+import ResearchProjects from "../components/pages/Admin/ResearchProjects/ResearchProjects.js";
+import CreateResearchProjects from "../components/pages/Admin/ResearchProjects/CreateResearchProjects.js";
+import UpdateResearchProjects from "../components/pages/Admin/ResearchProjects/UpdateResearchProjects.js";
 function Admin(props) {
 
   const [collapsedNav, setCollapsedNav] = useState(false);
@@ -83,7 +92,20 @@ function Admin(props) {
           <Route path="/department/update/:id" element={<UpdateDepartment successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/department/create" element={<CreateDepartment successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
 
-          <Route path="/user" element={<UserManager successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+          <Route path="/user" element={<UserManager collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
+        
+          <Route path="/work-process" element={<WorkProcess collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+          <Route path="/work-process/create" element={<CreateWorkProcess collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+          <Route path="/work-process/update/:id" element={<UpdateWorkProcess collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+
+          <Route path="/scientific-article" element={<ScientificArticle collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+          <Route path="/scientific-article/create" element={<CreateScientificArticle collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+          <Route path="/scientific-article/update/:id" element={<UpdateScientificArticle collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+
+          <Route path="/research-projects" element={<ResearchProjects collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+          <Route path="/research-projects/create" element={<CreateResearchProjects collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+          <Route path="/research-projects/update/:id" element={<UpdateResearchProjects collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} />} />
+
         </Routes>
       </div>
     </div>

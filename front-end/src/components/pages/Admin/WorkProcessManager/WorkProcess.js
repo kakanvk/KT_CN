@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Table, Tooltip } from "antd";
 import {
-    Avatar,
     BreadcrumbItem,
     Breadcrumbs,
     Button,
@@ -11,91 +10,56 @@ import {
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalFooter, 
+    ModalFooter,
     useDisclosure
 } from "@nextui-org/react";
 
-import { getAllsubjects, deleteSubject} from "../../../../service/SubjectService";
-import { deleteDetailListByIdSubject } from "../../../../service/DetailSubjectService";
-
-const Subject = (props) => {
-
-    const { successNoti, setSpinning} = props;
-
-    const [subjectData, setSubjectData] = useState([]);
-
+import { getAllWorkProcess, deleteWorkProcessList }
+    from "../../../../service/WorkProcessService";
+const WorkProcess = (props) => {
+    const { successNoti, setSpinning } = props;
+    const [workProcessData, setWorkProcessData] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
     const [deleteId, setDeleteId] = useState(null);
-
     const columns = [
         {
             title:
-                <p className="flex gap-2">Tên môn học
-                    <Avatar
-                        alt="Việt Nam"
-                        className="w-5 h-5"
-                        src="https://flagcdn.com/vn.svg"
-                    />
+                <p className="flex gap-2">Cơ sở giáo dục đại học
+
                 </p>,
-            dataIndex: "name_vi",
+            dataIndex: "academic_institution",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Tên môn học
-                    <Avatar
-                        alt="Việt Nam"
-                        className="w-5 h-5"
-                        src="https://flagcdn.com/gb.svg"
-                    />
+                <p className="flex gap-2">Thời gian làm việc
+
                 </p>,
-            dataIndex: "name_en",
+            dataIndex: "time",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Đối tượng nghiên cứu
-                    
+                <p className="flex gap-2">Địa chỉ
+
                 </p>,
-            dataIndex: "study_object",
+            dataIndex: "address",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Đầu năm
-                    
+                <p className="flex gap-2">Chức vụ
+
                 </p>,
-            dataIndex: "beginning_year",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
-        },
-        {
-            title:
-                <p className="flex gap-2">Thể chế
-                    
-                </p>,
-            dataIndex: "institutions",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
-        },
-        {
-            title:
-                <p className="flex gap-2">Tên chuyên ngành
-                    
-                </p>,
-            dataIndex: "majors",
+            dataIndex: "position",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
@@ -122,7 +86,7 @@ const Subject = (props) => {
                             <i className="fa-solid fa-pen"></i>
                         </Button>
 
-                        
+
                     </Tooltip>
                     <Tooltip title="Xoá">
                         <Button
@@ -157,21 +121,14 @@ const Subject = (props) => {
     const handleSoftDelete = async () => {
         setSpinning(true);
         const putData = {
-            id_subject: selectedRowKeys,
+            id_work_process: selectedRowKeys,
         }
-        try { 
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-
+        try {
+            await deleteWorkProcessList(putData);
+            setSpinning(false);
+            getWorkProcess();
+            successNoti("Xoá thành công");
+            handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -182,21 +139,13 @@ const Subject = (props) => {
     const handleSoftDeleteById = async (_id) => {
         setSpinning(true);
         const putData = {
-            id_subject: [_id],
+            id_work_process: [_id],
         }
         try {
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-                
+            await deleteWorkProcessList(putData);
+            setSpinning(false);
+            getWorkProcess();
+            successNoti("Xoá thành công");
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -204,28 +153,26 @@ const Subject = (props) => {
         }
     };
 
-    const getSubject = async () => {
+    const getWorkProcess = async () => {
         setSpinning(true);
         try {
-            const response = await getAllsubjects();
+            const response = await getAllWorkProcess();
             console.log(response.data);
 
-            const newsCategoryData = response.data.map((subject) => {
+            const work_process_data = response.data.work_process.map((work_process) => {
                 return {
-                    key: subject.id_subject,
-                    name_vi: subject.name_vi,
-                    name_en: subject.name_en,
-                    study_object: subject.study_object,
-                    beginning_year: subject.beginning_year,
-                    institutions: subject.institutions,
-                    majors: subject.majors.name_vi,
-                    created_at: subject.created_at,
-                    updated_at: subject.updated_at,
-                    action: subject.id_subject,
+                    key: work_process.id_work_process,
+                    time: work_process.time,
+                    academic_institution: work_process.academic_institution,
+                    address: work_process.address,
+                    position: work_process.position,
+                    created_at: work_process.created_at,
+                    updated_at: work_process.updated_at,
+                    action: work_process.id_work_process,
                 };
             });
 
-            setSubjectData(newsCategoryData);
+            setWorkProcessData(work_process_data);
 
             setSpinning(false);
         } catch (error) {
@@ -235,7 +182,7 @@ const Subject = (props) => {
     };
 
     useEffect(() => {
-        getSubject();
+        getWorkProcess();
     }, []);
 
     return (
@@ -256,7 +203,7 @@ const Subject = (props) => {
             <div className="flex items-start justify-between w-full">
                 <Breadcrumbs underline="hover">
                     <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                    <BreadcrumbItem>Quản lý môn học</BreadcrumbItem>
+                    <BreadcrumbItem>Quản lý quá trình làm việc</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="flex gap-2">
                     <Tooltip title="Làm mới">
@@ -264,12 +211,12 @@ const Subject = (props) => {
                             isIconOnly
                             radius="full"
                             variant="light"
-                            onClick={() => getSubject()}
+                            onClick={() => getWorkProcess()}
                         >
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-                    
+
                 </div>
             </div>
             <Button
@@ -278,18 +225,17 @@ const Subject = (props) => {
                 as={Link}
                 to="create"
             >
-                Tạo môn học mới
+                Tạo quá trình làm việc
             </Button>
-
             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
                     <p className="text-sm font-medium">
                         <i className="fa-solid fa-circle-check mr-3 text-emerald-500"></i>{" "}
-                        Đã chọn {selectedRow.length} môn học
+                        Đã chọn {selectedRow.length} quá trình
                     </p>
                     <div className="flex items-center gap-2">
                         <Tooltip
-                            title={`Xoá ${selectedRowKeys.length} môn học`}
+                            title={`Xoá ${selectedRowKeys.length} quá trình`}
                             getPopupContainer={() =>
                                 document.querySelector(".Quick__Option")
                             }
@@ -326,7 +272,7 @@ const Subject = (props) => {
                         ...rowSelection,
                     }}
                     columns={columns}
-                    dataSource={subjectData}
+                    dataSource={workProcessData}
                     className="w-full"
                 />
             </div>
@@ -334,7 +280,7 @@ const Subject = (props) => {
     );
 };
 
-export default Subject;
+export default WorkProcess;
 
 function ConfirmAction(props) {
 

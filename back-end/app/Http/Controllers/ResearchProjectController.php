@@ -21,8 +21,13 @@ class ResearchProjectController extends Controller
             ]);
 
             $research_projects = Research_projects::create($validatedData);
+            $id_research_project = $research_projects->id_research_project; 
 
-            return response()->json(['message' => 'research project created successfully', 'research_projects' => $research_projects], 201);
+            return response()->json([
+                'message' => 'research project created successfully', 
+                'research_projects' => $research_projects,
+                'id_research_project' => $id_research_project
+            ], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->validator->errors()], 400);
         } catch (\Exception $e) {
@@ -48,6 +53,29 @@ class ResearchProjectController extends Controller
         }
     }
 
+    public function DeleteMany(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'id_research_project' => 'required|array',
+            ]);
+
+            $id_research_project_list = $validatedData['id_research_project'];
+            error_log($request);
+            foreach ($id_research_project_list as $id_research_project) {
+                    $research_project = Research_projects::find($id_research_project);
+                    if ($research_project) {
+                        $research_project->delete();
+                    }
+            }
+            return response()->json([
+                'message' => 'Xóa thành công',
+                'id_research_project_list' => $id_research_project_list
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
+        }
+    }
     public function update(Request $request, $id)
     {
 

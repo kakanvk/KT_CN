@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Table, Tooltip } from "antd";
 import {
-    Avatar,
     BreadcrumbItem,
     Breadcrumbs,
     Button,
@@ -11,91 +10,67 @@ import {
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalFooter, 
+    ModalFooter,
     useDisclosure
 } from "@nextui-org/react";
 
-import { getAllsubjects, deleteSubject} from "../../../../service/SubjectService";
-import { deleteDetailListByIdSubject } from "../../../../service/DetailSubjectService";
+import { deleteListScientificArticle, getAllScientificArticle } from "../../../../service/ScientificAricleService";
+import { deleteListDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
 
-const Subject = (props) => {
-
-    const { successNoti, setSpinning} = props;
-
-    const [subjectData, setSubjectData] = useState([]);
-
+const ScientificArticle = (props) => {
+    const { successNoti, setSpinning } = props;
+    const [scientificArticleData, setScientificArticleData] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
     const [deleteId, setDeleteId] = useState(null);
-
     const columns = [
         {
             title:
-                <p className="flex gap-2">Tên môn học
-                    <Avatar
-                        alt="Việt Nam"
-                        className="w-5 h-5"
-                        src="https://flagcdn.com/vn.svg"
-                    />
+                <p className="flex gap-2">Bài báo khoa học
+
                 </p>,
-            dataIndex: "name_vi",
+            dataIndex: "title",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Tên môn học
-                    <Avatar
-                        alt="Việt Nam"
-                        className="w-5 h-5"
-                        src="https://flagcdn.com/gb.svg"
-                    />
+                <p className="flex gap-2">publication_date
+
                 </p>,
-            dataIndex: "name_en",
+            dataIndex: "publication_date",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Đối tượng nghiên cứu
-                    
+                <p className="flex gap-2">publishers
+
                 </p>,
-            dataIndex: "study_object",
+            dataIndex: "publishers",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Đầu năm
-                    
+                <p className="flex gap-2">abstract
+
                 </p>,
-            dataIndex: "beginning_year",
+            dataIndex: "abstract",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
         },
         {
             title:
-                <p className="flex gap-2">Thể chế
-                    
+                <p className="flex gap-2">link
+
                 </p>,
-            dataIndex: "institutions",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
-        },
-        {
-            title:
-                <p className="flex gap-2">Tên chuyên ngành
-                    
-                </p>,
-            dataIndex: "majors",
+            dataIndex: "link",
             render: (text) => (
                 <p className="font-medium">{text}</p>
             ),
@@ -122,7 +97,7 @@ const Subject = (props) => {
                             <i className="fa-solid fa-pen"></i>
                         </Button>
 
-                        
+
                     </Tooltip>
                     <Tooltip title="Xoá">
                         <Button
@@ -155,23 +130,22 @@ const Subject = (props) => {
     };
 
     const handleSoftDelete = async () => {
-        setSpinning(true);
+        setSpinning(true);     
         const putData = {
-            id_subject: selectedRowKeys,
+            id_scientific_article: selectedRowKeys,
         }
-        try { 
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-
+        try {
+            deleteListDetailScientificArticle(putData)
+            .then(response => {
+                deleteListScientificArticle(putData)
+                setSpinning(false);
+                getScientificArticle();
+                successNoti("Xoá thành công");
+                handleUnSelect();
+            })
+            .catch(error => {
+                console.error("Error save subject:", error);
+            });
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -182,21 +156,20 @@ const Subject = (props) => {
     const handleSoftDeleteById = async (_id) => {
         setSpinning(true);
         const putData = {
-            id_subject: [_id],
+            id_scientific_article: [_id],
         }
         try {
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-                
+            deleteListDetailScientificArticle(putData)
+            .then(response => {
+                deleteListScientificArticle(putData)
+                setSpinning(false);
+                getScientificArticle();
+                successNoti("Xoá thành công");
+                handleUnSelect();
+            })
+            .catch(error => {
+                console.error("Error save subject:", error);
+            });
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -204,28 +177,27 @@ const Subject = (props) => {
         }
     };
 
-    const getSubject = async () => {
+    const getScientificArticle = async () => {
         setSpinning(true);
         try {
-            const response = await getAllsubjects();
-            console.log(response.data);
+            const response = await getAllScientificArticle();
+            console.log(response.data.scientific_articles);
 
-            const newsCategoryData = response.data.map((subject) => {
+            const Scientific_Article_Data = response.data.scientific_articles.map((items) => {
                 return {
-                    key: subject.id_subject,
-                    name_vi: subject.name_vi,
-                    name_en: subject.name_en,
-                    study_object: subject.study_object,
-                    beginning_year: subject.beginning_year,
-                    institutions: subject.institutions,
-                    majors: subject.majors.name_vi,
-                    created_at: subject.created_at,
-                    updated_at: subject.updated_at,
-                    action: subject.id_subject,
+                    key: items.id_scientific_article,
+                    title: items.title,
+                    publication_date: items.publication_date,
+                    publishers: items.publishers,
+                    abstract: items.abstract,
+                    link: items.link,
+                    created_at: items.created_at,
+                    updated_at: items.updated_at,
+                    action: items.id_scientific_article,
                 };
             });
 
-            setSubjectData(newsCategoryData);
+            setScientificArticleData(Scientific_Article_Data);
 
             setSpinning(false);
         } catch (error) {
@@ -235,7 +207,7 @@ const Subject = (props) => {
     };
 
     useEffect(() => {
-        getSubject();
+        getScientificArticle();
     }, []);
 
     return (
@@ -256,7 +228,7 @@ const Subject = (props) => {
             <div className="flex items-start justify-between w-full">
                 <Breadcrumbs underline="hover">
                     <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                    <BreadcrumbItem>Quản lý môn học</BreadcrumbItem>
+                    <BreadcrumbItem>Quản lý bài báo khoa học</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="flex gap-2">
                     <Tooltip title="Làm mới">
@@ -264,12 +236,12 @@ const Subject = (props) => {
                             isIconOnly
                             radius="full"
                             variant="light"
-                            onClick={() => getSubject()}
+                            onClick={() => getScientificArticle()}
                         >
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-                    
+
                 </div>
             </div>
             <Button
@@ -278,18 +250,17 @@ const Subject = (props) => {
                 as={Link}
                 to="create"
             >
-                Tạo môn học mới
+                Tạo bài báo khoa học
             </Button>
-
             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
                     <p className="text-sm font-medium">
                         <i className="fa-solid fa-circle-check mr-3 text-emerald-500"></i>{" "}
-                        Đã chọn {selectedRow.length} môn học
+                        Đã chọn {selectedRow.length} quá trình
                     </p>
                     <div className="flex items-center gap-2">
                         <Tooltip
-                            title={`Xoá ${selectedRowKeys.length} môn học`}
+                            title={`Xoá ${selectedRowKeys.length} quá trình`}
                             getPopupContainer={() =>
                                 document.querySelector(".Quick__Option")
                             }
@@ -326,7 +297,7 @@ const Subject = (props) => {
                         ...rowSelection,
                     }}
                     columns={columns}
-                    dataSource={subjectData}
+                    dataSource={scientificArticleData}
                     className="w-full"
                 />
             </div>
@@ -334,7 +305,7 @@ const Subject = (props) => {
     );
 };
 
-export default Subject;
+export default ScientificArticle;
 
 function ConfirmAction(props) {
 

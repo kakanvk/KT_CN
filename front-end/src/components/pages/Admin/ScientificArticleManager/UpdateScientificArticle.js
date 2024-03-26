@@ -4,125 +4,102 @@ import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
 import { Select, Tooltip } from "antd";
 import { DatePicker, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
-import { getAllMajors } from "../../../../service/MajorService";
 import { getAllTeacher } from "../../../../service/TeacherService";
-import { getDetailByIdSubject, updateDetailByIdSubject } from "../../../../service/DetailSubjectService";
-import {
-    getSubjectByID,
-    updateSubject,
-} from "../../../../service/SubjectService";
+import { getByIdScientific, getByIdscientific_article, getone, updateScientificArticle } from "../../../../service/ScientificAricleService";
+import { putDetailScientificArticle, getDetailScientificArticleById } from "../../../../service/DetailScientificArticleService";
 const { Option } = Select;
-const UpdateSubject = (props) => {
+const UpdateScientificArticle = (props) => {
     const { id } = useParams();
     const { successNoti, errorNoti, setCollapsedNav } = props;
-    const [nameVi, setNameVi] = useState("");
-    const [nameEn, setNameEn] = useState("");
-    const [institutions, setInstitutions] = useState("");
-    const [studyObject, setStudyObject] = useState("");
-    const [selectedMajor, setSelectedMajor] = useState("");
-    const [selectedYear, setSelectedYear] = useState(2000);
-    const [MajorsData, setMajorsData] = useState([]);
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
-    const [oldValueTeacherUpdate, setSelectedoldValueTeacher] = useState("");
-    const [selectedTeacherUpdate, setSelectedTeacherUpdate] = useState("");
-
+    const [SelectedPublicationDate, setSelectedPublicationDate] = useState();
+    const [titleData, setTitle] = useState("");
+    const [publisherData, setPublisher] = useState("");
+    const [linkData, setLink] = useState("");
+    const [abstractData, setAbstracts] = useState("");
+    const [selectedKeys, setSelectedKeys] = useState([]);
     const [teacherData, setTeacherData] = useState([]);
-    
-    //hangle database
-    const getMajors = async () => {
-        try {
-            const response = await getAllMajors();
-            setMajorsData(response.data);
-        } catch (error) {
-            console.error("Error AllMajors:", error);
-        }
-    };
 
+    //hangle database
     const getTeachers = async () => {
         try {
             const response = await getAllTeacher();
-            setTeacherData(response.data);
+            const filteredTeacherData = response.data.map(teacher => ({
+                ...teacher,
+                id_teacher: teacher.id_teacher
+            }));
+            setTeacherData(filteredTeacherData);
+            const responseDetails = await getDetailScientificArticleById(id);
+            setSelectedKeys(responseDetails.data.id_teacher_array)
+            console.log(responseDetails.data.id_teacher_array);
         } catch (error) {
             console.error("Error getAllTeacher:", error);
         }
     };
 
-    const getDetailSubject = async () => {
+    const getScientificArticleByID = async () => {
         try {
-            const response = await getSubjectByID(id);
-            const {
-                majors,
-                name_vi,
-                name_en,
-                study_object,
-                beginning_year,
-                institutions,
-            } = response.data.subject;
-
-            setNameVi(name_vi);
-            setNameEn(name_en);
-            setStudyObject(study_object);
-            setSelectedYear(beginning_year);
-            setInstitutions(institutions);
-            setSelectedMajor(majors.id_major);
-
-          
-            const responseDeatailSubject = await getDetailByIdSubject(id);
-            const {
-                id_teacher
-            } = responseDeatailSubject.data[0];
-            setSelectedoldValueTeacher(id_teacher)
-            setSelectedTeacherUpdate(id_teacher);
-            
+            const response = await getone(id);
+                const {
+                    title,
+                    publication_date_old,
+                    publishers,
+                    abstract,
+                    link,
+                } = response.data.scientific_article;
+                console.log('Response data getone:', response.data.scientific_article);
+                setSelectedPublicationDate(publication_date_old);
+                setTitle(title);
+                setPublisher(publishers);
+                setLink(link);
+                setAbstracts(abstract);
+           
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
     };
+    
 
     const UpdateData = () => {
         try {
-            if (
-                !selectedMajor ||
-                !nameVi ||
-                !nameEn ||
-                !studyObject ||
-                !selectedYear ||
-                !institutions ||
-                !selectedTeacherUpdate
-            ) {
-                errorNoti("Vui lòng điền đầy đủ thông tin.");
-                return;
-            }
+            // if (
+            //     !titleData ||
+            //     !SelectedPublicationDate ||
+            //     !publisherData ||
+            //     !abstractData ||
+            //     !linkData 
+            // ) {
+            //     errorNoti("Vui lòng điền đầy đủ thông tin.");
+            //     return;
+            // }
             const data = {
-                id_major: selectedMajor,
-                name_vi: nameVi,
-                name_en: nameEn,
-                study_object: studyObject,
-                beginning_year: selectedYear,
-                institutions: institutions,
-            };
-            updateSubject(id, data)
+                title: titleData,
+                publication_date: SelectedPublicationDate,
+                publishers: publisherData,
+                abstract: abstractData,
+                link: linkData
+            }
+            updateScientificArticle(id, data)
                 .then(response => {
-
-                    const DataDetailSubject ={
-                        id_teacher_old: oldValueTeacherUpdate,
-                        id_teacher_update: selectedTeacherUpdate
+                    const detail_scientific_article = {
+                        id_teacher: selectedKeys
                     }
-                    updateDetailByIdSubject(id, DataDetailSubject);
-                    successNoti("Chỉnh sửa môn học thành công");
+                    console.log(detail_scientific_article);
+                    putDetailScientificArticle(id, detail_scientific_article);
+                    successNoti("Chỉnh sửa bài báo khoa học thành công");
                 })
                 .catch(error => {
-                    console.error("Error update subject:", error);
+                    console.error("Error update Scientific Article:", error);
                 });
         } catch (error) {
             console.error("Error update subject:", error);
         }
     };
     useEffect(() => {
-        getMajors();
-        getDetailSubject();
         getTeachers();
+        getScientificArticleByID();
+
         const handleResize = () => {
             if (window.innerWidth < 1024) {
                 setLayout("col");
@@ -133,18 +110,15 @@ const UpdateSubject = (props) => {
             console.log(window.innerWidth);
         };
         handleResize();
+
         window.addEventListener("resize", handleResize);
         return () => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
 
-    const handleMajorChange = (value, option) => {
-        setSelectedMajor(value);
-    };
-
     const handleTeacherChange = (value, option) => {
-        setSelectedTeacherUpdate(value);
+        setSelectedKeys(value);
     };
 
     const handleToggleLayout = (_layout) => {
@@ -157,9 +131,8 @@ const UpdateSubject = (props) => {
     };
 
     //////note
-    const onChangeYear = (date, dateString) => {
-        console.log("year1", selectedYear);
-        setSelectedYear(dateString);
+    const onChangePublicationDate = (date, dateString) => {
+        setSelectedPublicationDate(dateString);
     };
 
     return (
@@ -169,9 +142,9 @@ const UpdateSubject = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/subject">Quản lý môn học</Link>
+                            <Link to="/admin/subject">Quản lý bài báo khoa học</Link>
                         </BreadcrumbItem>
-                        <BreadcrumbItem>Chỉnh sửa môn học</BreadcrumbItem>
+                        <BreadcrumbItem>Chỉnh sửa bài báo khoa học</BreadcrumbItem>
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">
@@ -206,106 +179,83 @@ const UpdateSubject = (props) => {
                         <Input
                             label={
                                 <p>
-                                    Nhập tên môn học tiếng việt{" "}
+                                    Nhập tiêu đề{" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập tên môn học"
+                            placeholder=" "
                             labelPlacement="outside"
+
                             isClearable
                             radius="sm"
-                            value={nameVi}
-                            onValueChange={setNameVi}
+                            value={titleData}
+                            onValueChange={setTitle}
                         />
                         <Input
                             label={
                                 <p>
-                                    Nhập tên môn học tiếng anh{" "}
+                                    Nhập nhà xuất bản (publishers){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập tên môn học"
+                            placeholder=" "
                             labelPlacement="outside"
+
                             isClearable
                             radius="sm"
-                            value={nameEn}
-                            onValueChange={setNameEn}
+                            value={publisherData}
+                            onValueChange={setPublisher}
                         />
                         <Input
                             label={
                                 <p>
-                                    Nhập đối tượng nghiên cứu{" "}
+                                    Nhập tóm tắt (abstract){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập đối tượng"
+                            placeholder=" "
                             labelPlacement="outside"
+
                             isClearable
                             radius="sm"
-                            value={studyObject}
-                            onValueChange={setStudyObject}
+                            value={abstractData}
+                            onValueChange={setAbstracts}
                         />
                         <Input
                             label={
                                 <p>
-                                    Nhập thể chế{" "}
+                                    Nhập liên kết (link){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập thể chế"
+                            placeholder=" "
                             labelPlacement="outside"
+
                             isClearable
                             radius="sm"
-                            value={institutions}
-                            onValueChange={setInstitutions}
+                            value={linkData}
+                            onValueChange={setLink}
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <div>
                             <p className="text-sm">
-                                Chuyên ngành{" "}
-                                <span className="text-red-500 font-bold">
-                                    *
-                                </span>
-                            </p>
-                            <Select
-                                defaultValue="Chọn chuyên ngành"
-                                value={selectedMajor}
-                                onChange={handleMajorChange}
-                                className="w-[300px] h-[42px] mt-1"
-                            >
-                                {MajorsData.map((Majors) => (
-                                    <Option
-                                        key={Majors.id_major}
-                                        value={Majors.id_major}
-                                    >
-                                        {Majors.name_vi} ({Majors.name_en})
-                                    </Option>
-                                ))}
-                            </Select>
-                        </div>
-                        <div>
-                            <p className="text-sm">
-                                Năm bắt đầu{" "}
-                                <span className="text-red-500 font-bold">
-                                    *
-                                </span>
+                                Ngày xuất bản (publication date){" "}
+                                <span className="text-red-500 font-bold">*</span>
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
                                     className="w-[300px] h-[42px] mt-1"
-                                    onChange={onChangeYear}
-                                    picker="year"
-                                    format="YYYY"
-                                    value={dayjs().year(selectedYear)}
+                                    onChange={onChangePublicationDate}
+                                    value={dayjs(SelectedPublicationDate)}
                                 />
                             </Space>
                         </div>
@@ -314,32 +264,30 @@ const UpdateSubject = (props) => {
                                 Chọn giáo viên{" "}
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
-                            <Select
-                                defaultValue="Lựa chọn"
-                                onChange={handleTeacherChange}
-                                value={selectedTeacherUpdate}
-                                className="w-[300px] h-[42px] mt-1"
-                            >
-                                {teacherData.map((teachers) => (
-                                    <Option
-                                        key={teachers.id_teacher}
-                                        value={teachers.id_teacher}
-                                    >
-                                        {teachers.name_teacher}
-                                    </Option>
-                                ))}
-                            </Select>
+                                <Select
+                                    mode="multiple"
+                                    className="w-[300px] h-[42px] mt-1"
+                                    placeholder="Select one or more teachers"
+                                    value={selectedKeys}
+                                    onChange={handleTeacherChange}
+                                >
+                                    {teacherData.map(teacher => (
+                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
+                                </Select>
+                    
                         </div>
-
                     </div>
                 </div>
 
                 <Button onClick={UpdateData} color="primary" radius="sm">
-                    <span className="font-medium">Chỉnh sửa môn học</span>
+                    <span className="font-medium">Chỉnh sửa bài báo khoa học</span>
                 </Button>
             </div>
         </div>
     );
 };
 
-export default UpdateSubject;
+export default UpdateScientificArticle;
