@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detail_scientific_article;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
@@ -31,14 +32,19 @@ class DetailScientificArticleController extends Controller
 
     public function showByIdScientificArticle($id)
     {
-        $detailScientificArticle = Detail_scientific_article::where('id_scientific', $id)
-            ->get();
+        error_log("hung");
+        $detailScientificArticle = Detail_scientific_article::with('Teacher')->find($id);
 
         if (!$detailScientificArticle) {
             return response()->json(['message' => 'Detail scientific article not found'], 404);
         }
 
-        return response()->json(['Detail_scientific_article' => $detailScientificArticle], 200);
+        $teachers = $detailScientificArticle->Teacher->pluck('id_teacher')->toArray();
+
+        return response()->json([
+            'Detail_scientific_article' => $detailScientificArticle,
+            'id_teacher_array' => $teachers
+        ], 200);
     }
 
     public function showByIdTeacher($id)
@@ -56,7 +62,7 @@ class DetailScientificArticleController extends Controller
     public function getAll()
     {
         $detailScientificArticle = Detail_scientific_article::all();
-
+        
         return response()->json(['Detail_scientific_article' => $detailScientificArticle], 200);
     }
 
@@ -99,5 +105,4 @@ class DetailScientificArticleController extends Controller
             return response()->json(['message' => 'Failed to update detail scientific article', 'error' => $e->getMessage()], 500);
         }
     }
-
 }

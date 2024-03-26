@@ -18,6 +18,16 @@ class TeacherController extends Controller
             return response()->json(['message' => 'Failed to get teacher', 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function getdetail($id)
+    {
+        $Teacher = Teacher::findOrFail($id);
+        if (!$Teacher) {
+            return response()->json(['message' => 'Subject not found'], 404);
+        }
+        return response()->json($Teacher, 200);
+    }
+
     public function create(Request $request)
     {
         try {

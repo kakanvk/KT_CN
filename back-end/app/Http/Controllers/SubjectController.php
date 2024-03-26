@@ -42,8 +42,8 @@ class SubjectController extends Controller
                 'beginning_year' => $validatedData['beginning_year'],
                 'institutions' => $validatedData['institutions'],
             ]);
-
-            return response()->json(['message' => 'Subject created successfully', 'subject' => $subject], 201);
+            $id_subject = $subject->id_subject;
+        return response()->json(['message' => 'Subject created successfully', 'id_subject' => $id_subject, 'subject' => $subject], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to create subject', 'error' => $e->getMessage()], 500);
         }

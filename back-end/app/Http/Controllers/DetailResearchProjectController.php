@@ -99,4 +99,28 @@ class DetailResearchProjectController extends Controller
             return response()->json(['message' => 'Failed to update detail scientific article', 'error' => $e->getMessage()], 500);
         }
     }
+    
+    public function deleteManyDetailResearchProject(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'id_scientific' => 'required|array',
+            ]);
+
+            $id_scientific_list = $validatedData['id_scientific'];
+            error_log($request);
+            foreach ($id_scientific_list as $id_subject) {
+                    $detail_scientific_article= Detail_research_project::find($id_subject);
+                    if ($detail_scientific_article) {
+                        $detail_scientific_article->delete();
+                    }
+            }
+            return response()->json([
+                'message' => 'Xóa thành công',
+                'id_scientific_list' => $id_scientific_list
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
+        }
+    }
 }

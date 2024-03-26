@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import moment from 'moment';
 import {
     Breadcrumbs,
     BreadcrumbItem,
@@ -11,17 +10,25 @@ import { DatePicker, Space } from 'antd';
 import { Link } from "react-router-dom";
 import { getAllMajors } from "../../../../service/MajorService";
 import { postSubject } from "../../../../service/SubjectService";
+import { getAllTeacher } from "../../../../service/TeacherService";
+import { getAllDetailSubject } from "../../../../service/DetailSubjectService";
+
 const { Option } = Select;
 const CreateSubject = (props) => {
     const {successNoti, errorNoti, setCollapsedNav } = props;
-    const [loading, setLoading] = useState(false);
     const [nameVi, setNameVi] = useState("");
     const [nameEn, setNameEn] = useState("");
     const [institutions, setInstitutions] = useState("");
     const [studyObject, setStudyObject] = useState("");
     const [selectedMajor, setSelectedMajor] = useState("");
+    const [selectedTeacher, setSelectedTeacher] = useState("");
+    const [teacherData, setTeacherData] = useState([]);
+
     const [selectedYear, setSelectedYear] = useState();
     const [MajorsData, setMajorsData] = useState([]);
+
+
+
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
     const onChangeYear = (date, dateString) => {
@@ -36,9 +43,19 @@ const CreateSubject = (props) => {
             console.error("Error AllMajors:", error);
         }
     };
-    const SaveData = async () => {
+
+    const getTeachers = async () => {
         try {
-            if (!selectedMajor || !nameVi || !nameEn || !studyObject || !selectedYear || !institutions) {
+            const response = await getAllTeacher();
+            setTeacherData(response.data);
+        } catch (error) {
+            console.error("Error getAllTeacher:", error);
+        }
+    };
+
+    const SaveData = () => {
+        try {
+            if (!selectedMajor || !nameVi || !nameEn || !studyObject || !selectedYear || !institutions || !selectedTeacher) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
@@ -50,15 +67,28 @@ const CreateSubject = (props) => {
                 beginning_year: selectedYear,
                 institutions: institutions
             }
-            await postSubject(data)
-            console.table(data);
-            successNoti("Tạo môn học thành công");
+          postSubject(data)
+                .then(response => {
+                    const id_subject = response.data.id_subject; 
+                    const DataDetailSubject ={
+                        id_subject: id_subject,
+                        id_teacher: selectedTeacher
+                    }
+                    if(id_subject){
+                        getAllDetailSubject(DataDetailSubject);
+                        successNoti("Tạo môn học thành công");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error save subject:", error);
+                });
         } catch (error) {
             console.error("Error save subject:", error);
         }
     };
     useEffect(() => {
         getMajors();
+        getTeachers();
         const handleResize = () => {
             if (window.innerWidth < 1024) {
                 setLayout("col");
@@ -74,9 +104,15 @@ const CreateSubject = (props) => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+
     const handleMajorChange = (value, option) => {
         setSelectedMajor(value);
     };
+
+    const handleTeacherChange = (value, option) => {
+        setSelectedTeacher(value);
+    };
+
     //hangle Layout 
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
@@ -136,7 +172,7 @@ const CreateSubject = (props) => {
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập tên môn học"
+                            placeholder=" "
                             labelPlacement="outside"
 
                             isClearable
@@ -153,7 +189,7 @@ const CreateSubject = (props) => {
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập tên môn học"
+                            placeholder=" "
                             labelPlacement="outside"
 
                             isClearable
@@ -170,7 +206,7 @@ const CreateSubject = (props) => {
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập đối tượng"
+                            placeholder=" "
                             labelPlacement="outside"
 
                             isClearable
@@ -187,7 +223,7 @@ const CreateSubject = (props) => {
                                     </span>
                                 </p>
                             }
-                            placeholder="Nhập thể chế"
+                            placeholder=" "
                             labelPlacement="outside"
 
                             isClearable
@@ -199,11 +235,11 @@ const CreateSubject = (props) => {
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <div>
                             <p className="text-sm">
-                                Chuyên ngành{" "}
+                                Lựa chọn chuyên ngành{" "}
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
                             <Select
-                                defaultValue="Chọn chuyên ngành"
+                                defaultValue="Lựa chọn"
                                 onChange={handleMajorChange}
                                 className="w-[300px] h-[42px] mt-1"
                             >
@@ -216,7 +252,6 @@ const CreateSubject = (props) => {
                                     </Option>
                                 ))}
                             </Select>
-
                         </div>
                         <div>
                             <p className="text-sm">
@@ -229,12 +264,32 @@ const CreateSubject = (props) => {
                                     className="w-[300px] h-[42px] mt-1"
                                     onChange={onChangeYear}
                                     picker="year"
-                                    //value={selectedYear ? moment(selectedYear, 'YYYY') : null}
                                 />
                             </Space>
+                        </div> 
+                        <div>
+                            <p className="text-sm">
+                                Chọn giáo viên{" "}
+                                <span className="text-red-500 font-bold">*</span>
+                            </p>
+                            <Select
+                                defaultValue="Lựa chọn"
+                                onChange={handleTeacherChange}
+                                className="w-[300px] h-[42px] mt-1"
+                            >
+                                {teacherData.map((teachers) => (
+                                    <Option
+                                        key={teachers.id_teacher}
+                                        value={teachers.id_teacher}
+                                    >
+                                        {teachers.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
 
                     </div>
+                    
                 </div>
 
                 <Button onClick={SaveData} color="primary" radius="sm">

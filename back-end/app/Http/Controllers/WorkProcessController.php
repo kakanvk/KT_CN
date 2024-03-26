@@ -28,21 +28,27 @@ class WorkProcessController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function DeleteMany(Request $request)
     {
-
         try {
-            $workProcess = Work_process::find($id);
+            $validatedData = $request->validate([
+                'id_work_process' => 'required|array',
+            ]);
 
-            if (!$workProcess) {
-                return response()->json(['message' => 'Work process not found'], 404);
+            $id_work_process_list = $validatedData['id_work_process'];
+            error_log($request);
+            foreach ($id_work_process_list as $id_work_process) {
+                    $WorkProcess = Work_process::find($id_work_process);
+                    if ($WorkProcess) {
+                        $WorkProcess->delete();
+                    }
             }
-
-            $workProcess->delete();
-
-            return response()->json(['message' => 'Work process deleted successfully'], 200);
+            return response()->json([
+                'message' => 'Xóa thành công',
+                'id_work_process' => $id_work_process
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete work process', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -76,11 +82,9 @@ class WorkProcessController extends Controller
     public function getById($id)
     {
         $workProcess = Work_process::find($id);
-
         if (!$workProcess) {
             return response()->json(['message' => 'Work process not found'], 404);
         }
-
         return response()->json(['work_process' => $workProcess], 200);
     }
 
