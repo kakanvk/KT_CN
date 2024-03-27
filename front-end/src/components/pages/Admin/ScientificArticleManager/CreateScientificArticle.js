@@ -231,7 +231,7 @@ const CreateScientificArticle = (props) => {
                             <Space direction="vertical">
 
                                 <DatePicker
-                                    className="w-[400px] h-[42px] mt-1"
+                                    className="w-[300px] h-[42px] mt-1"
                                     onChange={onChangePublicationDate}
 
                                 />
