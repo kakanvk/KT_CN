@@ -159,19 +159,19 @@ const Subject = (props) => {
         const putData = {
             id_subject: selectedRowKeys,
         }
+        const id_list_data = {
+            id_list: selectedRowKeys,
+        }
         try { 
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
+            // delete DetailListByIdSubject
+            await deleteDetailListByIdSubject(id_list_data)
 
+            // delete Subject
+            await deleteSubject(putData);
+            setSpinning(false);
+            getSubject();
+            successNoti("Xoá thành công");
+            handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -184,19 +184,19 @@ const Subject = (props) => {
         const putData = {
             id_subject: [_id],
         }
+        const id_list_data = {
+            id_list: [_id],
+        }
         try {
-            await deleteDetailListByIdSubject(putData)
-                .then(response => {
-                    deleteSubject(putData);
-                    setSpinning(false);
-                    getSubject();
-                    successNoti("Xoá thành công");
-                    handleUnSelect();
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
-                
+            // delete DetailListByIdSubject
+            await deleteDetailListByIdSubject(id_list_data)
+
+             // delete Subject
+            await deleteSubject(putData);
+            setSpinning(false);
+            getSubject();
+            successNoti("Xoá thành công");
+            handleUnSelect(); 
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");

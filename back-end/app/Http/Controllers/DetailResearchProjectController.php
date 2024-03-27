@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Detail_research_project;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 
 class DetailResearchProjectController extends Controller
@@ -14,11 +15,15 @@ class DetailResearchProjectController extends Controller
         try {
             $validatedData = $request->validate([
                 'id_research_project' => 'required|integer|exists:research_projects,id_research_project',
-                'id_teacher' => 'required|integer|exists:teachers,id_teacher',
+                'id_teacher' => 'required|array',
             ]);
 
-            $detailResearchProject = Detail_research_project::create($validatedData);
-
+            $detailResearchProject = collect($validatedData['id_teacher'])->map(function ($id_teacher) use ($validatedData) {
+                return Detail_research_project::create([
+                    'id_research_project' => $validatedData['id_research_project'],
+                    'id_teacher' => $id_teacher,
+                ]);
+            });
             return response()->json(['message' => 'Detail subject created successfully', 'research_project' => $detailResearchProject], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->validator->errors()], 400);
@@ -36,8 +41,11 @@ class DetailResearchProjectController extends Controller
         if (!$detailResearchProject) {
             return response()->json(['message' => 'Detail research project not found'], 404);
         }
-
-        return response()->json(['Detail_research_project' => $detailResearchProject], 200);
+        $teachers = $detailResearchProject->pluck('id_teacher')->toArray();
+        return response()->json([
+            'Detail_research_project' => $detailResearchProject,
+            'id_teacher_array' => $teachers
+        ], 200);
     }
 
     public function showByIdTeacher($id)
@@ -61,31 +69,57 @@ class DetailResearchProjectController extends Controller
 
     public function updateByResearchProject(Request $request, $id)
     {
+        $validatedData = $request->validate([
+            'id_teacher' => 'nullable|array',
+        ]);
+
         try {
-            $validatedData = $request->validate([
-                'id_teacher_old' => 'required|integer|exists:teachers,id_teacher',
-                'id_teacher' => 'required|integer|exists:teachers,id_teacher',
-            ]);
+            if ($validatedData['id_teacher'] == []) {
 
-            $detailResearchProject = Detail_research_project::where('id_research_project', $id)
-                ->where('id_teacher', $validatedData['id_teacher_old'])
-                ->first();
+                try {
+                    // Tìm tất cả các bản ghi trong bảng detail_scientific_article có id_research_project tương ứng
+                    $deletedRows = Detail_research_project::where('id_research_project', $id)->delete();
 
-            if (!$detailResearchProject) {
-                return response()->json(['message' => 'Detail research_project not found'], 404);
+                    if ($deletedRows > 0) {
+                        return response()->json(['message' => 'Deleted successfully'], 200);
+                    } else {
+                        return response()->json(['message' => 'No records found to delete'], 404);
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['message' => 'Failed to delete', 'error' => $e->getMessage()], 500);
+                }
             }
 
-           
+            DB::beginTransaction();
 
-            $detailResearchProject->update([
-                'id_teacher' => $validatedData['id_teacher_update']
-            ]);
+            // Lấy danh sách id_teacher cũ của id_research_project từ cơ sở dữ liệu
+            $existingTeachers = Detail_research_project::where('id_research_project', $id)
+                ->pluck('id_teacher')
+                ->toArray();
 
-            return response()->json(['message' => 'Detail research_project updated successfully', 'data' => $detailResearchProject], 200);
-        } catch (ValidationException $e) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $e->validator->errors()], 400);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Failed', 'errors' => $th->getMessage()], 500);
+            // so sánh array
+            $teachersToRemove = array_diff($existingTeachers, $validatedData['id_teacher']);
+            $teachersToAdd = array_diff($validatedData['id_teacher'], $existingTeachers);
+
+            // Xóa
+            Detail_research_project::where('id_research_project', $id)
+                ->whereIn('id_teacher', $teachersToRemove)
+                ->delete();
+
+            // lưu
+            foreach ($teachersToAdd as $teacherId) {
+                Detail_research_project::create([
+                    'id_research_project' => $id,
+                    'id_teacher' => $teacherId,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Detail research project updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Failed to update detail research project', 'error' => $e->getMessage()], 500);
         }
     }
     
@@ -93,23 +127,36 @@ class DetailResearchProjectController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'id_scientific' => 'required|array',
+                'id_list' => 'nullable|array',
             ]);
-
-            $id_scientific_list = $validatedData['id_scientific'];
-            error_log($request);
-            foreach ($id_scientific_list as $id_subject) {
-                    $detail_scientific_article= Detail_research_project::find($id_subject);
-                    if ($detail_scientific_article) {
-                        $detail_scientific_article->delete();
+    
+            $id_research_project_list = $validatedData['id_list'];
+            error_log("hungdep");
+            if (count($id_research_project_list) === 0) { 
+                return response()->json([
+                    'message' => 'Không có dữ liệu để xóa',
+                    'id_research_project_list' => $id_research_project_list
+                ], 200);
+            }
+    
+            foreach ($id_research_project_list as $id_research_project) {
+                $detail_research_projects = Detail_research_project::
+                    where('id_research_project', $id_research_project)->get();
+                    foreach ($detail_research_projects as $ID) {
+                        Detail_research_project::where('id_research_project', $id_research_project)->delete();
                     }
             }
+    
             return response()->json([
                 'message' => 'Xóa thành công',
-                'id_scientific_list' => $id_scientific_list
+                'id_research_project_list' => $id_research_project_list
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Đã xảy ra lỗi khi xóa trạng thái',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
+    
 }

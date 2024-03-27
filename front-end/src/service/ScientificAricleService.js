@@ -30,6 +30,7 @@ const getone = (id) => {
 
 
 const updateScientificArticle= (id, data) => {
+    console.table(data);
     return axiosInstance.put(`/admin/scientific-article/${id}`, data);
 };
 

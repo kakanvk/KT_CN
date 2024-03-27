@@ -13,9 +13,8 @@ import {
     useDisclosure
 } from "@nextui-org/react";
 
-import { deleteListScientificArticle } from "../../../../service/ScientificAricleService";
-import { deleteListDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
-import { getAllResearchProject } from "../../../../service/ResearchProjectService";
+import { getAllResearchProject, deleteListResearchProject } from "../../../../service/ResearchProjectService";
+import { deleteListDetailResearchProject } from "../../../../service/DetailResearchProject";
 
 const ResearchProjects = (props) => {
     const { successNoti, setSpinning } = props;
@@ -130,22 +129,20 @@ const ResearchProjects = (props) => {
     };
 
     const handleSoftDelete = async () => {
-        setSpinning(true);     
+        //setSpinning(true);     
         const putData = {
             id_research_project: selectedRowKeys,
         }
+
+        const id_list_data = {
+            id_list: selectedRowKeys,
+        }
         try {
-            deleteListDetailScientificArticle(putData)
-            .then(response => {
-                deleteListScientificArticle(putData)
-                setSpinning(false);
-                getResearchProject();
-                successNoti("Xoá thành công");
-                handleUnSelect();
-            })
-            .catch(error => {
-                console.error("Error save subject:", error);
-            });
+            await deleteListDetailResearchProject(id_list_data)
+            await deleteListResearchProject(putData)
+            setSpinning(false);
+            handleUnSelect();
+            successNoti("Xoá thành công");
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -154,22 +151,22 @@ const ResearchProjects = (props) => {
     };
 
     const handleSoftDeleteById = async (_id) => {
-        setSpinning(true);
+        //setSpinning(true);
         const putData = {
             id_research_project: [_id],
         }
+
+        const id_list_data = {
+            id_list: [_id],
+        }
         try {
-            deleteListDetailScientificArticle(putData)
-            .then(response => {
-                deleteListScientificArticle(putData)
-                setSpinning(false);
-                getResearchProject();
-                successNoti("Xoá thành công");
-                handleUnSelect();
-            })
-            .catch(error => {
-                console.error("Error save subject:", error);
-            });
+            await deleteListDetailResearchProject(id_list_data)
+            await deleteListResearchProject(putData)
+            setSpinning(false);
+            getResearchProject();
+            successNoti("Xoá thành công");
+            handleUnSelect();
+
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");

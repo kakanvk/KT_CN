@@ -14,6 +14,7 @@ const updateDetailResearchProject = (id, data) => {
 };
 
 const deleteListDetailResearchProject = (data) => {
+    console.log("table",data);
     return axiosInstance.delete(`/admin/detail-research-project/delete`, {params: data});
 };
 
@@ -21,10 +22,17 @@ const getdeleteListDetailByIdResearchProject = (id) => {
     return axiosInstance.get(`/detail-research-project/research-project/${id}`);
 };
 
+
+const getDetailResearchProjectbyid = (id) => {
+    return axiosInstance.get(`/detail-research-project/research-project/${id}`);
+};
+
+
 export { 
     getAllDetailResearchProject,
     postDetailResearchProject,
     updateDetailResearchProject,
     deleteListDetailResearchProject,
     getdeleteListDetailByIdResearchProject,
+    getDetailResearchProjectbyid
 };

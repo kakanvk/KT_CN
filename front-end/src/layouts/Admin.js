@@ -1,7 +1,6 @@
 
-import logo from "../assets/KTCN-in.png"
 import './Layout.css';
-import { Link, Route, Routes } from 'react-router-dom';
+import {Route, Routes } from 'react-router-dom';
 import Navbar from "../components/pages/Admin/Navbar/Navbar";
 import Post from "../components/pages/Admin/Post/Post";
 import { useState } from "react";
@@ -64,11 +63,11 @@ function Admin(props) {
         <Routes>
           <Route path="/post" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
           <Route path="/post/stored" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
-          <Route path="/post/create" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"News"}/>} />
+          <Route path="/post/create" element={<CreatePost collapsedNav={collapsedNav} successNoti={successNoti} errorNoti={errorNoti} setCollapsedNav={setCollapsedNav} TypeNews={"News"}/>} />
           <Route path="/post/update/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"News"}/>} />
 
           <Route path="/program" element={<Program successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
-          <Route path="/program/create" element={<CreateProgram collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"program"}/>} />
+          <Route path="/program/create" element={<CreateProgram collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"program"}/>} />
           <Route path="/program/update/:id" element={<UpdateProgram collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"program"}/>} />
 
           <Route path="/major" element={<Major successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
@@ -79,11 +78,6 @@ function Admin(props) {
           <Route path="/subject/create" element={<CreateSubject collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/subject/update/:id" element={<UpdateSubject collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti}/>} />
 
-          <Route path="/postAdmissions" element={<Post successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
-          <Route path="/postAdmissions/createAdmissions" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"admissionNews"}/>} />
-          <Route path="/postAdmissions/storedAdmissions" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"admissionNews"} />} />
-          <Route path="/postAdmissions/updateAdmissions/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"admissionNews"}/>} />
-   
           <Route path="/category" element={<CategoryManager successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/category/create" element={<PostCategory successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/category/update/:id" element={<UpdateCategory successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />

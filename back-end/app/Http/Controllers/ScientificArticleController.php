@@ -109,13 +109,13 @@ class ScientificArticleController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'id_scientific_article' => 'required|array',
+                'id_scientific_article' => 'nullable|array',
             ]);
 
             $id_scientific_article_list = $validatedData['id_scientific_article'];
             error_log($request);
             foreach ($id_scientific_article_list as $id_scientific_article) {
-                    $scientific_article = Scientific_article::find($id_scientific_article);
+                    $scientific_article = Scientific_article::findOrFail($id_scientific_article);
                     if ($scientific_article) {
                         $scientific_article->delete();
                     }

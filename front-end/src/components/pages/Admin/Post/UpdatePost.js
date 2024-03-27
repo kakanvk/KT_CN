@@ -8,23 +8,23 @@ import {
     Avatar,
     Input,
 } from "@nextui-org/react";
-import { Upload, Select, message, Tooltip, Modal } from "antd";
+import { Upload, Select, message, Tooltip} from "antd";
 import ImgCrop from "antd-img-crop";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { getAllCategories } from "../../../../service/CategoryService";
 import { GetNewCanUpdate, PutNewsByID } from "../../../../service/NewsService";
 import "./Post.css";
 import { Link, useParams } from "react-router-dom";
-import { getAllMajors} from "../../../../service/MajorService";
+import { getAllMajors } from "../../../../service/MajorService";
 import { GetProgramsByID, PutProgramsByID } from "../../../../service/ProgramService";
 const UpdatePost = (props) => {
-    const { setCollapsedNav, setSpinning, successNoti, errorNoti, TypeNews} = props;
+    const { setCollapsedNav, setSpinning, successNoti, errorNoti, TypeNews } = props;
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [CategoryData, setCategoryData] = useState([]);
-    const [Majors, setMajors]= useState([]);
+    const [Majors, setMajors] = useState([]);
     const [SelectedMajors, setSelectedMajors] = useState("");
     const [nameProgram, setNameProgram] = useState("");
     const [contentProgram, setContentProgram] = useState("");
@@ -40,7 +40,7 @@ const UpdatePost = (props) => {
     //hangle database
     const Update = async () => {
         setSpinning(true);
-        if(TypeNews === "News") {
+        if (TypeNews === "News") {
             try {
                 if (!titleEN || !titleVI) {
                     throw new Error(
@@ -56,7 +56,7 @@ const UpdatePost = (props) => {
                     view_count: viewcount,
                     thumbnail: imageUrl,
                 };
-                const response = await PutNewsByID(id, data);
+                await PutNewsByID(id, data);
                 setSpinning(false);
                 successNoti("Cập nhật thành công");
             } catch (error) {
@@ -64,7 +64,7 @@ const UpdatePost = (props) => {
                 setSpinning(false);
                 errorNoti("Cập nhật thất bại");
             }
-        }  else if(TypeNews === "program") {
+        } else if (TypeNews === "program") {
             try {
                 if (!SelectedMajors || !contentProgram || !nameProgram) {
                     console.error("Vui lòng điền đầy đủ thông tin.");
@@ -76,7 +76,7 @@ const UpdatePost = (props) => {
                     content: contentProgram,
                     name_program: nameProgram,
                 };
-                const response = await PutProgramsByID(id, data);
+                await PutProgramsByID(id, data);
                 setSpinning(false);
                 successNoti("Cập nhật thành công");
             } catch (error) {
@@ -88,28 +88,28 @@ const UpdatePost = (props) => {
     };
 
     const getDetailNews = async () => {
-            setSpinning(true);
-            try {
-                const response = await GetNewCanUpdate(id);
-                console.log("newsDetailData:", response.data);
-                const newsDetail = response.data[0];
-                if (newsDetail) {
-                    const { en, vi, thumbnail, id_category, view_count } = newsDetail;
-                    setTitleEN(en.title_en);
-                    setTitleVI(vi.title_vi);
-                    setSelectedCategory(id_category);
-                    setImageUrl(thumbnail);
-                    setContentEN(en.content_en || "");
-                    setContentVI(vi.content_vi || "");
-                    setviewcount(view_count);
-                } else {
-                    console.error("No data found in the response");
-                }
-                setSpinning(false);
-            } catch (error) {
-                console.error("Error fetching newsDetailData:", error);
-                setSpinning(false);
+        setSpinning(true);
+        try {
+            const response = await GetNewCanUpdate(id);
+            console.log("newsDetailData:", response.data);
+            const newsDetail = response.data[0];
+            if (newsDetail) {
+                const { en, vi, thumbnail, id_category, view_count } = newsDetail;
+                setTitleEN(en.title_en);
+                setTitleVI(vi.title_vi);
+                setSelectedCategory(id_category);
+                setImageUrl(thumbnail);
+                setContentEN(en.content_en || "");
+                setContentVI(vi.content_vi || "");
+                setviewcount(view_count);
+            } else {
+                console.error("No data found in the response");
             }
+            setSpinning(false);
+        } catch (error) {
+            console.error("Error fetching newsDetailData:", error);
+            setSpinning(false);
+        }
     };
     const DetailPrograms = async () => {
         setSpinning(true);
@@ -145,7 +145,7 @@ const UpdatePost = (props) => {
     };
 
 
-    const MajorsAll = async () =>{
+    const MajorsAll = async () => {
         try {
             const response = await getAllMajors();
             console.log("departments data:", response.data);
@@ -156,10 +156,10 @@ const UpdatePost = (props) => {
     };
 
     useEffect(() => {
-        if(TypeNews === "News") {
+        if (TypeNews === "News") {
             getDetailNews();
             getCategorys();
-        } else if(TypeNews === "program") {
+        } else if (TypeNews === "program") {
             DetailPrograms();
             MajorsAll();
         }
@@ -252,28 +252,28 @@ const UpdatePost = (props) => {
         </div>
     );
 
-    //config CKEditor
-    const items = [
-        {
-            key: "1",
-            label: "Tạo bài viết tiếng việt",
-        },
-        {
-            key: "2",
-            label: "Tạo bài viết tiếng anh",
-        },
-    ];
-
     return (
         <div>
             <div className="CreateNews flex flex-col gap-7 items-start">
                 <div className="flex items-start justify-between w-full">
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                        <BreadcrumbItem>
-                            <Link to="/admin/post">Quản lý bài viết</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem>Chỉnh sửa bài viết</BreadcrumbItem>
+
+                        {TypeNews === "News" ? (
+                                <>
+                                    <BreadcrumbItem>
+                                        <Link to="/admin/post">Quản lý bài viết</Link>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbItem>Chỉnh sửa bài viết</BreadcrumbItem>
+                                </>
+                            ) : (
+                                <>
+                                    <BreadcrumbItem>
+                                        <Link to="/admin/program">Quản lý chương trình</Link>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbItem>Chỉnh sửa chương trình</BreadcrumbItem>
+                                </>
+                            )}
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">
@@ -306,235 +306,232 @@ const UpdatePost = (props) => {
 
                 <div className="flex w-full gap-8">
                     {TypeNews === "News" ? (
-                    <div className="flex flex-1 flex-col gap-2 w-full">
-                        <p className="text-sm">
-                            Ảnh bìa bài viết{" "}
-                            <span className="text-red-500 font-bold">*</span>
-                        </p>
-                        <ImgCrop
-                            aspect={4 / 3}
-                            modalTitle="Cắt hình ảnh"
-                            rotationSlider
-                            showReset
-                        >
-                            <Upload
-                                name="avatar"
-                                listType="picture-card"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                action={`${process.env.REACT_APP_API_DOMAIN}/admin/upload-image-`}
-                                beforeUpload={beforeUpload}
-                                onChange={handleChange}
+                        <div className="flex flex-1 flex-col gap-2 w-full">
+                            <p className="text-sm">
+                                Ảnh bìa bài viết{" "}
+                                <span className="text-red-500 font-bold">*</span>
+                            </p>
+                            <ImgCrop
+                                aspect={4 / 3}
+                                modalTitle="Cắt hình ảnh"
+                                rotationSlider
+                                showReset
                             >
-                                {imageUrl ? (
-                                    <img src={imageUrl} alt="avatar" />
-                                ) : (
-                                    uploadButton
-                                )}
-                            </Upload>
-                        </ImgCrop>
-                    </div>
-                   ) : ( <>
-                   
-                   </> )}
+                                <Upload
+                                    name="avatar"
+                                    listType="picture-card"
+                                    className="avatar-uploader"
+                                    showUploadList={false}
+                                    action={`${process.env.REACT_APP_API_DOMAIN}/admin/upload-image-`}
+                                    beforeUpload={beforeUpload}
+                                    onChange={handleChange}
+                                >
+                                    {imageUrl ? (
+                                        <img src={imageUrl} alt="avatar" />
+                                    ) : (
+                                        uploadButton
+                                    )}
+                                </Upload>
+                            </ImgCrop>
+                        </div>
+                    ) : (<>
+
+                    </>)}
                     {TypeNews === "News" ? (
+                        <div>
+                            <p className="text-sm">
+                                Thể loại{" "}
+                                <span className="text-red-500 font-bold">*</span>
+                            </p>
+                            <Select
+                                defaultValue="Chọn loại"
+                                value={selectedCategory}
+                                onChange={handleCategoryChange}
+                                size="large"
+                            >
+                                {CategoryData.map((category) => (
+                                    <Option
+                                        key={category.id_category}
+                                        value={category.id_category}
+                                    >
+                                        {category.name_vi} ({category.name_en})
+                                    </Option>
+                                ))}
+                            </Select>
+                        </div>
+                    ) : (
+                        <div>
                             <div>
                                 <p className="text-sm">
-                                    Thể loại{" "}
+                                    Chọn chuyên ngành{" "}
                                     <span className="text-red-500 font-bold">*</span>
                                 </p>
                                 <Select
-                                    defaultValue="Chọn loại"
-                                    value={selectedCategory}
-                                    onChange={handleCategoryChange}
+                                    defaultValue={SelectedMajors ? SelectedMajors : "Chọn loại"}
+                                    value={SelectedMajors}
+                                    onChange={handleMajorsChange}
                                     size="large"
+                                    className="w-full"
                                 >
-                                    {CategoryData.map((category) => (
+                                    {Majors.map((Major) => (
                                         <Option
-                                            key={category.id_category}
-                                            value={category.id_category}
+                                            key={Major.id_majors}
+                                            value={Major.id_major}
                                         >
-                                            {category.name_vi} ({category.name_en})
+                                            {Major.name_vi}({Major.name_en})
                                         </Option>
                                     ))}
                                 </Select>
                             </div>
-                        ) : (
-                            <div>
-                                <div>
-                                    <p className="text-sm">
-                                        Chọn chuyên ngành{" "}
-                                        <span className="text-red-500 font-bold">*</span>
-                                    </p>
-                                    <Select
-                                        defaultValue={SelectedMajors? SelectedMajors: "Chọn loại"}
-                                        value={SelectedMajors}
-                                        onChange={handleMajorsChange}
-                                        size="large"
-                                        className="w-full"
-                                    >
-                                        {Majors.map((Major) => (
-                                            <Option
-                                                key={Major.id_majors}
-                                                value={Major.id_major}
-                                            >
-                                                {Major.name_vi}({Major.name_en})
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                            </div>
-                        )}
+                        </div>
+                    )}
 
                 </div>
                 {TypeNews === "News" ? (
-                <div
-                    className={`flex w-full gap-${
-                        layout === "col" ? "10" : "8"
-                    } flex-${layout}`}
-                >
-                    {/* load map data detail */}
                     <div
-                        className={`${
-                            layout === "col" ? "w-full" : "w-[40%]"
-                        } flex-1 flex flex-col gap-6`}
+                        className={`flex w-full gap-${layout === "col" ? "10" : "8"
+                            } flex-${layout}`}
                     >
-                        <Input
-                            label={
-                                <p>
-                                    Nhập tiêu đề tiếng Việt{" "}
+                        {/* load map data detail */}
+                        <div
+                            className={`${layout === "col" ? "w-full" : "w-[40%]"
+                                } flex-1 flex flex-col gap-6`}
+                        >
+                            <Input
+                                label={
+                                    <p>
+                                        Nhập tiêu đề tiếng Việt{" "}
+                                        <span className="text-red-500 font-bold">
+                                            *
+                                        </span>
+                                    </p>
+                                }
+                                placeholder="Nhập tiêu đề tiếng Việt"
+                                labelPlacement="outside"
+                                startContent={
+                                    <Avatar
+                                        className="w-5 h-5"
+                                        src="https://flagcdn.com/vn.svg"
+                                    />
+                                }
+                                isClearable
+                                radius="sm"
+                                value={titleVI}
+                                onValueChange={setTitleVI}
+                            />
+                            <div className="flex flex-col gap-2">
+                                <p className="text-sm">
+                                    Nội dung bài viết tiếng Việt{" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
                                 </p>
-                            }
-                            placeholder="Nhập tiêu đề tiếng Việt"
-                            labelPlacement="outside"
-                            startContent={
-                                <Avatar
-                                    className="w-5 h-5"
-                                    src="https://flagcdn.com/vn.svg"
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    data={contentVI}
+                                    onChange={(event, editor) => {
+                                        handleVIChange(event, editor);
+                                    }}
+                                    config={{
+                                        ckfinder: {
+                                            uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
+                                        },
+                                    }}
                                 />
-                            }
-                            isClearable
-                            radius="sm"
-                            value={titleVI}
-                            onValueChange={setTitleVI}
-                        />
-                        <div className="flex flex-col gap-2">
-                            <p className="text-sm">
-                                Nội dung bài viết tiếng Việt{" "}
-                                <span className="text-red-500 font-bold">
-                                    *
-                                </span>
-                            </p>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                data={contentVI}
-                                onChange={(event, editor) => {
-                                    handleVIChange(event, editor);
-                                }}
-                                config={{
-                                    ckfinder: {
-                                        uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
-                                    },
-                                }}
-                            />
+                            </div>
                         </div>
-                    </div>
-                    <div
-                        className={`${
-                            layout === "col" ? "w-full" : "w-[40%]"
-                        } flex-1 flex flex-col gap-6`}
-                    >
-                        <Input
-                            label="Tiêu đề bài viết tiếng Anh"
-                            placeholder="Nhập tiêu đề tiếng Anh"
-                            labelPlacement="outside"
-                            startContent={
-                                <Avatar
-                                    className="w-5 h-5"
-                                    src="https://flagcdn.com/gb.svg"
-                                />
-                            }
-                            isClearable
-                            radius="sm"
-                            value={titleEN}
-                            onValueChange={setTitleEN}
-                        />
-                        <div className="flex flex-col gap-2">
-                            <p className="text-sm">
-                                Nội dung bài viết tiếng Anh
-                            </p>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                data={contentEN}
-                                onChange={(event, editor) => {
-                                    handleENChange(event, editor);
-                                }}
-                                config={{
-                                    ckfinder: {
-                                        uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
-                                    },
-                                }}
+                        <div
+                            className={`${layout === "col" ? "w-full" : "w-[40%]"
+                                } flex-1 flex flex-col gap-6`}
+                        >
+                            <Input
+                                label="Tiêu đề bài viết tiếng Anh"
+                                placeholder="Nhập tiêu đề tiếng Anh"
+                                labelPlacement="outside"
+                                startContent={
+                                    <Avatar
+                                        className="w-5 h-5"
+                                        src="https://flagcdn.com/gb.svg"
+                                    />
+                                }
+                                isClearable
+                                radius="sm"
+                                value={titleEN}
+                                onValueChange={setTitleEN}
                             />
-                            <div className="text-[12px] opacity-50">
-                                <i className="fa-solid fa-circle-info mr-1"></i>
-                                Bài viết tiếng Anh là không bắt buộc
+                            <div className="flex flex-col gap-2">
+                                <p className="text-sm">
+                                    Nội dung bài viết tiếng Anh
+                                </p>
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    data={contentEN}
+                                    onChange={(event, editor) => {
+                                        handleENChange(event, editor);
+                                    }}
+                                    config={{
+                                        ckfinder: {
+                                            uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
+                                        },
+                                    }}
+                                />
+                                <div className="text-[12px] opacity-50">
+                                    <i className="fa-solid fa-circle-info mr-1"></i>
+                                    Bài viết tiếng Anh là không bắt buộc
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 ) : (
                     <div className={`flex w-full gap-${layout === "col" ? "10" : "8"} flex-${layout}`}>
-                    <div
-                        className={`${layout === "col" ? "w-full" : "w-[60%]"
-                            } flex-1 flex flex-col gap-6`}
-                    >
-                        <Input
-                            label={
-                                <p>
-                                    Nhập tên chương trình{" "}
+                        <div
+                            className={`${layout === "col" ? "w-full" : "w-[60%]"
+                                } flex-1 flex flex-col gap-6`}
+                        >
+                            <Input
+                                label={
+                                    <p>
+                                        Nhập tên chương trình{" "}
+                                        <span className="text-red-500 font-bold">
+                                            *
+                                        </span>
+                                    </p>
+                                }
+                                placeholder="Nhập tên chương trình"
+                                labelPlacement="outside"
+                                startContent={
+                                    <Avatar
+                                        className="w-5 h-5"
+                                        src="https://flagcdn.com/vn.svg"
+                                    />
+                                }
+                                isClearable
+                                radius="sm"
+                                value={nameProgram}
+                                onValueChange={setNameProgram}
+                            />
+
+                            <div className="flex flex-col gap-2">
+                                <p className="text-sm">
+                                    Nội dung chương trình đào tạo{" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
                                 </p>
-                            }
-                            placeholder="Nhập tên chương trình"
-                            labelPlacement="outside"
-                            startContent={
-                                <Avatar
-                                    className="w-5 h-5"
-                                    src="https://flagcdn.com/vn.svg"
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    data={contentProgram}
+                                    onChange={(event, editor) => {
+                                        handleProgramChange(event, editor);
+                                    }}
+                                    config={{
+                                        ckfinder: {
+                                            uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
+                                        },
+                                    }}
                                 />
-                            }
-                            isClearable
-                            radius="sm"
-                            value={nameProgram}
-                            onValueChange={setNameProgram}
-                        />
-
-                        <div className="flex flex-col gap-2">
-                            <p className="text-sm">
-                                Nội dung chương trình đào tạo{" "}
-                                <span className="text-red-500 font-bold">
-                                    *
-                                </span>
-                            </p>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                data={contentProgram}
-                                onChange={(event, editor) => {
-                                    handleProgramChange(event, editor);
-                                }}
-                                config={{
-                                    ckfinder: {
-                                        uploadUrl: `${process.env.REACT_APP_API_DOMAIN}/admin/upload-image`,
-                                    },
-                                }}
-                            />
+                            </div>
                         </div>
-                    </div>
 
                     </div>
                 )}

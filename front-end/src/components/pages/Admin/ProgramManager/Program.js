@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { Table, Tooltip, Image } from "antd";
+import { Table, Tooltip} from "antd";
 import {
     Avatar,
     BreadcrumbItem,
@@ -16,21 +16,11 @@ import {
     ModalFooter, useDisclosure
 } from "@nextui-org/react";
 
-import { getAllNewsForAdmin, softDeleteNewsByIds, UpdateStatusVi, UpdateStatusEn, GetAllCategories, UpdateStatuses } from "../../../../service/NewsService";
 
-import {
-    getAllNewsAdmissionForAdmin,
-    softDeleteNewsAdmissionByIds,
-    UpdateAdmissionStatuses,
-    UpdateAdmissionStatusVi,
-    UpdateAdmissionStatusEn
-} from "../../../../service/AdmissionNewsService";
 import { DeleteListProgram, GetAllPrograms, PutStatusOneProgram, UpdateStatusesProgram } from "../../../../service/ProgramService";
 
 const Program = (props) => {
     const { successNoti, errorNoti, setSpinning, TypeNews } = props;
-    const [newsListData, setNewsListData] = useState([]);
-    const [categoryData, setCategoryData] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [selectedRow, setSelectedRow] = useState([]);
@@ -163,7 +153,7 @@ const Program = (props) => {
             status: !checkValue
         }
         console.log(putData);
-        const response = await UpdateStatusesProgram(putData);
+        await UpdateStatusesProgram(putData);
         await getProgram();
         successNoti("Cập nhật thành công");
         setSpinning(false);
@@ -204,7 +194,7 @@ const Program = (props) => {
             }
         }
         try {
-            const response = await DeleteListProgram(putData);
+            await DeleteListProgram(putData);
             getProgram();
             setSpinning(false);
             successNoti("Xoá thành công");
@@ -219,7 +209,7 @@ const Program = (props) => {
     const handleUpdateStatusOneProgram = async (id) => {
         setSpinning(true);
         try {
-            const response = await PutStatusOneProgram(id);
+            await PutStatusOneProgram(id);
             await getProgram();
             setSpinning(false);
             successNoti("Cập nhật thành công");
@@ -295,7 +285,7 @@ const Program = (props) => {
             <div className="flex items-start justify-between w-full">
                 <Breadcrumbs underline="hover">
                     <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                    <BreadcrumbItem>Quản lý bài viết</BreadcrumbItem>
+                    <BreadcrumbItem>Quản lý chương trình</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="flex gap-2">
                     <Tooltip title="Làm mới">

@@ -83,7 +83,7 @@ class SubjectController extends Controller
             error_log($request);
             foreach ($id_subject_list as $id_subject) {
 
-                    $Subject = Subject::find($id_subject);
+                    $Subject = Subject::findOrFail($id_subject);
                     if ($Subject) {
                         $Subject->delete();
                     }

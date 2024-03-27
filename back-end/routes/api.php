@@ -175,44 +175,35 @@ Route::get('/category/{id_category}', [CategoryController::class, 'get']);
 
 Route::middleware(['check.jwt'])->group(function () {
     Route::get('/admin/programs', [ProgramController::class, 'getAll']);
-
     Route::get('/admin/programs/all/hidden', [ProgramController::class, 'getAllhidden']);
-
     Route::get('/admin/programs/{id}', [ProgramController::class, 'getDetails']);
-
     Route::post('/admin/programs', [ProgramController::class, 'saveProgram']);
-
     Route::delete('/admin/programs/{id}', [ProgramController::class, 'delete']);
     Route::delete('/admin/programs/delete/list', [ProgramController::class, 'updateManyDeleted']);
-
     Route::put('/admin/programs/{id}', [ProgramController::class, 'update']);
-
     Route::put('/admin/programs/{id}/update/one/status', [ProgramController::class, 'updateOneStatus']);
-
     Route::put('/admin/programs/all/status', [ProgramController::class, 'updateStatus']);
 });
 
 
 //majors
 Route::get('/admin/majors', [MajorsController::class, 'getAll']);
-
 Route::get('/admin/majors/{id}', [MajorsController::class, 'getMajorsById']);
-
 Route::post('/admin/majors', [MajorsController::class, 'create']);
-
 Route::put('/admin/majors/{id}', [MajorsController::class, 'update']);
-
 Route::delete('/admin/majors/soft-list/delete', [MajorsController::class, 'checkDeleteMany']); //not ok
+
+//teacher
+Route::post('/teacher', [TeacherController::class, 'create']);
+Route::get('/teacher', [TeacherController::class, 'getAll']);
+Route::get('/teacher/{id}', [TeacherController::class, 'getdetail']);
+Route::put('/teacher/{id}', [TeacherController::class, 'update']);
 
 //subject
 Route::get('/subjects', [SubjectController::class, 'getSubjects']);
-
 Route::get('/subjects/{id}', [SubjectController::class, 'getSubjectById']);
-
 Route::post('admin/subjects', [SubjectController::class, 'createSubject']);
-
 Route::put('admin/subjects/{id}', [SubjectController::class, 'updateSubject']);
-
 Route::delete('admin/subjects/soft-list/delete', [SubjectController::class, 'deleteManySubject']);
 
 // detail_subject
@@ -221,31 +212,7 @@ Route::get('/detail-subject/subject/{id}', [DetailSubjectController::class, 'sho
 Route::get('/detail-subject/teacher/{id}', [DetailSubjectController::class, 'showByIdTeacher']);
 Route::post('/admin/detail-subject', [DetailSubjectController::class, 'create']);
 Route::put('/admin/detail-subject/subject/{id}', [DetailSubjectController::class, 'updateBySubject']);
-
 Route::delete('/admin/subject-detail-list/delete', [DetailSubjectController::class, 'deleteManyDetailSubject']);
-
-// detail research project
-Route::get('/detail-research-project', [DetailResearchProjectController::class, 'getAll']);
-Route::get('/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'showByIdResearchProject']);
-Route::get('/detail-research-project/teacher/{id}', [DetailResearchProjectController::class, 'showByIdTeacher']);
-Route::post('/admin/detail-research-project', [DetailResearchProjectController::class, 'create']);
-Route::put('/admin/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'updateByResearchProject']);//loi
-Route::delete('/admin/detail-research-project/delete', [DetailResearchProjectController::class, 'deleteManyDetailResearchProject']);
-
-// detail scientific article
-Route::get('/detail-scientific-article', [DetailScientificArticleController::class, 'getAll']);
-Route::get('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'showByIdScientificArticle']);
-Route::get('/detail-scientific-article/teacher/{id}', [DetailScientificArticleController::class, 'showByIdTeacher']);
-Route::post('/admin/detail-scientific-article', [DetailScientificArticleController::class, 'create']);
-Route::put('/admin/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);//loi
-Route::delete('/admin/detail-scientific-article/delete', [DetailScientificArticleController::class, 'deleteManyDetailScientificArticle']);
-
-//teacher
-Route::post('/teacher', [TeacherController::class, 'create']);
-
-Route::get('/teacher', [TeacherController::class, 'getAll']);
-Route::get('/teacher/{id}', [TeacherController::class, 'getdetail']);
-Route::put('/teacher/{id}', [TeacherController::class, 'update']);
 
 // work process
 Route::get('work-process', [WorkProcessController::class, 'getAll']);
@@ -257,14 +224,24 @@ Route::delete('admin/work-process/soft-list/delete', [WorkProcessController::cla
 //scientific_article
 Route::get('scientific-article', [ScientificArticleController::class, 'getAll']);
 Route::get('scientific-article/{id}', [ScientificArticleController::class, 'getById']);//ok
-
 Route::get('scientific-article/getone/{id}', [ScientificArticleController::class, 'getone']);//ok
-
 Route::get('scientific-article/get-all-teacher-scientific-article-by-id/{id}', [ScientificArticleController::class, 'getScientificArticlesById']);//ok
-
 Route::post('/admin/scientific-article/', [ScientificArticleController::class, 'create']);
 Route::put('/admin/scientific-article/{id}', [ScientificArticleController::class, 'update']);
 Route::delete('/admin/scientific-article/soft-list/delete', [ScientificArticleController::class, 'DeleteMany']);
+
+// detail scientific article
+Route::get('/detail-scientific-article', [DetailScientificArticleController::class, 'getAll']);
+Route::get('/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'showByIdScientificArticle']);
+Route::get('/detail-scientific-article/teacher/{id}', [DetailScientificArticleController::class, 'showByIdTeacher']);
+Route::post('/admin/detail-scientific-article', [DetailScientificArticleController::class, 'create']);
+Route::put('/admin/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);//loi
+Route::delete('/admin/detail-scientific-article/delete', [DetailScientificArticleController::class, 'deleteManyDetailScientificArticle']);
+
+
+
+
+
 
 // research project
 Route::get('research-project', [ResearchProjectController::class, 'getAll']);
@@ -272,3 +249,11 @@ Route::get('research-project/{id}', [ResearchProjectController::class, 'getById'
 Route::post('/admin/research-project/', [ResearchProjectController::class, 'create']);
 Route::put('/admin/research-project/{id}', [ResearchProjectController::class, 'update']);
 Route::delete('/admin/research-project/soft-list/delete', [ResearchProjectController::class, 'DeleteMany']);
+
+// detail research project
+Route::get('/detail-research-project', [DetailResearchProjectController::class, 'getAll']);
+Route::get('/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'showByIdResearchProject']);
+Route::get('/detail-research-project/teacher/{id}', [DetailResearchProjectController::class, 'showByIdTeacher']);
+Route::post('/admin/detail-research-project', [DetailResearchProjectController::class, 'create']);
+Route::put('/admin/detail-research-project/research-project/{id}', [DetailResearchProjectController::class, 'updateByResearchProject']);//loi
+Route::delete('/admin/detail-research-project/delete', [DetailResearchProjectController::class, 'deleteManyDetailResearchProject']);

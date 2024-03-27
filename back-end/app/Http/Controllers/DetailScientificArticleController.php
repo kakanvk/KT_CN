@@ -16,20 +16,24 @@ class DetailScientificArticleController extends Controller
         try {
             $validatedData = $request->validate([
                 'id_scientific' => 'required|integer|exists:scientific_article,id_scientific_article',
-                'id_teacher' => 'required|integer|exists:teachers,id_teacher',
+                'id_teacher' => 'required|array',
             ]);
 
-            $detailScientificArticle = Detail_scientific_article::create($validatedData);
+            // Use map to create a Detail_scientific_article instance for each id_teacher value
+            $detailScientificArticles = collect($validatedData['id_teacher'])->map(function ($id_teacher) use ($validatedData) {
+                return Detail_scientific_article::create([
+                    'id_scientific' => $validatedData['id_scientific'],
+                    'id_teacher' => $id_teacher,
+                ]);
+            });
 
-            return response()->json(['message' => 'Detail scientific article created successfully', 'research_project' => $detailScientificArticle], 201);
+            return response()->json(['message' => 'Detail scientific articles created successfully', 'research_projects' => $detailScientificArticles], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->validator->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to create detail scientific article', 'error' => $e->getMessage()], 500);
-
+            return response()->json(['message' => 'Failed to create detail scientific articles', 'error' => $e->getMessage()], 500);
         }
     }
-
     public function showByIdScientificArticle($id)
     {
         error_log("hung");
@@ -69,13 +73,27 @@ class DetailScientificArticleController extends Controller
     public function updateByScientificArticle(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'id_teacher' => 'required|array',
+            'id_teacher' => 'nullable|array',
         ]);
 
         try {
-            // Begin transaction
-            DB::beginTransaction();
 
+            if ($validatedData['id_teacher'] == []) {
+
+                try {
+                    $deletedRows = Detail_scientific_article::where('id_scientific', $id)->delete();
+
+                    if ($deletedRows > 0) {
+                        return response()->json(['message' => 'Deleted successfully'], 200);
+                    } else {
+                        return response()->json(['message' => 'No records found to delete'], 404);
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['message' => 'Failed to delete', 'error' => $e->getMessage()], 500);
+                }
+            }
+
+            DB::beginTransaction();
             // Lấy danh sách id_teacher cũ của id_scientific từ cơ sở dữ liệu
             $existingTeachers = Detail_scientific_article::where('id_scientific', $id)
                 ->pluck('id_teacher')
@@ -110,23 +128,36 @@ class DetailScientificArticleController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'id_scientific' => 'required|array',
+                'id_list' => 'nullable|array',
             ]);
 
-            $id_scientific_list = $validatedData['id_scientific'];
-            error_log($request);
-            foreach ($id_scientific_list as $id_subject) {
-                    $detail_scientific_article= Detail_scientific_article::find($id_subject);
-                    if ($detail_scientific_article) {
-                        $detail_scientific_article->delete();
-                    }
+            $id_scientific_list = $validatedData['id_list'];
+            error_log("hungdep");
+            if (count($id_scientific_list)===0) {
+                return response()->json([
+                    'message' => 'Không có dữ liệu để xóa',
+                    'id_scientific_list' => $id_scientific_list
+                ], 200);
             }
+
+            foreach ($id_scientific_list as $id_scientific) {
+                $detail_scientific_article = Detail_scientific_article::
+                    where('id_scientific', $id_scientific)->get();
+                    foreach ($detail_scientific_article as $ID) {
+                        Detail_scientific_article::where('id_scientific', $ID)->delete();
+                }
+            }
+
             return response()->json([
                 'message' => 'Xóa thành công',
                 'id_scientific_list' => $id_scientific_list
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Đã xảy ra lỗi khi xóa trạng thái', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Đã xảy ra lỗi khi xóa trạng thái',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
+
 }

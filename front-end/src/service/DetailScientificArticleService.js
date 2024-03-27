@@ -11,11 +11,12 @@ const putDetailScientificArticle = (id, data) => {
 };
 
 const deleteListDetailScientificArticle = (data) => {
+
+    console.log('hung',data);
     return axiosInstance.delete(`/admin/detail-scientific-article/delete`, {params: data});
 };
 
 const getDetailScientificArticleById= (id) => {
-    console.log(`Detailddddddddddddddddđ`, id);
     return axiosInstance.get(`/detail-scientific-article/scientific-article/${id}`);
 }
 

@@ -13,6 +13,7 @@ const postResearchProject =(data)=>{
 }
 
 const updateResearchProject =(id, data)=>{
+    console.log(data)
     return axiosInstance.put(`/admin/research-project/${id}`, data);
 }
 

@@ -57,13 +57,14 @@ class ResearchProjectController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'id_research_project' => 'required|array',
+                'id_research_project' => 'nullable|array',
             ]);
 
             $id_research_project_list = $validatedData['id_research_project'];
             error_log($request);
+
             foreach ($id_research_project_list as $id_research_project) {
-                    $research_project = Research_projects::find($id_research_project);
+                    $research_project = Research_projects::findOrFail($id_research_project);
                     if ($research_project) {
                         $research_project->delete();
                     }
@@ -93,7 +94,7 @@ class ResearchProjectController extends Controller
                 'status' => 'nullable|string',
                 'link' => 'nullable|string',
             ]);
-
+            error_log('fkfkas ' );
             $research_projects->update($validatedData);
 
             return response()->json(['message' => 'research project updated successfully', 'Research_projects' => $research_projects], 200);

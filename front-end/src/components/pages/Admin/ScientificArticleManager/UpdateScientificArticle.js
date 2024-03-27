@@ -63,16 +63,18 @@ const UpdateScientificArticle = (props) => {
 
     const UpdateData = () => {
         try {
-            // if (
-            //     !titleData ||
-            //     !SelectedPublicationDate ||
-            //     !publisherData ||
-            //     !abstractData ||
-            //     !linkData 
-            // ) {
-            //     errorNoti("Vui lòng điền đầy đủ thông tin.");
-            //     return;
-            // }
+            if (
+                !titleData ||
+                !SelectedPublicationDate ||
+                !publisherData ||
+                !abstractData ||
+                !linkData ||
+                selectedKeys.length === 0
+            ) {
+                errorNoti("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+            
             const data = {
                 title: titleData,
                 publication_date: SelectedPublicationDate,
@@ -85,7 +87,7 @@ const UpdateScientificArticle = (props) => {
                     const detail_scientific_article = {
                         id_teacher: selectedKeys
                     }
-                    console.log(detail_scientific_article);
+                    //console.log(detail_scientific_article);
                     putDetailScientificArticle(id, detail_scientific_article);
                     successNoti("Chỉnh sửa bài báo khoa học thành công");
                 })
