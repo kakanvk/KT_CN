@@ -3,21 +3,17 @@ import dayjs from "dayjs";
 import {
     Breadcrumbs, BreadcrumbItem, Button, Input
 } from "@nextui-org/react";
-import {Select, SelectItem, Avatar, Chip} from "@nextui-org/react";
 
-import { Tooltip } from "antd";
-import { DatePicker, Space } from "antd";
+import { DatePicker, Space, Tooltip, Select } from "antd";
 import { Link, useParams } from "react-router-dom";
-import { getAllTeacher, getTeacherByID } from "../../../../service/TeacherService";
-import { getByIdScientific, updateScientificArticle } from "../../../../service/ScientificAricleService";
-import { putDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
-import { getResearchProjectByID } from "../../../../service/ResearchProjectService";
+import { getAllTeacher} from "../../../../service/TeacherService";
+
+import { getResearchProjectByID, updateResearchProject } from "../../../../service/ResearchProjectService";
 import { getdeleteListDetailByIdResearchProject } from "../../../../service/DetailResearchProject";
+import { putDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
 const { Option } = Select;
 const UpdateResearchProjects = (props) => {
     //biến cục bộ đặt giá trị mặc định key
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([]);
-
     const { id } = useParams();
     const { successNoti, errorNoti, setCollapsedNav } = props;
     const [layout, setLayout] = useState("col");
@@ -28,24 +24,25 @@ const UpdateResearchProjects = (props) => {
     const [titleData, setTitle] = useState("");
     const [investigatorDate, setInvestigator] = useState();
     const [linkData, setLink] = useState("");
-    const [statusDate, setStatus] = useState("");
+    const [statusData, setStatus] = useState("");
 
     const [teacherData, setTeacherData] = useState([]);
     //hangle database
 
+    const handleTeacherChange = (value, option) => {
+        setSelectedKeys(value);
+    };
 
     const getTeachers = async () => {
         try {
             const response = await getAllTeacher();
             await setTeacherData(response.data);
-
+            const responseDataTeacherArray = await getdeleteListDetailByIdResearchProject(id);
+            setSelectedKeys(responseDataTeacherArray.data.id_teacher_array) 
+            console.log(responseDataTeacherArray.data.id_teacher_array);
         } catch (error) {
             console.error("Error getAllTeacher:", error);
         }
-    };
-    
-    const handleSelectChange = (keys) => {
-        setSelectedKeys(keys);
     };
 
     const getResearchProjectsByID = async () => {
@@ -64,11 +61,6 @@ const UpdateResearchProjects = (props) => {
             setInvestigator(investigator)
             setLink(link)
             setStatus(status)
-
-            //gọi api lấy đối tượng teacher
-            // const responseTeacherByID = await getTeacherByID(id_teacher);
-            // setSelectedoldValueTeacher(responseTeacherByID.data.id_teacher)
-            // setSelectedTeacherUpdate(responseTeacherByID.data.id_teacher);    
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
@@ -76,36 +68,46 @@ const UpdateResearchProjects = (props) => {
 
     const UpdateData = () => {
         try {
-            // if (
-            //     !titleData ||
-            //     !SelectedPublicationDate ||
-            //     !publisherData ||
-            //     !abstractData ||
-            //     !linkData ||
-            //     !selectedTeacherUpdate
-            // ) {
-            //     errorNoti("Vui lòng điền đầy đủ thông tin.");
-            //     return;
-            // }
-            // const data = {
-            //     title: titleData,
-            //     publication_date: SelectedPublicationDate,
-            //     publishers: publisherData,
-            //     abstract: abstractData,
-            //     link: linkData
-            // }
-            // updateScientificArticle(id, data)
-            //     .then(response => {
-            //         const detail_scientific_article ={
-            //             id_teacher_old: oldValueTeacherUpdate,
-            //             id_teacher_update: selectedTeacherUpdate
-            //         }
-            //         putDetailScientificArticle(id, detail_scientific_article);
-            //         successNoti("Chỉnh sửa dự án nghiên cứu thành công");
-            //      })
-            //      .catch(error => {
-            //         console.error("Error update Scientific Article:", error);
-            //  });
+            if (
+                !titleData ||
+                !SelectedStatusDate ||
+                !investigatorDate ||
+                !statusData ||
+                !linkData ||
+                selectedKeys.length === 0 
+            ) {
+                errorNoti("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+
+            if (isNaN(investigatorDate)) {
+                errorNoti("Vui lòng điền investigator là số");
+                return;
+            }
+
+            const data = {
+                title: titleData,
+                status_date: SelectedStatusDate,
+                investigator: parseInt(investigatorDate),
+                status: statusData,
+                link: linkData
+            }
+            console.log(data)
+
+            updateResearchProject(id, data)
+                .then(response => {
+                    const detail_scientific_article ={
+                        id_teacher: selectedKeys
+                    }
+                    //console.log(detail_scientific_article)
+                    putDetailScientificArticle(id, detail_scientific_article);
+                    successNoti("Chỉnh sửa dự án nghiên cứu thành công");
+                 })
+                 .catch(error => {
+                    console.error("Error update Scientific Article:", error);
+             });
+            
+
         } catch (error) {
             console.error("Error update subject:", error);
         }
@@ -122,23 +124,6 @@ const UpdateResearchProjects = (props) => {
             console.log(window.innerWidth);
         };
         handleResize();
-        
-        const fetchData = async () => {
-            try {
-                const getTeacherInDetailResearchProjects = await getdeleteListDetailByIdResearchProject(id);
-                const list_id_teacher = getTeacherInDetailResearchProjects.data.Detail_research_project.map(item => 
-                    item.id_teacher
-                );
-                
-                console.log('',list_id_teacher);
-                setDefaultSelectedKeys(list_id_teacher); // Set defaultSelectedKeys after fetching data
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        
-
-        fetchData();
         getTeachers();
         window.addEventListener("resize", handleResize);
         return () => {
@@ -161,7 +146,6 @@ const UpdateResearchProjects = (props) => {
         setSelectedStatusDate(dateString);
     };
 
-    const hung =defaultSelectedKeys;
     return (
         <div>
             <div className="CreateNews flex flex-col gap-7 items-start">
@@ -201,7 +185,7 @@ const UpdateResearchProjects = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
@@ -234,7 +218,6 @@ const UpdateResearchProjects = (props) => {
 
                             isClearable
                             radius="sm"
-                            type="number"
                             value={investigatorDate}
                             onValueChange={setInvestigator}
                         />
@@ -253,7 +236,7 @@ const UpdateResearchProjects = (props) => {
 
                             isClearable
                             radius="sm"
-                            value={statusDate}
+                            value={statusData}
                             onValueChange={setStatus}
                         />
                         <Input
@@ -282,7 +265,7 @@ const UpdateResearchProjects = (props) => {
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangeStatusDate}
                                     value={dayjs(SelectedStatusDate)}
 
@@ -294,48 +277,19 @@ const UpdateResearchProjects = (props) => {
                                 Chọn giáo viên{" "}
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
-                            <p className="text-sm">
-                                Chọn giggggggggggáfo viên{" "}
-
-                                <span className="text-red-500 font-bold">{defaultSelectedKeys}</span>
-                            </p>
-                            
                             <Select
-                                items={teacherData}
-                                label="Assigned to"
-                                variant="bordered"
-                                isMultiline={true}
-                                selectionMode="multiple"
-                                value={[1]}
-                                defaultSelectedKeys={[1]}
-                                placeholder="Select a user"
-                                labelPlacement="outside"
-                                classNames={{
-                                    base: "max-w-xs",
-                                    trigger: "min-h-unit-12 py-2",
-                                }}
-                                renderValue={(items) => {
-                                    return (
-                                    <div className="flex flex-wrap gap-2">
-                                        {items.map((item) => (
-                                        <Chip key={item.key}>{item.data.name_teacher}</Chip>
-                                        ))}
-                                    </div>
-                                    );
-                                }}
+                                    mode="multiple"
+                                    className="w-[400px] h-[42px] mt-1"
+                                    placeholder="Select one or more teachers"
+                                    value={selectedKeys}
+                                    onChange={handleTeacherChange}
                                 >
-                                {(teacherData) => (
-                                    <SelectItem key={teacherData.id_teacher} textValue={teacherData.name_teacher}>
-                                    <div className="flex gap-2 items-center">
-                                        <Avatar alt={teacherData.name_teacher} className="flex-shrink-0" size="sm" src={teacherData.avatar} />
-                                        <div className="flex flex-col">
-                                        <span className="text-small">{teacherData.name_teacher}</span>
-                                        <span className="text-tiny text-default-400">{teacherData.email}</span>
-                                        </div>
-                                    </div>
-                                    </SelectItem>
-                                )}
-                            </Select>          
+                                    {teacherData.map(teacher => (
+                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
+                                </Select>    
                         </div>
                     </div>
                 </div>
@@ -350,13 +304,3 @@ const UpdateResearchProjects = (props) => {
 
 export default UpdateResearchProjects;
 
-function SelectMultiple(props) {
-
-    const { Data, handleChange, value } = props;
-    return (
-        <div className="flex w-full max-w-xs flex-col gap-2">
-            
-            
-        </div>
-    )
-}

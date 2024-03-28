@@ -21,8 +21,9 @@ const CreateSubject = (props) => {
     const [institutions, setInstitutions] = useState("");
     const [studyObject, setStudyObject] = useState("");
     const [selectedMajor, setSelectedMajor] = useState("");
-    const [selectedTeacher, setSelectedTeacher] = useState("");
+
     const [teacherData, setTeacherData] = useState([]);
+    const [selectedKeys, setSelectedKeys] = useState([]);
 
     const [selectedYear, setSelectedYear] = useState();
     const [MajorsData, setMajorsData] = useState([]);
@@ -53,12 +54,16 @@ const CreateSubject = (props) => {
         }
     };
 
-    const SaveData = () => {
+    const handleTeacherChange = (value, option) => {
+        setSelectedKeys(value);
+    };
+    const SaveData = async () => {
         try {
-            if (!selectedMajor || !nameVi || !nameEn || !studyObject || !selectedYear || !institutions || !selectedTeacher) {
+            if (!selectedMajor || !nameVi || !nameEn || !studyObject || !selectedYear || !institutions || selectedKeys.length === 0) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
+
             const data = {
                 id_major: selectedMajor,
                 name_vi: nameVi,
@@ -67,21 +72,16 @@ const CreateSubject = (props) => {
                 beginning_year: selectedYear,
                 institutions: institutions
             }
-          postSubject(data)
-                .then(response => {
-                    const id_subject = response.data.id_subject; 
-                    const DataDetailSubject ={
-                        id_subject: id_subject,
-                        id_teacher: selectedTeacher
-                    }
-                    if(id_subject){
-                        getAllDetailSubject(DataDetailSubject);
-                        successNoti("Tạo môn học thành công");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error save subject:", error);
-                });
+            const response = await postSubject(data)
+            const id_subject = response.data.id_subject; 
+            const DataDetailSubject ={
+                id_subject: id_subject,
+                id_teacher: selectedKeys
+            }
+            if(id_subject){
+                getAllDetailSubject(DataDetailSubject);
+                successNoti("Tạo môn học thành công");
+            } 
         } catch (error) {
             console.error("Error save subject:", error);
         }
@@ -107,10 +107,6 @@ const CreateSubject = (props) => {
 
     const handleMajorChange = (value, option) => {
         setSelectedMajor(value);
-    };
-
-    const handleTeacherChange = (value, option) => {
-        setSelectedTeacher(value);
     };
 
     //hangle Layout 
@@ -161,7 +157,7 @@ const CreateSubject = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
@@ -232,7 +228,7 @@ const CreateSubject = (props) => {
                             onValueChange={setInstitutions}
                         />
                     </div>
-                    <div className="flex flex-1 flex-col gap-[20px] w-full">
+                    <div className="flex flex-1 flex-col gap-[18px] w-full">
                         <div>
                             <p className="text-sm">
                                 Lựa chọn chuyên ngành{" "}
@@ -241,7 +237,7 @@ const CreateSubject = (props) => {
                             <Select
                                 defaultValue="Lựa chọn"
                                 onChange={handleMajorChange}
-                                className="w-[300px] h-[42px] mt-1"
+                                className="w-[400px] h-[42px] mt-1"
                             >
                                 {MajorsData.map((Majors) => (
                                     <Option
@@ -261,7 +257,7 @@ const CreateSubject = (props) => {
                             <Space direction="vertical">
 
                                 <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangeYear}
                                     picker="year"
                                 />
@@ -273,19 +269,18 @@ const CreateSubject = (props) => {
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
                             <Select
-                                defaultValue="Lựa chọn"
-                                onChange={handleTeacherChange}
-                                className="w-[300px] h-[42px] mt-1"
-                            >
-                                {teacherData.map((teachers) => (
-                                    <Option
-                                        key={teachers.id_teacher}
-                                        value={teachers.id_teacher}
-                                    >
-                                        {teachers.name_teacher}
-                                    </Option>
-                                ))}
-                            </Select>
+                                    mode="multiple"
+                                    className="w-[400px] h-[42px] mt-1"
+                                    placeholder="Select one or more teachers"
+                                    value={selectedKeys}
+                                    onChange={handleTeacherChange}
+                                >
+                                    {teacherData.map(teacher => (
+                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
+                                </Select>
                         </div>
 
                     </div>

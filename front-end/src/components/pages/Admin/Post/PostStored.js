@@ -14,8 +14,7 @@ import {
     ModalBody,
     ModalFooter, useDisclosure
 } from "@nextui-org/react";
-import { getAllNewsHiddenForAdmin, forceDeleteNewsByIds, softDeleteNewsByIds, softDeleteNewsById, UpdateStatusVi, UpdateStatusEn, GetAllCategories, UpdateStatuses, } from "../../../../service/NewsService";
-import { getAllAdmissionNewsHiddenForAdmin, softDeleteAdmissionNewsByIds, forceDeleteAdmissionNewsByIds} from "../../../../service/AdmissionNewsService";
+import { getAllNewsHiddenForAdmin, forceDeleteNewsByIds, softDeleteNewsByIds, GetAllCategories} from "../../../../service/NewsService";
 
 // forceDeleteNewsByIds
 
@@ -24,7 +23,7 @@ const PostStored = (props) => {
 
     const [newsListData, setNewsListData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     const [selectedRow, setSelectedRow] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -253,19 +252,12 @@ const PostStored = (props) => {
         }
         try {
             if (TypeNews === 'News') {
-                const response = await softDeleteNewsByIds(putData);
+                await softDeleteNewsByIds(putData);
                 await getNews();
                 setSpinning(false);
                 successNoti("Khôi phục thành công");
                 handleUnSelect();
             } 
-            else if (TypeNews === "admissionNews") {
-                const response = await softDeleteAdmissionNewsByIds(putData);
-                await getAdmissionNews();
-                setSpinning(false);
-                successNoti("Khôi phục thành công");
-                handleUnSelect();
-            }
         } catch (error) {
             setSpinning(false);
             successNoti("Khôi phục thất bại");
@@ -281,18 +273,12 @@ const PostStored = (props) => {
         }
         try {
             if (TypeNews === 'News') { 
-                const response = await softDeleteNewsByIds(putData);
+                await softDeleteNewsByIds(putData);
                 await getNews();
                 setSpinning(false);
                 successNoti("Khôi phục thành công");
                 handleUnSelect();
-            }  else if (TypeNews === "admissionNews") {
-                const response = await softDeleteAdmissionNewsByIds(putData);
-                await getAdmissionNews();
-                setSpinning(false);
-                successNoti("Khôi phục thành công");
-                handleUnSelect();
-            }
+            }  
         } catch (error) {
             setSpinning(false);
             successNoti("Khôi phục thất bại");
@@ -317,19 +303,12 @@ const PostStored = (props) => {
 
         try {
             if (TypeNews === 'News') { 
-                const response = await forceDeleteNewsByIds(putData);
+                await forceDeleteNewsByIds(putData);
                 await getNews();
                 setSpinning(false);
                 successNoti("Cập nhật thành công");
                 handleUnSelect();
-            }  else if (TypeNews === "admissionNews") {
-                const response = await forceDeleteAdmissionNewsByIds(putData);
-                await getAdmissionNews();
-                setSpinning(false);
-                successNoti("Cập nhật thành công");
-                handleUnSelect();
-            }
-
+            }  
         } catch (error) {
             setSpinning(false);
             errorNoti("Cập nhật thất bại");
@@ -409,66 +388,10 @@ const PostStored = (props) => {
         }
     };
 
-    const getAdmissionNews = async () => {
-        setSpinning(true);
-        try {
-            const response = await getAllAdmissionNewsHiddenForAdmin();
-
-            console.log(response.data)
-
-            const updatedNewsData = response.data.map((news) => {
-                return {
-                    key: news.id_admission_news,
-                    thumbnail: news.thumbnail,
-                    name_group: {
-                        thumbnail: news.thumbnail,
-                        title_vi: news.vi.title_vi,
-                        title_en: news.en.title_en,
-                    },
-                    view_count: news.view_count,
-                    category: {
-                        en: news.en.category_name_en,
-                        vi: news.vi.category_name_vi,
-                        id: news.id_category,
-                    },
-                    date: {
-                        created_at: moment(news.created_at).format(
-                            "DD/MM/YYYY HH:mm"
-                        ),
-                        create_by: {
-                            email: news.user.email,
-                            photoURL: news.user.photoURL,
-                            name: news.user.name
-                        },
-                        updated_at: moment(news.updated_at).format(
-                            "DD/MM/YYYY HH:mm"
-                        ),
-                        update_by: {
-                            email: news.user_update.email,
-                            photoURL: news.user_update.photoURL,
-                            name: news.user_update.name
-                        }
-                    },
-                    action: news.id_admission_news,
-                    auto_delete: news.updated_at
-                };
-            });
-
-            setNewsListData(updatedNewsData);
-
-            setSpinning(false);
-        } catch (error) {
-            console.error("Error fetching news:", error);
-            setSpinning(false);
-        }
-    }
-
     useEffect(() => {
         if(TypeNews === "News") {
             getNews(); 
-        } else if(TypeNews === "admissionNews") {
-            getAdmissionNews();
-        }
+        } 
         getCategory();
     }, []);
 

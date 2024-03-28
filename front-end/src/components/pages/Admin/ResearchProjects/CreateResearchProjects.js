@@ -4,12 +4,8 @@ import {
     BreadcrumbItem,
     Button,
     Input,
-    Select,
-    SelectItem,
-    Avatar,
-    Chip
 } from "@nextui-org/react";
-import { Tooltip } from "antd";
+import { Tooltip, Select} from "antd";
 import { DatePicker, Space } from 'antd';
 import { Link } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
@@ -19,7 +15,6 @@ const { Option } = Select;
 const CreateResearchProjects = (props) => {
     const { successNoti, errorNoti, setCollapsedNav } = props;
 
-    const [selectedTeacher, setSelectedTeacher] = useState("");
     const [teacherData, setTeacherData] = useState([]);
     const [selectedKeys, setSelectedKeys] = useState([]);
 
@@ -44,16 +39,22 @@ const CreateResearchProjects = (props) => {
             console.error("Error getAllTeacher:", error);
         }
     };
-    const handleSelectChange = (keys) => {
-        console.log('Selected Keys:', keys);
-        setSelectedKeys(keys);
+
+    const handleTeacherChange = (value, option) => {
+        setSelectedKeys(value);
     };
+
     const SaveData = async () => {
         try {
-            if (!titleData || !investigatorDate || !statusDate || !SelectedStatusDate || !linkData || !selectedTeacher) {
+            if (!titleData || !investigatorDate || !statusDate || !SelectedStatusDate || !linkData || selectedKeys.length === 0) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
+            if (isNaN(investigatorDate)) {
+                errorNoti("Vui lòng nhập investigator là số");
+                return;
+            }
+
             const data = {
                 title: titleData,
                 status_date: SelectedStatusDate,
@@ -67,7 +68,7 @@ const CreateResearchProjects = (props) => {
                     const id_research_project = response.data.id_research_project;
                     const DataDetailSubject = {
                         id_research_project: id_research_project,
-                        id_teacher: selectedTeacher
+                        id_teacher: selectedKeys
                     }
                     console.log(DataDetailSubject)
                     if (id_research_project) {
@@ -104,10 +105,6 @@ const CreateResearchProjects = (props) => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
-
-    const handleTeacherChange = (value, option) => {
-        setSelectedTeacher(value);
-    };
 
     //hangle Layout 
     const handleToggleLayout = (_layout) => {
@@ -157,7 +154,7 @@ const CreateResearchProjects = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
@@ -190,7 +187,6 @@ const CreateResearchProjects = (props) => {
 
                             isClearable
                             radius="sm"
-                            type="number"
                             value={investigatorDate}
                             onValueChange={setInvestigator}
                         />
@@ -239,7 +235,7 @@ const CreateResearchProjects = (props) => {
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangeStatusDate}
 
                                 />
@@ -250,57 +246,20 @@ const CreateResearchProjects = (props) => {
                                 Chọn giáo viên{" "}
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
-                            {/* <Select
-                                defaultValue="Lựa chọn"
-                                onChange={handleTeacherChange}
-                                className="w-[300px] h-[42px] mt-1"
-                            >
-                                {teacherData.map((teachers) => (
-                                    <Option
-                                        key={teachers.id_teacher}
-                                        value={teachers.id_teacher}
-                                    >
-                                        {teachers.name_teacher}
-                                    </Option>
-                                ))}
-                            </Select> */}
-
-                            <Select
-                                items={teacherData}
-                                label="Assigned to"
-                                variant="bordered"
-                                isMultiline={true}
-                                selectionMode="multiple"
-                                placeholder="Select a user"
-                                labelPlacement="outside"
-                                defaultSelectedKeys= { selectedKeys }
-                                onSelectionChange={handleSelectChange}
-                                classNames={{
-                                    base: "max-w-xs",
-                                    trigger: "min-h-unit-12 py-2",
-                                }}
-                                renderValue={(items) => {
-                                    return (
-                                        <div className="flex flex-wrap gap-2">
-                                            {items.map((item) => (
-                                                <Chip key={item.key}>{item.data.name_teacher}</Chip>
-                                            ))}
-                                        </div>
-                                    );
-                                }}
-                            >
-                                {(teacherData) => (
-                                    <SelectItem key={teacherData.id_teacher} textValue={teacherData.name_teacher}>
-                                        <div className="flex gap-2 items-center">
-                                            {/* //<Avatar alt={teacherData.name} className="flex-shrink-0" size="sm" src={teacherData.avatar} /> */}
-                                            <div className="flex flex-col">
-                                                <span className="text-small">{teacherData.name_teacher}</span>
-                                                <span className="text-tiny text-default-400">{teacherData.email}</span>
-                                            </div>
-                                        </div>
-                                    </SelectItem>
-                                )}
-                            </Select>
+                        
+                                <Select
+                                    mode="multiple"
+                                    className="w-[400px] h-[42px] mt-1"
+                                    placeholder="Select one or more teachers"
+                                    value={selectedKeys}
+                                    onChange={handleTeacherChange}
+                                >
+                                    {teacherData.map(teacher => (
+                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
+                                </Select>
                         </div>
 
                     </div>

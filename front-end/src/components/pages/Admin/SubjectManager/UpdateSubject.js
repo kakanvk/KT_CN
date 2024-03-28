@@ -24,8 +24,7 @@ const UpdateSubject = (props) => {
     const [MajorsData, setMajorsData] = useState([]);
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
-    const [oldValueTeacherUpdate, setSelectedoldValueTeacher] = useState("");
-    const [selectedTeacherUpdate, setSelectedTeacherUpdate] = useState("");
+    const [selectedKeys, setSelectedKeys] = useState([]);
 
     const [teacherData, setTeacherData] = useState([]);
     
@@ -43,6 +42,9 @@ const UpdateSubject = (props) => {
         try {
             const response = await getAllTeacher();
             setTeacherData(response.data);
+            const responseDetails = await getDetailByIdSubject(id);
+            setSelectedKeys(responseDetails.data.id_teacher_array)
+            //console.log(responseDetails.data.id_teacher_array);
         } catch (error) {
             console.error("Error getAllTeacher:", error);
         }
@@ -67,14 +69,6 @@ const UpdateSubject = (props) => {
             setInstitutions(institutions);
             setSelectedMajor(majors.id_major);
 
-          
-            const responseDeatailSubject = await getDetailByIdSubject(id);
-            const {
-                id_teacher
-            } = responseDeatailSubject.data[0];
-            setSelectedoldValueTeacher(id_teacher)
-            setSelectedTeacherUpdate(id_teacher);
-            
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
@@ -89,7 +83,7 @@ const UpdateSubject = (props) => {
                 !studyObject ||
                 !selectedYear ||
                 !institutions ||
-                !selectedTeacherUpdate
+                selectedKeys.length === 0
             ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
@@ -102,14 +96,13 @@ const UpdateSubject = (props) => {
                 beginning_year: selectedYear,
                 institutions: institutions,
             };
+
             updateSubject(id, data)
                 .then(response => {
-
-                    const DataDetailSubject ={
-                        id_teacher_old: oldValueTeacherUpdate,
-                        id_teacher_update: selectedTeacherUpdate
+                    const detail_subject_article ={
+                        id_teacher: selectedKeys
                     }
-                    updateDetailByIdSubject(id, DataDetailSubject);
+                    updateDetailByIdSubject(id, detail_subject_article);
                     successNoti("Chỉnh sửa môn học thành công");
                 })
                 .catch(error => {
@@ -130,7 +123,7 @@ const UpdateSubject = (props) => {
             } else {
                 setDisableRowLayout(false);
             }
-            console.log(window.innerWidth);
+            //console.log(window.innerWidth);
         };
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -144,7 +137,7 @@ const UpdateSubject = (props) => {
     };
 
     const handleTeacherChange = (value, option) => {
-        setSelectedTeacherUpdate(value);
+        setSelectedKeys(value);
     };
 
     const handleToggleLayout = (_layout) => {
@@ -158,7 +151,7 @@ const UpdateSubject = (props) => {
 
     //////note
     const onChangeYear = (date, dateString) => {
-        console.log("year1", selectedYear);
+        //console.log("year1", selectedYear);
         setSelectedYear(dateString);
     };
 
@@ -201,7 +194,7 @@ const UpdateSubject = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
@@ -268,7 +261,7 @@ const UpdateSubject = (props) => {
                             onValueChange={setInstitutions}
                         />
                     </div>
-                    <div className="flex flex-1 flex-col gap-[20px] w-full">
+                    <div className="flex flex-1 flex-col gap-[18px] w-full">
                         <div>
                             <p className="text-sm">
                                 Chuyên ngành{" "}
@@ -280,7 +273,7 @@ const UpdateSubject = (props) => {
                                 defaultValue="Chọn chuyên ngành"
                                 value={selectedMajor}
                                 onChange={handleMajorChange}
-                                className="w-[300px] h-[42px] mt-1"
+                                className="w-[400px] h-[42px] mt-1"
                             >
                                 {MajorsData.map((Majors) => (
                                     <Option
@@ -301,7 +294,7 @@ const UpdateSubject = (props) => {
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangeYear}
                                     picker="year"
                                     format="YYYY"
@@ -315,20 +308,18 @@ const UpdateSubject = (props) => {
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
                             <Select
-                                defaultValue="Lựa chọn"
-                                onChange={handleTeacherChange}
-                                value={selectedTeacherUpdate}
-                                className="w-[300px] h-[42px] mt-1"
-                            >
-                                {teacherData.map((teachers) => (
-                                    <Option
-                                        key={teachers.id_teacher}
-                                        value={teachers.id_teacher}
-                                    >
-                                        {teachers.name_teacher}
-                                    </Option>
-                                ))}
-                            </Select>
+                                    mode="multiple"
+                                    className="w-[400px] h-[42px] mt-1"
+                                    placeholder="Select one or more teachers"
+                                    value={selectedKeys}
+                                    onChange={handleTeacherChange}
+                                >
+                                    {teacherData.map(teacher => (
+                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
+                                </Select>
                         </div>
 
                     </div>

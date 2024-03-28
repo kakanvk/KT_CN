@@ -10,23 +10,20 @@ import {
 import { Select, Tooltip } from "antd";
 import { DatePicker, Space } from 'antd';
 import { Link } from "react-router-dom";
-import { getAllMajors } from "../../../../service/MajorService";
 import { getAllTeacher } from "../../../../service/TeacherService";
-import { getAllDetailSubject } from "../../../../service/DetailSubjectService";
 import { postScientificArticle } from "../../../../service/ScientificAricleService";
 import { postDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
 
 const { Option } = Select;
 const CreateScientificArticle = (props) => {
     const { successNoti, errorNoti, setCollapsedNav } = props;
-
-    const [selectedTeacher, setSelectedTeacher] = useState("");
     const [teacherData, setTeacherData] = useState([]);
     const [SelectedPublicationDate, setSelectedPublicationDate] = useState();
     const [titleData, setTitle] = useState("");
     const [publisherData, setPublisher] = useState("");
     const [linkData, setLink] = useState("");
     const [abstractData, setAbstracts] = useState("");
+    const [selectedKeys, setSelectedKeys] = useState([]);
 
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
@@ -46,7 +43,7 @@ const CreateScientificArticle = (props) => {
 
     const SaveData = async () => {
         try {
-            if (!titleData || !publisherData || !abstractData || !SelectedPublicationDate || !linkData || !selectedTeacher) {
+            if (!titleData || !publisherData || !abstractData || !SelectedPublicationDate || !linkData || selectedKeys.length === 0) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
@@ -63,7 +60,7 @@ const CreateScientificArticle = (props) => {
                     const id_scientific = response.data.id_scientific;
                     const DataDetailSubject = {
                         id_scientific: id_scientific,
-                        id_teacher: selectedTeacher
+                        id_teacher: selectedKeys
                     }
                     console.log(DataDetailSubject)
                     if (id_scientific) {
@@ -102,7 +99,7 @@ const CreateScientificArticle = (props) => {
     }, []);
 
     const handleTeacherChange = (value, option) => {
-        setSelectedTeacher(value);
+        setSelectedKeys(value);
     };
 
     //hangle Layout 
@@ -153,7 +150,7 @@ const CreateScientificArticle = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
@@ -246,19 +243,18 @@ const CreateScientificArticle = (props) => {
                                 <span className="text-red-500 font-bold">*</span>
                             </p>
                             <Select
-                                defaultValue="Lựa chọn"
-                                onChange={handleTeacherChange}
-                                className="w-[300px] h-[42px] mt-1"
-                            >
-                                {teacherData.map((teachers) => (
-                                    <Option
-                                        key={teachers.id_teacher}
-                                        value={teachers.id_teacher}
-                                    >
-                                        {teachers.name_teacher}
-                                    </Option>
-                                ))}
-                            </Select>
+                                    mode="multiple"
+                                    className="w-[400px] h-[42px] mt-1"
+                                    placeholder="Select one or more teachers"
+                                    value={selectedKeys}
+                                    onChange={handleTeacherChange}
+                                >
+                                    {teacherData.map(teacher => (
+                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
+                                </Select>
                         </div>
 
                     </div>

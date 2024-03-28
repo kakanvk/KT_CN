@@ -63,16 +63,18 @@ const UpdateScientificArticle = (props) => {
 
     const UpdateData = () => {
         try {
-            // if (
-            //     !titleData ||
-            //     !SelectedPublicationDate ||
-            //     !publisherData ||
-            //     !abstractData ||
-            //     !linkData 
-            // ) {
-            //     errorNoti("Vui lòng điền đầy đủ thông tin.");
-            //     return;
-            // }
+            if (
+                !titleData ||
+                !SelectedPublicationDate ||
+                !publisherData ||
+                !abstractData ||
+                !linkData ||
+                selectedKeys.length === 0
+            ) {
+                errorNoti("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+            
             const data = {
                 title: titleData,
                 publication_date: SelectedPublicationDate,
@@ -85,7 +87,7 @@ const UpdateScientificArticle = (props) => {
                     const detail_scientific_article = {
                         id_teacher: selectedKeys
                     }
-                    console.log(detail_scientific_article);
+                    //console.log(detail_scientific_article);
                     putDetailScientificArticle(id, detail_scientific_article);
                     successNoti("Chỉnh sửa bài báo khoa học thành công");
                 })
@@ -142,7 +144,7 @@ const UpdateScientificArticle = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/subject">Quản lý bài báo khoa học</Link>
+                            <Link to="/admin/scientific-article">Quản lý bài báo khoa học</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>Chỉnh sửa bài báo khoa học</BreadcrumbItem>
                     </Breadcrumbs>
@@ -174,7 +176,7 @@ const UpdateScientificArticle = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
@@ -253,7 +255,7 @@ const UpdateScientificArticle = (props) => {
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangePublicationDate}
                                     value={dayjs(SelectedPublicationDate)}
                                 />
@@ -266,7 +268,7 @@ const UpdateScientificArticle = (props) => {
                             </p>
                                 <Select
                                     mode="multiple"
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     placeholder="Select one or more teachers"
                                     value={selectedKeys}
                                     onChange={handleTeacherChange}

@@ -24,13 +24,13 @@ const getByIdscientific_article = (id) => {
 };
 
 const getone = (id) => {
-    console.log("getone", id);
     return axiosInstance.get(`scientific-article/getone/${id}`);
 };
 
 
 
 const updateScientificArticle= (id, data) => {
+    console.table(data);
     return axiosInstance.put(`/admin/scientific-article/${id}`, data);
 };
 

@@ -134,18 +134,16 @@ const ScientificArticle = (props) => {
         const putData = {
             id_scientific_article: selectedRowKeys,
         }
+        const id_list_data = {
+            id_list: selectedRowKeys,
+        }
         try {
-            deleteListDetailScientificArticle(putData)
-            .then(response => {
-                deleteListScientificArticle(putData)
-                setSpinning(false);
-                getScientificArticle();
-                successNoti("Xoá thành công");
-                handleUnSelect();
-            })
-            .catch(error => {
-                console.error("Error save subject:", error);
-            });
+            await deleteListDetailScientificArticle(id_list_data)
+            await deleteListScientificArticle(putData)
+            setSpinning(false);
+            getScientificArticle();
+            successNoti("Xoá thành công");
+            handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -158,18 +156,16 @@ const ScientificArticle = (props) => {
         const putData = {
             id_scientific_article: [_id],
         }
+        const id_list_data = {
+            id_list: selectedRowKeys,
+        }
         try {
-            deleteListDetailScientificArticle(putData)
-            .then(response => {
-                deleteListScientificArticle(putData)
-                setSpinning(false);
-                getScientificArticle();
-                successNoti("Xoá thành công");
-                handleUnSelect();
-            })
-            .catch(error => {
-                console.error("Error save subject:", error);
-            });
+            await deleteListDetailScientificArticle(id_list_data)
+            await deleteListScientificArticle(putData)
+            setSpinning(false);
+            getScientificArticle();
+            successNoti("Xoá thành công");
+            handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
