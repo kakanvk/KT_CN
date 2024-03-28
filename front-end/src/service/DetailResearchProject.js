@@ -10,7 +10,7 @@ const postDetailResearchProject = (data) => {
 };
 
 const updateDetailResearchProject = (id, data) => {
-    return axiosInstance.post(`/admin/detail-research-project/research-project/${id}`, data);
+    return axiosInstance.put(`/admin/detail-research-project/research-project/${id}`, data);
 };
 
 const deleteListDetailResearchProject = (data) => {

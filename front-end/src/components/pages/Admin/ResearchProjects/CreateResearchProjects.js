@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-    Breadcrumbs,
-    BreadcrumbItem,
-    Button,
-    Input,
-} from "@nextui-org/react";
-import { Tooltip, Select} from "antd";
-import { DatePicker, Space } from 'antd';
+import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
+import { Tooltip, Select } from "antd";
+import { DatePicker, Space } from "antd";
 import { Link } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
 import { postResearchProject } from "../../../../service/ResearchProjectService";
@@ -46,7 +41,14 @@ const CreateResearchProjects = (props) => {
 
     const SaveData = async () => {
         try {
-            if (!titleData || !investigatorDate || !statusDate || !SelectedStatusDate || !linkData || selectedKeys.length === 0) {
+            if (
+                !titleData ||
+                !investigatorDate ||
+                !statusDate ||
+                !SelectedStatusDate ||
+                !linkData ||
+                selectedKeys.length === 0
+            ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
@@ -60,28 +62,32 @@ const CreateResearchProjects = (props) => {
                 status_date: SelectedStatusDate,
                 investigator: investigatorDate,
                 status: statusDate,
-                link: linkData
-            }
+                link: linkData,
+            };
 
             postResearchProject(data)
-                .then(response => {
-                    const id_research_project = response.data.id_research_project;
+                .then((response) => {
+                    const id_research_project =
+                        response.data.id_research_project;
                     const DataDetailSubject = {
                         id_research_project: id_research_project,
-                        id_teacher: selectedKeys
-                    }
-                    console.log(DataDetailSubject)
+                        id_teacher: selectedKeys,
+                    };
+                    console.log(DataDetailSubject);
                     if (id_research_project) {
                         postDetailResearchProject(DataDetailSubject)
                             .then(() => {
                                 successNoti("Tạo dự án nghiên cứu thành công");
                             })
-                            .catch(error => {
-                                console.error("Error save Detail research project:", error);
+                            .catch((error) => {
+                                console.error(
+                                    "Error save Detail research project:",
+                                    error
+                                );
                             });
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error("Error save research project:", error);
                 });
         } catch (error) {
@@ -106,7 +112,7 @@ const CreateResearchProjects = (props) => {
         };
     }, []);
 
-    //hangle Layout 
+    //hangle Layout
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
         if (_layout === "col") {
@@ -122,7 +128,9 @@ const CreateResearchProjects = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/scientific-article">Quản lý dự án nghiên cứu</Link>
+                            <Link to="/admin/research-projects">
+                                Quản lý dự án nghiên cứu
+                            </Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>Thêm dự án nghiên cứu</BreadcrumbItem>
                     </Breadcrumbs>
@@ -167,7 +175,6 @@ const CreateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={titleData}
@@ -184,7 +191,6 @@ const CreateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={investigatorDate}
@@ -202,7 +208,6 @@ const CreateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={statusDate}
@@ -219,7 +224,6 @@ const CreateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={linkData}
@@ -227,43 +231,46 @@ const CreateResearchProjects = (props) => {
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
-
                         <div>
                             <p className="text-sm">
                                 Ngày ngày báo cáo (status date){" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
                                     className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangeStatusDate}
-
                                 />
                             </Space>
                         </div>
                         <div>
                             <p className="text-sm">
                                 Chọn giáo viên{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
-                        
-                                <Select
-                                    mode="multiple"
-                                    className="w-[400px] h-[42px] mt-1"
-                                    placeholder="Select one or more teachers"
-                                    value={selectedKeys}
-                                    onChange={handleTeacherChange}
-                                >
-                                    {teacherData.map(teacher => (
-                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
-                                            {teacher.name_teacher}
-                                        </Option>
-                                    ))}
-                                </Select>
+
+                            <Select
+                                mode="multiple"
+                                className="w-[400px] h-[42px] mt-1"
+                                placeholder="Select one or more teachers"
+                                value={selectedKeys}
+                                onChange={handleTeacherChange}
+                            >
+                                {teacherData.map((teacher) => (
+                                    <Option
+                                        key={teacher.id_teacher}
+                                        value={teacher.id_teacher}
+                                    >
+                                        {teacher.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
-
                     </div>
-
                 </div>
 
                 <Button onClick={SaveData} color="primary" radius="sm">

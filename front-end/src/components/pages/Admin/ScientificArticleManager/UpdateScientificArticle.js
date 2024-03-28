@@ -5,8 +5,16 @@ import { Select, Tooltip } from "antd";
 import { DatePicker, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
-import { getByIdScientific, getByIdscientific_article, getone, updateScientificArticle } from "../../../../service/ScientificAricleService";
-import { putDetailScientificArticle, getDetailScientificArticleById } from "../../../../service/DetailScientificArticleService";
+import {
+    getByIdScientific,
+    getByIdscientific_article,
+    getone,
+    updateScientificArticle,
+} from "../../../../service/ScientificAricleService";
+import {
+    putDetailScientificArticle,
+    getDetailScientificArticleById,
+} from "../../../../service/DetailScientificArticleService";
 const { Option } = Select;
 const UpdateScientificArticle = (props) => {
     const { id } = useParams();
@@ -25,13 +33,13 @@ const UpdateScientificArticle = (props) => {
     const getTeachers = async () => {
         try {
             const response = await getAllTeacher();
-            const filteredTeacherData = response.data.map(teacher => ({
+            const filteredTeacherData = response.data.map((teacher) => ({
                 ...teacher,
-                id_teacher: teacher.id_teacher
+                id_teacher: teacher.id_teacher,
             }));
             setTeacherData(filteredTeacherData);
             const responseDetails = await getDetailScientificArticleById(id);
-            setSelectedKeys(responseDetails.data.id_teacher_array)
+            setSelectedKeys(responseDetails.data.id_teacher_array);
             console.log(responseDetails.data.id_teacher_array);
         } catch (error) {
             console.error("Error getAllTeacher:", error);
@@ -41,31 +49,27 @@ const UpdateScientificArticle = (props) => {
     const getScientificArticleByID = async () => {
         try {
             const response = await getone(id);
-                const {
-                    title,
-                    publication_date_old,
-                    publishers,
-                    abstract,
-                    link,
-                } = response.data.scientific_article;
-                console.log('Response data getone:', response.data.scientific_article);
-                setSelectedPublicationDate(publication_date_old);
-                setTitle(title);
-                setPublisher(publishers);
-                setLink(link);
-                setAbstracts(abstract);
-           
+            const { title, publication_date_old, publishers, abstract, link } =
+                response.data.scientific_article;
+            console.log(
+                "Response data getone:",
+                response.data.scientific_article
+            );
+            setSelectedPublicationDate(publication_date_old);
+            setTitle(title);
+            setPublisher(publishers);
+            setLink(link);
+            setAbstracts(abstract);
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
     };
-    
 
     const UpdateData = () => {
         try {
             if (
                 !titleData ||
-                !SelectedPublicationDate ||
+                SelectedPublicationDate == "" ||
                 !publisherData ||
                 !abstractData ||
                 !linkData ||
@@ -74,24 +78,24 @@ const UpdateScientificArticle = (props) => {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
-            
+
             const data = {
                 title: titleData,
                 publication_date: SelectedPublicationDate,
                 publishers: publisherData,
                 abstract: abstractData,
-                link: linkData
-            }
+                link: linkData,
+            };
             updateScientificArticle(id, data)
-                .then(response => {
+                .then((response) => {
                     const detail_scientific_article = {
-                        id_teacher: selectedKeys
-                    }
+                        id_teacher: selectedKeys,
+                    };
                     //console.log(detail_scientific_article);
                     putDetailScientificArticle(id, detail_scientific_article);
                     successNoti("Chỉnh sửa bài báo khoa học thành công");
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error("Error update Scientific Article:", error);
                 });
         } catch (error) {
@@ -144,9 +148,13 @@ const UpdateScientificArticle = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/scientific-article">Quản lý bài báo khoa học</Link>
+                            <Link to="/admin/scientific-article">
+                                Quản lý bài báo khoa học
+                            </Link>
                         </BreadcrumbItem>
-                        <BreadcrumbItem>Chỉnh sửa bài báo khoa học</BreadcrumbItem>
+                        <BreadcrumbItem>
+                            Chỉnh sửa bài báo khoa học
+                        </BreadcrumbItem>
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">
@@ -189,7 +197,6 @@ const UpdateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={titleData}
@@ -206,7 +213,6 @@ const UpdateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={publisherData}
@@ -223,7 +229,6 @@ const UpdateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={abstractData}
@@ -240,7 +245,6 @@ const UpdateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={linkData}
@@ -251,7 +255,9 @@ const UpdateScientificArticle = (props) => {
                         <div>
                             <p className="text-sm">
                                 Ngày xuất bản (publication date){" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
@@ -264,28 +270,34 @@ const UpdateScientificArticle = (props) => {
                         <div>
                             <p className="text-sm">
                                 Chọn giáo viên{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
-                                <Select
-                                    mode="multiple"
-                                    className="w-[400px] h-[42px] mt-1"
-                                    placeholder="Select one or more teachers"
-                                    value={selectedKeys}
-                                    onChange={handleTeacherChange}
-                                >
-                                    {teacherData.map(teacher => (
-                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
-                                            {teacher.name_teacher}
-                                        </Option>
-                                    ))}
-                                </Select>
-                    
+                            <Select
+                                mode="multiple"
+                                className="w-[400px] h-[42px] mt-1"
+                                placeholder="Select one or more teachers"
+                                value={selectedKeys}
+                                onChange={handleTeacherChange}
+                            >
+                                {teacherData.map((teacher) => (
+                                    <Option
+                                        key={teacher.id_teacher}
+                                        value={teacher.id_teacher}
+                                    >
+                                        {teacher.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
                     </div>
                 </div>
 
                 <Button onClick={UpdateData} color="primary" radius="sm">
-                    <span className="font-medium">Chỉnh sửa bài báo khoa học</span>
+                    <span className="font-medium">
+                        Chỉnh sửa bài báo khoa học
+                    </span>
                 </Button>
             </div>
         </div>

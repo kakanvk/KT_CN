@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import {
-    Breadcrumbs, BreadcrumbItem, Button, Input
-} from "@nextui-org/react";
+import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
 
 import { DatePicker, Space, Tooltip, Select } from "antd";
 import { Link, useParams } from "react-router-dom";
-import { getAllTeacher} from "../../../../service/TeacherService";
+import { getAllTeacher } from "../../../../service/TeacherService";
 
-import { getResearchProjectByID, updateResearchProject } from "../../../../service/ResearchProjectService";
-import { getdeleteListDetailByIdResearchProject } from "../../../../service/DetailResearchProject";
+import {
+    getResearchProjectByID,
+    updateResearchProject,
+} from "../../../../service/ResearchProjectService";
+import {
+    getdeleteListDetailByIdResearchProject,
+    updateDetailResearchProject,
+} from "../../../../service/DetailResearchProject";
 import { putDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
 const { Option } = Select;
 const UpdateResearchProjects = (props) => {
@@ -37,8 +41,9 @@ const UpdateResearchProjects = (props) => {
         try {
             const response = await getAllTeacher();
             await setTeacherData(response.data);
-            const responseDataTeacherArray = await getdeleteListDetailByIdResearchProject(id);
-            setSelectedKeys(responseDataTeacherArray.data.id_teacher_array) 
+            const responseDataTeacherArray =
+                await getdeleteListDetailByIdResearchProject(id);
+            setSelectedKeys(responseDataTeacherArray.data.id_teacher_array);
             console.log(responseDataTeacherArray.data.id_teacher_array);
         } catch (error) {
             console.error("Error getAllTeacher:", error);
@@ -48,19 +53,14 @@ const UpdateResearchProjects = (props) => {
     const getResearchProjectsByID = async () => {
         try {
             const response = await getResearchProjectByID(id);
-            const {
-                title,
-                status_date,
-                investigator,
-                status,
-                link,
-            } = response.data.Research_projects;
+            const { title, status_date, investigator, status, link } =
+                response.data.Research_projects;
 
-            setSelectedStatusDate(status_date)
-            setTitle(title)
-            setInvestigator(investigator)
-            setLink(link)
-            setStatus(status)
+            setSelectedStatusDate(status_date);
+            setTitle(title);
+            setInvestigator(investigator);
+            setLink(link);
+            setStatus(status);
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
@@ -74,7 +74,7 @@ const UpdateResearchProjects = (props) => {
                 !investigatorDate ||
                 !statusData ||
                 !linkData ||
-                selectedKeys.length === 0 
+                selectedKeys.length === 0
             ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
@@ -90,24 +90,22 @@ const UpdateResearchProjects = (props) => {
                 status_date: SelectedStatusDate,
                 investigator: parseInt(investigatorDate),
                 status: statusData,
-                link: linkData
-            }
-            console.log(data)
+                link: linkData,
+            };
+            console.log(data);
 
             updateResearchProject(id, data)
-                .then(response => {
-                    const detail_scientific_article ={
-                        id_teacher: selectedKeys
-                    }
-                    //console.log(detail_scientific_article)
-                    putDetailScientificArticle(id, detail_scientific_article);
+                .then((response) => {
+                    const research_projects = {
+                        id_teacher: selectedKeys,
+                    };
+                    //console.log(research_projects)
+                    updateDetailResearchProject(id, research_projects);
                     successNoti("Chỉnh sửa dự án nghiên cứu thành công");
-                 })
-                 .catch(error => {
+                })
+                .catch((error) => {
                     console.error("Error update Scientific Article:", error);
-             });
-            
-
+                });
         } catch (error) {
             console.error("Error update subject:", error);
         }
@@ -131,7 +129,6 @@ const UpdateResearchProjects = (props) => {
         };
     }, []);
 
- 
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
         if (_layout === "col") {
@@ -153,9 +150,13 @@ const UpdateResearchProjects = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/research-projects">Quản lý dự án nghiên cứu</Link>
+                            <Link to="/admin/research-projects">
+                                Quản lý dự án nghiên cứu
+                            </Link>
                         </BreadcrumbItem>
-                        <BreadcrumbItem>Chỉnh sửa dự án nghiên cứu</BreadcrumbItem>
+                        <BreadcrumbItem>
+                            Chỉnh sửa dự án nghiên cứu
+                        </BreadcrumbItem>
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">
@@ -198,7 +199,6 @@ const UpdateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={titleData}
@@ -215,7 +215,6 @@ const UpdateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={investigatorDate}
@@ -233,7 +232,6 @@ const UpdateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={statusData}
@@ -250,7 +248,6 @@ const UpdateResearchProjects = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={linkData}
@@ -261,41 +258,49 @@ const UpdateResearchProjects = (props) => {
                         <div>
                             <p className="text-sm">
                                 Ngày ngày báo cáo (status date){" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Space direction="vertical">
                                 <DatePicker
                                     className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangeStatusDate}
                                     value={dayjs(SelectedStatusDate)}
-
                                 />
                             </Space>
                         </div>
                         <div>
                             <p className="text-sm">
                                 Chọn giáo viên{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Select
-                                    mode="multiple"
-                                    className="w-[400px] h-[42px] mt-1"
-                                    placeholder="Select one or more teachers"
-                                    value={selectedKeys}
-                                    onChange={handleTeacherChange}
-                                >
-                                    {teacherData.map(teacher => (
-                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
-                                            {teacher.name_teacher}
-                                        </Option>
-                                    ))}
-                                </Select>    
+                                mode="multiple"
+                                className="w-[400px] h-[42px] mt-1"
+                                placeholder="Select one or more teachers"
+                                value={selectedKeys}
+                                onChange={handleTeacherChange}
+                            >
+                                {teacherData.map((teacher) => (
+                                    <Option
+                                        key={teacher.id_teacher}
+                                        value={teacher.id_teacher}
+                                    >
+                                        {teacher.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
                     </div>
                 </div>
 
                 <Button onClick={UpdateData} color="primary" radius="sm">
-                    <span className="font-medium">Chỉnh sửa dự án nghiên cứu</span>
+                    <span className="font-medium">
+                        Chỉnh sửa dự án nghiên cứu
+                    </span>
                 </Button>
             </div>
         </div>
@@ -303,4 +308,3 @@ const UpdateResearchProjects = (props) => {
 };
 
 export default UpdateResearchProjects;
-

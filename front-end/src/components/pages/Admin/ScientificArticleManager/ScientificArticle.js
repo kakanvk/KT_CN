@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Table, Tooltip } from "antd";
@@ -11,10 +10,13 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    useDisclosure
+    useDisclosure,
 } from "@nextui-org/react";
 
-import { deleteListScientificArticle, getAllScientificArticle } from "../../../../service/ScientificAricleService";
+import {
+    deleteListScientificArticle,
+    getAllScientificArticle,
+} from "../../../../service/ScientificAricleService";
 import { deleteListDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
 
 const ScientificArticle = (props) => {
@@ -26,54 +28,29 @@ const ScientificArticle = (props) => {
     const [deleteId, setDeleteId] = useState(null);
     const columns = [
         {
-            title:
-                <p className="flex gap-2">Bài báo khoa học
-
-                </p>,
+            title: <p className="flex gap-2">Bài báo khoa học</p>,
             dataIndex: "title",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">publication_date
-
-                </p>,
+            title: <p className="flex gap-2">publication_date</p>,
             dataIndex: "publication_date",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">publishers
-
-                </p>,
+            title: <p className="flex gap-2">publishers</p>,
             dataIndex: "publishers",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">abstract
-
-                </p>,
+            title: <p className="flex gap-2">abstract</p>,
             dataIndex: "abstract",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">link
-
-                </p>,
+            title: <p className="flex gap-2">link</p>,
             dataIndex: "link",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
             title: (
@@ -96,8 +73,6 @@ const ScientificArticle = (props) => {
                         >
                             <i className="fa-solid fa-pen"></i>
                         </Button>
-
-
                     </Tooltip>
                     <Tooltip title="Xoá">
                         <Button
@@ -105,7 +80,10 @@ const ScientificArticle = (props) => {
                             variant="light"
                             radius="full"
                             size="sm"
-                            onClick={() => { onOpen(); setDeleteId(_id); }}
+                            onClick={() => {
+                                onOpen();
+                                setDeleteId(_id);
+                            }}
                         >
                             <i className="fa-solid fa-trash-can"></i>
                         </Button>
@@ -130,16 +108,16 @@ const ScientificArticle = (props) => {
     };
 
     const handleSoftDelete = async () => {
-        setSpinning(true);     
+        setSpinning(true);
         const putData = {
             id_scientific_article: selectedRowKeys,
-        }
+        };
         const id_list_data = {
             id_list: selectedRowKeys,
-        }
+        };
         try {
-            await deleteListDetailScientificArticle(id_list_data)
-            await deleteListScientificArticle(putData)
+            await deleteListDetailScientificArticle(id_list_data);
+            await deleteListScientificArticle(putData);
             setSpinning(false);
             getScientificArticle();
             successNoti("Xoá thành công");
@@ -155,13 +133,13 @@ const ScientificArticle = (props) => {
         setSpinning(true);
         const putData = {
             id_scientific_article: [_id],
-        }
+        };
         const id_list_data = {
-            id_list: selectedRowKeys,
-        }
+            id_list: [_id],
+        };
         try {
-            await deleteListDetailScientificArticle(id_list_data)
-            await deleteListScientificArticle(putData)
+            await deleteListDetailScientificArticle(id_list_data);
+            await deleteListScientificArticle(putData);
             setSpinning(false);
             getScientificArticle();
             successNoti("Xoá thành công");
@@ -179,19 +157,20 @@ const ScientificArticle = (props) => {
             const response = await getAllScientificArticle();
             console.log(response.data.scientific_articles);
 
-            const Scientific_Article_Data = response.data.scientific_articles.map((items) => {
-                return {
-                    key: items.id_scientific_article,
-                    title: items.title,
-                    publication_date: items.publication_date,
-                    publishers: items.publishers,
-                    abstract: items.abstract,
-                    link: items.link,
-                    created_at: items.created_at,
-                    updated_at: items.updated_at,
-                    action: items.id_scientific_article,
-                };
-            });
+            const Scientific_Article_Data =
+                response.data.scientific_articles.map((items) => {
+                    return {
+                        key: items.id_scientific_article,
+                        title: items.title,
+                        publication_date: items.publication_date,
+                        publishers: items.publishers,
+                        abstract: items.abstract,
+                        link: items.link,
+                        created_at: items.created_at,
+                        updated_at: items.updated_at,
+                        action: items.id_scientific_article,
+                    };
+                });
 
             setScientificArticleData(Scientific_Article_Data);
 
@@ -237,15 +216,9 @@ const ScientificArticle = (props) => {
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-
                 </div>
             </div>
-            <Button
-                color="primary"
-                radius="sm"
-                as={Link}
-                to="create"
-            >
+            <Button color="primary" radius="sm" as={Link} to="create">
                 Tạo bài báo khoa học
             </Button>
             {selectedRowKeys.length !== 0 && (
@@ -261,7 +234,12 @@ const ScientificArticle = (props) => {
                                 document.querySelector(".Quick__Option")
                             }
                         >
-                            <Button isIconOnly variant="light" radius="full" onClick={onOpen}>
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                radius="full"
+                                onClick={onOpen}
+                            >
                                 <i className="fa-solid fa-trash-can"></i>
                             </Button>
                         </Tooltip>
@@ -304,15 +282,14 @@ const ScientificArticle = (props) => {
 export default ScientificArticle;
 
 function ConfirmAction(props) {
-
     const { isOpen, onOpenChange, onConfirm } = props;
 
     const handleOnOKClick = (onClose) => {
         onClose();
-        if (typeof onConfirm === 'function') {
+        if (typeof onConfirm === "function") {
             onConfirm();
         }
-    }
+    };
 
     return (
         <Modal
@@ -336,7 +313,7 @@ function ConfirmAction(props) {
                             ease: "easeIn",
                         },
                     },
-                }
+                },
             }}
         >
             <ModalContent>
@@ -352,7 +329,11 @@ function ConfirmAction(props) {
                             <Button variant="light" onPress={onClose}>
                                 Huỷ
                             </Button>
-                            <Button color="danger" className="font-medium" onPress={() => handleOnOKClick(onClose)}>
+                            <Button
+                                color="danger"
+                                className="font-medium"
+                                onPress={() => handleOnOKClick(onClose)}
+                            >
                                 Xoá
                             </Button>
                         </ModalFooter>
@@ -360,5 +341,5 @@ function ConfirmAction(props) {
                 )}
             </ModalContent>
         </Modal>
-    )
+    );
 }

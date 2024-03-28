@@ -6,7 +6,6 @@ use App\Models\Detail_research_project;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\DB;
 
 
 class DetailResearchProjectController extends Controller
@@ -130,24 +129,23 @@ class DetailResearchProjectController extends Controller
             $validatedData = $request->validate([
                 'id_list' => 'nullable|array',
             ]);
-    
+
             $id_research_project_list = $validatedData['id_list'];
-            error_log("hungdep");
-            if (count($id_research_project_list) === 0) { 
+            if (count($id_research_project_list) === 0) {
                 return response()->json([
                     'message' => 'Không có dữ liệu để xóa',
                     'id_research_project_list' => $id_research_project_list
                 ], 200);
             }
-    
+
             foreach ($id_research_project_list as $id_research_project) {
                 $detail_research_projects = Detail_research_project::
                     where('id_research_project', $id_research_project)->get();
-                    foreach ($detail_research_projects as $ID) {
-                        Detail_research_project::where('id_research_project', $id_research_project)->delete();
-                    }
+                foreach ($detail_research_projects as $ID) {
+                    Detail_research_project::where('id_research_project', $id_research_project)->delete();
+                }
             }
-    
+
             return response()->json([
                 'message' => 'Xóa thành công',
                 'id_research_project_list' => $id_research_project_list
@@ -159,5 +157,5 @@ class DetailResearchProjectController extends Controller
             ], 500);
         }
     }
-    
+
 }

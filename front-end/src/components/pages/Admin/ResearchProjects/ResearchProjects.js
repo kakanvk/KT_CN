@@ -10,10 +10,13 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    useDisclosure
+    useDisclosure,
 } from "@nextui-org/react";
 
-import { getAllResearchProject, deleteListResearchProject } from "../../../../service/ResearchProjectService";
+import {
+    getAllResearchProject,
+    deleteListResearchProject,
+} from "../../../../service/ResearchProjectService";
 import { deleteListDetailResearchProject } from "../../../../service/DetailResearchProject";
 
 const ResearchProjects = (props) => {
@@ -25,54 +28,29 @@ const ResearchProjects = (props) => {
     const [deleteId, setDeleteId] = useState(null);
     const columns = [
         {
-            title:
-                <p className="flex gap-2">Bài báo khoa học
-
-                </p>,
+            title: <p className="flex gap-2">Bài báo khoa học</p>,
             dataIndex: "title",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">status_date
-
-                </p>,
+            title: <p className="flex gap-2">status_date</p>,
             dataIndex: "status_date",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">investigator
-
-                </p>,
+            title: <p className="flex gap-2">investigator</p>,
             dataIndex: "investigator",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">status
-
-                </p>,
+            title: <p className="flex gap-2">status</p>,
             dataIndex: "status",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">link
-
-                </p>,
+            title: <p className="flex gap-2">link</p>,
             dataIndex: "link",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
             title: (
@@ -95,8 +73,6 @@ const ResearchProjects = (props) => {
                         >
                             <i className="fa-solid fa-pen"></i>
                         </Button>
-
-
                     </Tooltip>
                     <Tooltip title="Xoá">
                         <Button
@@ -104,7 +80,10 @@ const ResearchProjects = (props) => {
                             variant="light"
                             radius="full"
                             size="sm"
-                            onClick={() => { onOpen(); setDeleteId(_id); }}
+                            onClick={() => {
+                                onOpen();
+                                setDeleteId(_id);
+                            }}
                         >
                             <i className="fa-solid fa-trash-can"></i>
                         </Button>
@@ -129,17 +108,18 @@ const ResearchProjects = (props) => {
     };
 
     const handleSoftDelete = async () => {
-        //setSpinning(true);     
+        setSpinning(true);
         const putData = {
             id_research_project: selectedRowKeys,
-        }
+        };
 
         const id_list_data = {
             id_list: selectedRowKeys,
-        }
+        };
         try {
-            await deleteListDetailResearchProject(id_list_data)
-            await deleteListResearchProject(putData)
+            await deleteListDetailResearchProject(id_list_data);
+            await deleteListResearchProject(putData);
+            getResearchProject();
             setSpinning(false);
             handleUnSelect();
             successNoti("Xoá thành công");
@@ -151,22 +131,21 @@ const ResearchProjects = (props) => {
     };
 
     const handleSoftDeleteById = async (_id) => {
-        //setSpinning(true);
+        setSpinning(true);
         const putData = {
             id_research_project: [_id],
-        }
+        };
 
         const id_list_data = {
             id_list: [_id],
-        }
+        };
         try {
-            await deleteListDetailResearchProject(id_list_data)
-            await deleteListResearchProject(putData)
+            await deleteListDetailResearchProject(id_list_data);
+            await deleteListResearchProject(putData);
             setSpinning(false);
             getResearchProject();
             successNoti("Xoá thành công");
             handleUnSelect();
-
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -179,19 +158,21 @@ const ResearchProjects = (props) => {
         try {
             const response = await getAllResearchProject();
             console.log(response.data.Research_projects);
-            const Scientific_Article_Data = response.data.Research_projects.map((items) => {
-                return {
-                    key: items.id_research_project,
-                    title: items.title,
-                    status_date: items.status_date,
-                    investigator: items.investigator,
-                    status: items.status,
-                    link: items.link,
-                    created_at: items.created_at,
-                    updated_at: items.updated_at,
-                    action: items.id_research_project,
-                };
-            });
+            const Scientific_Article_Data = response.data.Research_projects.map(
+                (items) => {
+                    return {
+                        key: items.id_research_project,
+                        title: items.title,
+                        status_date: items.status_date,
+                        investigator: items.investigator,
+                        status: items.status,
+                        link: items.link,
+                        created_at: items.created_at,
+                        updated_at: items.updated_at,
+                        action: items.id_research_project,
+                    };
+                }
+            );
 
             setResearchProjectData(Scientific_Article_Data);
 
@@ -237,15 +218,9 @@ const ResearchProjects = (props) => {
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-
                 </div>
             </div>
-            <Button
-                color="primary"
-                radius="sm"
-                as={Link}
-                to="create"
-            >
+            <Button color="primary" radius="sm" as={Link} to="create">
                 Tạo dự án nghiên cứu
             </Button>
             {selectedRowKeys.length !== 0 && (
@@ -261,7 +236,12 @@ const ResearchProjects = (props) => {
                                 document.querySelector(".Quick__Option")
                             }
                         >
-                            <Button isIconOnly variant="light" radius="full" onClick={onOpen}>
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                radius="full"
+                                onClick={onOpen}
+                            >
                                 <i className="fa-solid fa-trash-can"></i>
                             </Button>
                         </Tooltip>
@@ -304,15 +284,14 @@ const ResearchProjects = (props) => {
 export default ResearchProjects;
 
 function ConfirmAction(props) {
-
     const { isOpen, onOpenChange, onConfirm } = props;
 
     const handleOnOKClick = (onClose) => {
         onClose();
-        if (typeof onConfirm === 'function') {
+        if (typeof onConfirm === "function") {
             onConfirm();
         }
-    }
+    };
 
     return (
         <Modal
@@ -336,7 +315,7 @@ function ConfirmAction(props) {
                             ease: "easeIn",
                         },
                     },
-                }
+                },
             }}
         >
             <ModalContent>
@@ -352,7 +331,11 @@ function ConfirmAction(props) {
                             <Button variant="light" onPress={onClose}>
                                 Huỷ
                             </Button>
-                            <Button color="danger" className="font-medium" onPress={() => handleOnOKClick(onClose)}>
+                            <Button
+                                color="danger"
+                                className="font-medium"
+                                onPress={() => handleOnOKClick(onClose)}
+                            >
                                 Xoá
                             </Button>
                         </ModalFooter>
@@ -360,5 +343,5 @@ function ConfirmAction(props) {
                 )}
             </ModalContent>
         </Modal>
-    )
+    );
 }

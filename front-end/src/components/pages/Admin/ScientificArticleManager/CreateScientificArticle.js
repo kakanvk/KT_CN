@@ -1,14 +1,7 @@
-
-
 import React, { useState, useEffect } from "react";
-import {
-    Breadcrumbs,
-    BreadcrumbItem,
-    Button,
-    Input,
-} from "@nextui-org/react";
+import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
 import { Select, Tooltip } from "antd";
-import { DatePicker, Space } from 'antd';
+import { DatePicker, Space } from "antd";
 import { Link } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
 import { postScientificArticle } from "../../../../service/ScientificAricleService";
@@ -43,7 +36,14 @@ const CreateScientificArticle = (props) => {
 
     const SaveData = async () => {
         try {
-            if (!titleData || !publisherData || !abstractData || !SelectedPublicationDate || !linkData || selectedKeys.length === 0) {
+            if (
+                !titleData ||
+                !publisherData ||
+                !abstractData ||
+                !SelectedPublicationDate ||
+                !linkData ||
+                selectedKeys.length === 0
+            ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
@@ -52,28 +52,31 @@ const CreateScientificArticle = (props) => {
                 publication_date: SelectedPublicationDate,
                 publishers: publisherData,
                 abstract: abstractData,
-                link: linkData
-            }
+                link: linkData,
+            };
 
             postScientificArticle(data)
-                .then(response => {
+                .then((response) => {
                     const id_scientific = response.data.id_scientific;
                     const DataDetailSubject = {
                         id_scientific: id_scientific,
-                        id_teacher: selectedKeys
-                    }
-                    console.log(DataDetailSubject)
+                        id_teacher: selectedKeys,
+                    };
+                    console.log(DataDetailSubject);
                     if (id_scientific) {
                         postDetailScientificArticle(DataDetailSubject)
                             .then(() => {
                                 successNoti("Tạo bài báo khoa học thành công");
                             })
-                            .catch(error => {
-                                console.error("Error save Detail Scientific Article:", error);
+                            .catch((error) => {
+                                console.error(
+                                    "Error save Detail Scientific Article:",
+                                    error
+                                );
                             });
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error("Error save Scientific Article:", error);
                 });
         } catch (error) {
@@ -102,7 +105,7 @@ const CreateScientificArticle = (props) => {
         setSelectedKeys(value);
     };
 
-    //hangle Layout 
+    //hangle Layout
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
         if (_layout === "col") {
@@ -118,7 +121,9 @@ const CreateScientificArticle = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/scientific-article">Quản lý bài báo khoa học</Link>
+                            <Link to="/admin/scientific-article">
+                                Quản lý bài báo khoa học
+                            </Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>Thêm bài báo khoa học</BreadcrumbItem>
                     </Breadcrumbs>
@@ -163,7 +168,6 @@ const CreateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={titleData}
@@ -180,7 +184,6 @@ const CreateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={publisherData}
@@ -197,7 +200,6 @@ const CreateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={abstractData}
@@ -214,7 +216,6 @@ const CreateScientificArticle = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
                             value={linkData}
@@ -222,43 +223,47 @@ const CreateScientificArticle = (props) => {
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
-
                         <div>
                             <p className="text-sm">
                                 Ngày xuất bản (publication date){" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Space direction="vertical">
-
                                 <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
+                                    className="w-[400px] h-[42px] mt-1"
                                     onChange={onChangePublicationDate}
-
                                 />
                             </Space>
                         </div>
                         <div>
                             <p className="text-sm">
                                 Chọn giáo viên{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
                             <Select
-                                    mode="multiple"
-                                    className="w-[400px] h-[42px] mt-1"
-                                    placeholder="Select one or more teachers"
-                                    value={selectedKeys}
-                                    onChange={handleTeacherChange}
-                                >
-                                    {teacherData.map(teacher => (
-                                        <Option key={teacher.id_teacher} value={teacher.id_teacher}>
-                                            {teacher.name_teacher}
-                                        </Option>
-                                    ))}
-                                </Select>
+                                mode="multiple"
+                                className="w-[400px] mt-1 h-[40px]"
+                                placeholder="Select one or more teachers"
+                                listItemHeight={10}
+                                listHeight={250}
+                                value={selectedKeys}
+                                onChange={handleTeacherChange}
+                            >
+                                {teacherData.map((teacher) => (
+                                    <Option
+                                        key={teacher.id_teacher}
+                                        value={teacher.id_teacher}
+                                    >
+                                        {teacher.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
-
                     </div>
-
                 </div>
 
                 <Button onClick={SaveData} color="primary" radius="sm">
