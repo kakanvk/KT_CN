@@ -11,6 +11,8 @@ import {
     getSubjectByID,
     updateSubject,
 } from "../../../../service/SubjectService";
+import "./css.css";
+
 const { Option } = Select;
 const UpdateSubject = (props) => {
     const { id } = useParams();
@@ -273,7 +275,7 @@ const UpdateSubject = (props) => {
                                 defaultValue="Chọn chuyên ngành"
                                 value={selectedMajor}
                                 onChange={handleMajorChange}
-                                className="w-[400px] h-[42px] mt-1"
+                                className="w-[400px] mt-1"
                             >
                                 {MajorsData.map((Majors) => (
                                     <Option
@@ -309,7 +311,7 @@ const UpdateSubject = (props) => {
                             </p>
                             <Select
                                     mode="multiple"
-                                    className="w-[400px] h-[42px] mt-1"
+                                    className="w-[400px] mt-1"
                                     placeholder="Select one or more teachers"
                                     value={selectedKeys}
                                     onChange={handleTeacherChange}

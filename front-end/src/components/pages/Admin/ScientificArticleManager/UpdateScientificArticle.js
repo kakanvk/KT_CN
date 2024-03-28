@@ -276,7 +276,7 @@ const UpdateScientificArticle = (props) => {
                             </p>
                             <Select
                                 mode="multiple"
-                                className="w-[400px] h-[42px] mt-1"
+                                className="w-[400px] mt-1"
                                 placeholder="Select one or more teachers"
                                 value={selectedKeys}
                                 onChange={handleTeacherChange}

@@ -12,6 +12,7 @@ import { getAllMajors } from "../../../../service/MajorService";
 import { postSubject } from "../../../../service/SubjectService";
 import { getAllTeacher } from "../../../../service/TeacherService";
 import { getAllDetailSubject } from "../../../../service/DetailSubjectService";
+import "./css.css";
 
 const { Option } = Select;
 const CreateSubject = (props) => {
@@ -237,7 +238,7 @@ const CreateSubject = (props) => {
                             <Select
                                 defaultValue="Lựa chọn"
                                 onChange={handleMajorChange}
-                                className="w-[400px] h-[42px] mt-1"
+                                className="w-[400px] mt-1"
                             >
                                 {MajorsData.map((Majors) => (
                                     <Option
@@ -270,7 +271,7 @@ const CreateSubject = (props) => {
                             </p>
                             <Select
                                     mode="multiple"
-                                    className="w-[400px] h-[42px] mt-1"
+                                    className="w-[400px] mt-1"
                                     placeholder="Select one or more teachers"
                                     value={selectedKeys}
                                     onChange={handleTeacherChange}

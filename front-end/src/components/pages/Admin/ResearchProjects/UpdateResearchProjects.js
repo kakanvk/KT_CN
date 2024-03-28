@@ -5,6 +5,7 @@ import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
 import { DatePicker, Space, Tooltip, Select } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
+import "./css.css";
 
 import {
     getResearchProjectByID,
@@ -279,7 +280,7 @@ const UpdateResearchProjects = (props) => {
                             </p>
                             <Select
                                 mode="multiple"
-                                className="w-[400px] h-[42px] mt-1"
+                                className="w-[400px] mt-1"
                                 placeholder="Select one or more teachers"
                                 value={selectedKeys}
                                 onChange={handleTeacherChange}

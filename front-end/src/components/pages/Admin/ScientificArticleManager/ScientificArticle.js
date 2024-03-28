@@ -18,6 +18,7 @@ import {
     getAllScientificArticle,
 } from "../../../../service/ScientificAricleService";
 import { deleteListDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
+import "./css.css"
 
 const ScientificArticle = (props) => {
     const { successNoti, setSpinning } = props;

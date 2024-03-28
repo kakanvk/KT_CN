@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
 import { postResearchProject } from "../../../../service/ResearchProjectService";
 import { postDetailResearchProject } from "../../../../service/DetailResearchProject";
+import "./css.css";
+
 const { Option } = Select;
 const CreateResearchProjects = (props) => {
     const { successNoti, errorNoti, setCollapsedNav } = props;
@@ -255,7 +257,7 @@ const CreateResearchProjects = (props) => {
 
                             <Select
                                 mode="multiple"
-                                className="w-[400px] h-[42px] mt-1"
+                                className="w-[400px] mt-1"
                                 placeholder="Select one or more teachers"
                                 value={selectedKeys}
                                 onChange={handleTeacherChange}

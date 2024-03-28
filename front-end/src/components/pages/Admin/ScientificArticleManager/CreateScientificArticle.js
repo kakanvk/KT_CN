@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { getAllTeacher } from "../../../../service/TeacherService";
 import { postScientificArticle } from "../../../../service/ScientificAricleService";
 import { postDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
-
+import "./css.css"
 const { Option } = Select;
 const CreateScientificArticle = (props) => {
     const { successNoti, errorNoti, setCollapsedNav } = props;
@@ -246,21 +246,19 @@ const CreateScientificArticle = (props) => {
                             </p>
                             <Select
                                 mode="multiple"
-                                className="w-[400px] mt-1 h-[40px]"
+                                className="w-[400px] mt-1"
                                 placeholder="Select one or more teachers"
-                                listItemHeight={10}
-                                listHeight={250}
                                 value={selectedKeys}
                                 onChange={handleTeacherChange}
                             >
-                                {teacherData.map((teacher) => (
-                                    <Option
-                                        key={teacher.id_teacher}
-                                        value={teacher.id_teacher}
-                                    >
-                                        {teacher.name_teacher}
-                                    </Option>
-                                ))}
+                                    {teacherData.map((teacher) => (
+                                        <Option
+                                            key={teacher.id_teacher}
+                                            value={teacher.id_teacher}
+                                        >
+                                            {teacher.name_teacher}
+                                        </Option>
+                                    ))}
                             </Select>
                         </div>
                     </div>
