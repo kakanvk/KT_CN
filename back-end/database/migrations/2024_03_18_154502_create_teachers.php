@@ -14,7 +14,6 @@ return new class extends Migration {
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id('id_teacher');
-            $table->unsignedBigInteger('id_work_process');
             $table->string('name_teacher', 100);
             $table->string('email')->unique();
             $table->string('phone', 11)->unique();
@@ -30,10 +29,6 @@ return new class extends Migration {
             $table->string('gg_scholar')->nullable();
 
             $table->timestamps();
-        });
-
-        Schema::table('teachers', function (Blueprint $table) {
-            $table->foreign('id_work_process')->references('id_work_process')->on('work_process');
         });
     }
 

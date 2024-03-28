@@ -8,4 +8,12 @@ const getTeacherByID = (id) => {
     return axiosInstance.get(`/teacher/${id}`);
 };
 
-export {getAllTeacher, getTeacherByID}
+const putTeacher = (id, data) => {
+    return axiosInstance.put(`/teacher/${id}`, data);
+};
+
+const createTeacher = (data) => {
+    return axiosInstance.post(`/teacher`, data);
+};
+
+export { getAllTeacher, getTeacherByID, putTeacher, createTeacher };

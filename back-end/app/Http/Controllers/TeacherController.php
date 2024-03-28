@@ -32,17 +32,17 @@ class TeacherController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'id_work_process' => 'required|integer|exists:work_process,id_work_process',
                 'name_teacher' => 'required|string|max:100',
-                'email' => 'required|email|unique:teachers,email',
-                'phone' => 'required|string|max:11|unique:teachers,phone',
-                'position' => 'required|string',
+                'email' => 'required|email:rfc,dns|unique:teachers,email',
+                'phone' => 'nullable|string|max:11|unique:teachers,phone',
+                'position' => 'nullable|string',
                 'academic_title' => 'nullable|string',
-                'language' => 'required|string|max:50',
+                'language' => 'nullable|string|max:50',
                 'research_group' => 'nullable|string',
-                'degree' => 'required|string|max:100',
+                'degree' => 'nullable|string|max:100',
                 'research_area' => 'nullable|string',
                 'unit' => 'nullable|string',
+                'graduation_year' => 'nullable|string',
                 'address' => 'nullable|string',
                 'gg_site' => 'nullable|string',
                 'gg_scholar' => 'nullable|string',
@@ -52,7 +52,6 @@ class TeacherController extends Controller
         }
         try {
             $teacher = Teacher::create([
-                'id_work_process' => $validatedData['id_work_process'],
                 'name_teacher' => $validatedData['name_teacher'],
                 'email' => $validatedData['email'],
                 'phone' => $validatedData['phone'],
@@ -63,6 +62,7 @@ class TeacherController extends Controller
                 'degree' => $validatedData['degree'],
                 'research_area' => $validatedData['research_area'],
                 'unit' => $validatedData['unit'],
+                'graduation_year' => $validatedData['graduation_year'],
                 'address' => $validatedData['address'],
                 'gg_site' => $validatedData['gg_site'],
                 'gg_scholar' => $validatedData['gg_scholar'],
@@ -77,18 +77,27 @@ class TeacherController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'id_work_process' => 'required|integer|exists:work_process,id_work_process',
                 'name_teacher' => 'required|string|max:100',
-                'email' => 'required|email',
-                'phone' => 'required|string',
-                'position' => 'required|string',
+                'email' => [
+                    'required',
+                    'email:rfc,dns',
+                    Rule::unique('teachers', 'email')->ignore($id, 'id_teacher')
+                ],
+                'phone' => [
+                    'nullable',
+                    'string',
+                    'max:11',
+                    Rule::unique('teachers', 'phone')->ignore($id, 'id_teacher')
+                ],
+                'position' => 'nullable|string',
                 'academic_title' => 'nullable|string',
-                'language' => 'required|string|max:50',
+                'language' => 'nullable|string|max:50',
                 'research_group' => 'nullable|string',
-                'degree' => 'required|string|max:100',
+                'degree' => 'nullable|string|max:100',
                 'research_area' => 'nullable|string',
                 'unit' => 'nullable|string',
                 'address' => 'nullable|string',
+                'graduation_year' => 'nullable|string',
                 'gg_site' => 'nullable|string',
                 'gg_scholar' => 'nullable|string',
             ]);
@@ -102,12 +111,11 @@ class TeacherController extends Controller
 
             // Cập nhật thông tin của tin tức
 
-            $teacher->id_work_process = $request->input('id_work_process');
             $teacher->name_teacher = $request->input('name_teacher');
             $teacher->email = $request->input('email');
             $teacher->phone = $request->input('phone');
-            $teacher->title_en = $request->input('title_en');
             $teacher->position = $request->input('position');
+            $teacher->graduation_year = $request->input('graduation_year');
             $teacher->academic_title = $request->input('academic_title');
             $teacher->language = $request->input('language');
             $teacher->research_group = $request->input('research_group');

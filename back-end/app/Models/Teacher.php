@@ -11,7 +11,6 @@ class Teacher extends Model
     protected $primaryKey = 'id_teacher'; // Tên của cột khóa chính
 
     protected $fillable = [
-        'id_work_process',
         'name_teacher',
         'email',
         'phone',
@@ -23,14 +22,10 @@ class Teacher extends Model
         'research_area',
         'unit',
         'gg_site',
+        'graduation_year',
         'gg_scholar',
         'address'
     ];
 
     // Xác định mối quan hệ với các model khác
-    public function work_process()
-    {
-        return $this->belongsTo(Work_process::class, 'id_work_process');
-    }
-
 }

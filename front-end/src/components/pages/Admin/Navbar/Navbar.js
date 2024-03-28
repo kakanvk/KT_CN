@@ -56,6 +56,17 @@ function Navbar(props) {
             ),
         },
         {
+            text: "Quản lý giáo viên",
+            link: "/admin/teacher",
+            icon: (
+                <i
+                    className={`fa-regular fa-images mr-${
+                        collapsedNav ? "0" : "3"
+                    } w-4`}
+                ></i>
+            ),
+        },
+        {
             text: "Quản lý chương trình",
             link: "/admin/program",
             icon: (
@@ -109,7 +120,7 @@ function Navbar(props) {
                     } w-4`}
                 ></i>
             ),
-        }, 
+        },
         {
             text: "Quản lý người dùng",
             link: "/admin/user",

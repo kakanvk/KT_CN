@@ -34,6 +34,9 @@ import UpdateScientificArticle from "../components/pages/Admin/ScientificArticle
 import ResearchProjects from "../components/pages/Admin/ResearchProjects/ResearchProjects.js";
 import CreateResearchProjects from "../components/pages/Admin/ResearchProjects/CreateResearchProjects.js";
 import UpdateResearchProjects from "../components/pages/Admin/ResearchProjects/UpdateResearchProjects.js";
+import UpdateTeacher from "../components/pages/Admin/TeacherManager/UpdateTeacher.js";
+import Teacher from "../components/pages/Admin/TeacherManager/Teacher.js";
+import CreateTeacher from "../components/pages/Admin/TeacherManager/CreateTeacher.js";
 function Admin(props) {
 
   const [collapsedNav, setCollapsedNav] = useState(false);
@@ -66,6 +69,10 @@ function Admin(props) {
           <Route path="/post/stored" element={<PostStored successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
           <Route path="/post/create" element={<CreatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"News"}/>} />
           <Route path="/post/update/:id" element={<UpdatePost collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"News"}/>} />
+
+          <Route path="/teacher" element={<Teacher successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
+          <Route path="/teacher/create" element={<CreateTeacher successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning} TypeNews={"News"} />} />
+          <Route path="/teacher/update/:id" element={<UpdateTeacher collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} setSpinning={setSpinning} successNoti={successNoti} errorNoti={errorNoti} TypeNews={"News"}/>} />
 
           <Route path="/program" element={<Program successNoti={successNoti} errorNoti={errorNoti} setSpinning={setSpinning}/>} />
           <Route path="/program/create" element={<CreateProgram collapsedNav={collapsedNav} setCollapsedNav={setCollapsedNav} TypeNews={"program"}/>} />

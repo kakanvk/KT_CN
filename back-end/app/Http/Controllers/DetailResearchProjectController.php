@@ -63,10 +63,26 @@ class DetailResearchProjectController extends Controller
     public function updateByResearchProject(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'id_teacher' => 'required|array',
+            'id_teacher' => 'nullable|array',
         ]);
 
         try {
+            if ($validatedData['id_teacher'] == []) {
+
+                try {
+                    // Tìm tất cả các bản ghi trong bảng detail_scientific_article có id_scientific tương ứng
+                    $deletedRows = Detail_research_project::where('id_research_project', $id)->delete();
+
+                    if ($deletedRows > 0) {
+                        return response()->json(['message' => 'Deleted successfully'], 200);
+                    } else {
+                        return response()->json(['message' => 'No records found to delete'], 404);
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['message' => 'Failed to delete', 'error' => $e->getMessage()], 500);
+                }
+            }
+
             DB::beginTransaction();
 
             // Lấy danh sách id_teacher cũ của id_research_project từ cơ sở dữ liệu
@@ -93,13 +109,13 @@ class DetailResearchProjectController extends Controller
 
             DB::commit();
 
-            return response()->json(['message' => 'Detail scientific article updated successfully'], 200);
+            return response()->json(['message' => 'Detail research project updated successfully'], 200);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['message' => 'Failed to update detail scientific article', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to update detail research project', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function deleteManyDetailResearchProject(Request $request)
     {
         try {
@@ -110,10 +126,10 @@ class DetailResearchProjectController extends Controller
             $id_scientific_list = $validatedData['id_scientific'];
             error_log($request);
             foreach ($id_scientific_list as $id_subject) {
-                    $detail_scientific_article= Detail_research_project::find($id_subject);
-                    if ($detail_scientific_article) {
-                        $detail_scientific_article->delete();
-                    }
+                $detail_scientific_article = Detail_research_project::find($id_subject);
+                if ($detail_scientific_article) {
+                    $detail_scientific_article->delete();
+                }
             }
             return response()->json([
                 'message' => 'Xóa thành công',

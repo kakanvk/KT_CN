@@ -243,7 +243,6 @@ Route::delete('/admin/detail-scientific-article/delete', [DetailScientificArticl
 
 //teacher
 Route::post('/teacher', [TeacherController::class, 'create']);
-
 Route::get('/teacher', [TeacherController::class, 'getAll']);
 Route::get('/teacher/{id}', [TeacherController::class, 'getdetail']);
 Route::put('/teacher/{id}', [TeacherController::class, 'update']);
