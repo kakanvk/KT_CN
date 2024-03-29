@@ -176,7 +176,6 @@ Route::get('/category/{id_category}', [CategoryController::class, 'get']);
 Route::middleware(['check.jwt'])->group(function () {
     Route::get('/admin/programs', [ProgramController::class, 'getAll']);
     Route::get('/admin/programs/all/hidden', [ProgramController::class, 'getAllhidden']);
-    Route::get('/admin/programs/{id}', [ProgramController::class, 'getDetails']);
     Route::post('/admin/programs', [ProgramController::class, 'saveProgram']);
     Route::delete('/admin/programs/{id}', [ProgramController::class, 'delete']);
     Route::delete('/admin/programs/delete/list', [ProgramController::class, 'updateManyDeleted']);
@@ -184,6 +183,10 @@ Route::middleware(['check.jwt'])->group(function () {
     Route::put('/admin/programs/{id}/update/one/status', [ProgramController::class, 'updateOneStatus']);
     Route::put('/admin/programs/all/status', [ProgramController::class, 'updateStatus']);
 });
+
+Route::get('/admin/programs/{id}', [ProgramController::class, 'getDetails']);
+Route::get('/admin/programs/name/{name}', [ProgramController::class, 'getDetailByName']);
+
 
 
 //majors

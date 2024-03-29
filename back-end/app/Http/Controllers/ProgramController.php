@@ -35,6 +35,16 @@ class ProgramController extends Controller
         $program = Program::findOrFail($id);
         return response()->json(['program' => $program], 200);
     }
+    public function getDetailByName($name){
+        try {
+            error_log('đa');
+            $program = Program::where('name_program', $name)->get();
+            return response()->json($program, 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Program not found'], 404);
+        }
+    }
+    
 
     // Thêm một bản ghi mới
     public function saveProgram(Request $request)

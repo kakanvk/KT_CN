@@ -25,6 +25,7 @@ export const DetailScientificArticle = () => {
         getData();
     }, [id]);
 
+   
     return (
         <div className="flex gap-6 flex-col mx-16 m-6">
             <div className="text-center text-2xl w-full font-semibold text-[#E95A13]">

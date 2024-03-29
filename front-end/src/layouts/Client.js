@@ -13,6 +13,9 @@ import StudentSet from "../components/pages/Client/StudentSet/StudentSet";
 // import NewsDetail from '../components/pages/Client/NewsDetail/NewsDetail';
 import DetailListNews from "../components/pages/Client/Categorization/DetailListNews";
 import { DetailScientificArticle } from "../components/pages/Client/ScientificArticle/DetailScientificArticle";
+import ProgramDetail from "../components/pages/Client/Program/ProgramDetail";
+import People from "../components/pages/Client/People/People";
+import { ScientificRecords } from "../components/pages/Client/ScientificRecords/ScientificRecords";
 function Client() {
     return (
         <div className="Client">
@@ -53,6 +56,20 @@ function Client() {
                         <Route
                             path="/scientific-article/:id"
                             element={<DetailScientificArticle />}
+                        />
+                        
+                        <Route
+                            path="/program/:id"
+                            element={<ProgramDetail />}
+                        />
+
+                        <Route
+                            path="/people"
+                            element={<People />}
+                        />
+                        <Route
+                            path="/scientific-records/:id"
+                            element={<ScientificRecords />}
                         />
                     </Routes>
                 </div>

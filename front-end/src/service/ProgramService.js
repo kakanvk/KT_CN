@@ -7,6 +7,11 @@ const GetProgramsByID=(id)=>{
     return axiosInstance.get(`/admin/programs/${id}`);
 }
 
+const GetProgramsByName=(name)=>{
+    return axiosInstance.get(`/admin/programs/name/${name}`);
+}
+
+
 const GetAllPrograms=()=>{
     return axiosInstance.get(`/admin/programs/`);
 }
@@ -39,6 +44,7 @@ export {
     PutStatusOneProgram,
     UpdateStatusesProgram,
     DeleteProgramById,
-    DeleteListProgram
+    DeleteListProgram,
+    GetProgramsByName
 };
 
