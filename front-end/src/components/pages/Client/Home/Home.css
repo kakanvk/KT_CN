@@ -1,0 +1,36 @@
+
+
+.Admissions {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 50px;
+    z-index: -1;
+}
+.Admissions_type_img {
+   
+    width: 100%; 
+    height: 400px; 
+
+   
+}
+.Admissions_type_img img{
+    z-index: 1;
+    height: 400px; 
+}
+.Admissions_type {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    height: 400px; 
+    z-index: 0;
+    position: relative;
+}
+.Admissions_type_name {
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    color: yellow;
+    border: 1px solid #486470;
+    padding: 20px;
+}

@@ -1,0 +1,10 @@
+.Client{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* min-height: 2000px; */
+}
+
+.Admin_tab-active{
+    background-color: rgb(71 85 105);
+}

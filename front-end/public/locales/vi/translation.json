@@ -1,0 +1,123 @@
+{
+    "header": {
+        "left_text_tvu" : "Trường Đại học Trà Vinh",
+        "left_text_1": "Cổng thông tin sinh viên",
+        "left_text_2": "Phòng Đào tạo",
+        "left_text_3": "Phòng Khảo thí",
+        "left_text_4": "Trung tâm học liệu",
+        "tooltip_text" : "Ngôn ngữ",
+        "login_button_text": "Đăng nhập"
+    },
+    "menu": {
+        "SET_name": "Khoa Kỹ thuật và Công nghệ",
+        "text_link_1": "Trang chủ",
+        "text_link_2": {
+            "title": "Giới thiệu",
+            "sub1": "Giới thiệu Khoa",
+            "sub2": "Về tổ chức"
+        },
+        "text_link_3": {
+            "title": "Tin tức",
+            "sub1": "Hoạt động TVU",
+            "sub2": "Tuyển sinh"
+        },
+        "text_link_4": {
+            "title": "Đơn vị",
+            "sub1": "Văn phòng Khoa",
+            "sub2": "Công nghệ thông tin",
+            "sub3": "Cơ khí - Động lực",
+            "sub4": "Điện - Điện tử",
+            "sub5": "Xây dựng",
+            "sub6": "Các lớp ngoài Khoa"
+        },
+        "text_link_5": "Tuyển sinh",
+        "text_link_6": {
+            "title": "Đào tạo",
+            "sub1": "Sau Đại học",
+            "sub2": "Đại học"
+        },
+        "text_link_7": {
+            "title": "Nghiên cứu",
+            "sub1": "Đề tài",
+            "sub2": "Dự án",
+            "sub3": "Hội thảo RET",
+            "sub4": "Bài báo RET6"
+        },
+        "text_link_8": {
+            "title": "Sinh viên",
+            "sub1": "Sinh viên SET",
+            "sub2": "Học viên cao học",
+            "sub3": "Nghiên cứu sinh"
+        },
+        "text_link_9": "Cựu sinh viên",
+        "section_text_1": "Về TVU",
+        "section_text_2": "Khác"
+    },
+    "footer": {
+        "address": "Số 126 Nguyễn Thiện Thành, Khóm 4, Phường 5, TP. Trà Vinh, tỉnh Trà Vinh",
+        "copyright": "Copyright © 2024 Bản quyền thuộc về Khoa Kỹ thuật và Công nghệ, Trường Đại học Trà Vinh",
+        "explore_text": "Khám phá"
+    },
+    "about": {
+        "text_about_1": "GIỚI THIỆU KHOA",
+        "text_about_2": "KHOA KỸ THUẬT VÀ CÔNG NGHỆ, THÀNH TỰU VÀ PHÁT TRIỂN",
+        "text_about_summary": "Với sự phát triển của kỹ thuật hiện đại, Kỹ thụât và Công nghệ đóng một vai trò rất quan trọng trong phát triển công nghiệp, Khoa Kỹ thuật và Công nghệ (KT&CN) được thành lập theo quyết định số: 179/QĐ-ĐHTV ngày 20/10/2006 của Hiệu trưởng trường Đại học Trà Vinh với 5 đơn vị: Bộ môn Công nghệ Thông tin, bộ môn Điện - Điện tử, bộ môn Cơ khí - Động lực, bộ môn Xây dựng và Văn phòng Khoa. Hiện tại, đội ngũ của Khoa có 80 viên chức, tất cả họ đều trẻ, năng động và ham học hỏi. Vì thế, Khoa tạo nhiều cơ hội để họ được bồi dưỡng và nâng cao nghề nghiệp. Hằng năm, Khoa tuyển mới trên 500 sinh viên. Đặc biệt, số lượng sinh viên tìm được việc làm sau 1 năm tốt nghiệp là trên 90%.",
+        "text_about_body_1": "Với sự phát triển của kỹ thuật hiện đại, Kỹ thụât và Công nghệ đóng một vai trò rất quan trọng trong phát triển công nghiệp, Khoa Kỹ thuật và Công nghệ (KT&CN) được thành lập theo quyết định số: 179/QĐ-ĐHTV ngày 20/10/2006 của Hiệu trưởng trường Đại học Trà Vinh với 5 đơn vị: Bộ môn Công nghệ Thông tin, bộ môn Điện - Điện tử, bộ môn Cơ khí - Động lực, bộ môn Xây dựng và Văn phòng Khoa. Hiện tại, đội ngũ của Khoa có 80 viên chức, tất cả họ đều trẻ, năng động và ham học hỏi. Vì thế, Khoa tạo nhiều cơ hội để họ được bồi dưỡng và nâng cao nghề nghiệp. Hằng năm, Khoa tuyển mới trên 500 sinh viên. Đặc biệt, số lượng sinh viên tìm được việc làm sau 1 năm tốt nghiệp là 90%.",
+        "text_about_body_2": "Để đào tạo hiệu quả và chất lượng đáp ứng được nhu cầu của xã hội, Khoa KT&CN đã rất chú trọng hợp tác với các đơn vị, với doanh nghiệp (HTDN). Đây cũng là ưu tiên hàng đầu trong quá trình hoạt động và đào tạo của Khoa và được cụ thể qua các hình thức đào tạo theo chương trình HTDN (Co-op). Hiện tại Khoa đã ký kết ghi nhớ hợp tác đào tạo Co-op với 08 công ty, doanh nghiệp và hợp tác thường xuyên với hơn 30 doanh nghiệp trong và ngoài Tỉnh.",
+        "text_about_body_3": "Được dẫn dắt bởi các nhà nghiên cứu được công nhận trong nước và quốc tế, sinh viên được tham gia vào các dự án nghiên cứu để giải quyết những thách thức quan trọng nhất đối với thế giới ngày nay. Những lĩnh vực nghiên cứu ở Khoa bao gồm: Tối ưu hoá việc sử dụng và quản lý năng lượng, năng lượng tái tạo, quản lý dự án xây dựng, ứng dụng tự động hoá vào nông nghiệp và thuỷ sản, kỹ thuật ô-tô, xử lý ảnh và máy học, xử lý ngôn ngữ tự nhiên, bảo mật mạng và thông tin. Trong các lĩnh vực này, 40 bài báo (25 bài thuộc tạp chí trong danh mục ISI và SCOPUS) và 15 bài báo hội nghị trong và ngoài nước đã được xuất bản trong 5 năm qua. Ngoài ra, Khoa cũng đã đạt được nhiều giải thưởng của tập thể và cá nhân rất đáng trân trọng khác.",
+        "text_about_body_4": "Khoa KT&CN đã vạch ra chiến lược phát triển đội ngũ giảng dạy, cải tiến theo quy trình làm việc ISO 9001:2015 của Trường. Khoa cũng cập nhật các chương trình đào tạo đáp ứng nhu cầu thực tiễn, đặc biệt là đào tạo HTDN (Co-op) theo mô hình Win – Win – Win (Sinh viên – Nhà trường – Doanh nghiệp) và định hướng tiến tới đào tạo theo chuẩn AUN, ABET. Chúng tôi tiếp tục cải thiện môi trường học tập và nghiên cứu để có thể tiến hành nghiên cứu có tầm ảnh hưởng và tác động cao, và cố gắng giáo dục nên các học sinh tài năng trong kỹ thuật và công nghệ. Phấn đấu trong 10 năm tới, Khoa KT&CN sẽ một trong những khoa đào tạo các ngành nghề kỹ thuật hàng đầu trong cả nước, lọt vào top 100 các khoa đào tạo kỹ thuật của Châu Á.",
+        "Button": "Xem thêm"
+    },
+    "admissions": {
+        "title":"TUYỂN SINH",
+        "type1":"SAU ĐẠI HỌC",
+        "type2":"ĐẠI HỌC"
+    },
+    "News": {
+        "text_new_1": "Tin tức",
+        "text_new_2": "Xem thêm",
+        "text_new_3": "Sự kiện",
+        "text_new_4": "Đối tác của chúng tôi",
+        "text_new_5": "Bộ môn thuộc Khoa Kỹ Thuật & Công nghệ"
+
+    },
+    "NewsDetail": {
+        "related": "Tin liên quan",
+        "latest": "Tin mới nhất",
+        "popular": "Xem nhiều nhất"
+    },
+    "StudentSet": {
+        "tital": {
+            "title1": "SINH VIÊN SET",
+            "title2": "LỊCH THI LẠI LẦN 2",
+            "title3": "HỌC BỔNG",
+            "title4": "HỌC PHÍ",
+            "title5": "THÔNG BÁO",
+            "title6": "SỔ TAY SINH VIÊN + KẾ HOẠCH HỌC TẬP",
+            "title7": "TUYỂN DỤNG",
+            "title8": "TRA CỨU KẾT QUẢ THI",
+            "title9": "ĐỀ CƯƠNG CHI TIẾT",
+            "title10": "BIỂU MẪU",
+            "title11": "QUY ĐỊNH - QUY CHẾ"
+
+        },
+        "button": {
+            "watch": "Xem thêm",
+            "label1": "Chọn bộ môn",
+            "label2": "Chọn lớp",
+            "placeholder1": "Chọn bộ môn",
+            "placeholder2": "Chọn lớp"
+        }
+    },
+    "home": {
+        "title_1": "Các Bộ môn thuộc Khoa Kỹ thuật và Công nghệ",
+        "introduce": {
+            "text_1": "Giới thiệu",
+            "text_2": "Thành tựu và phát triển",
+            "text_3": "Với sự phát triển của kỹ thuật hiện đại, Kỹ thụât và Công nghệ đóng một vai trò rất quan trọng trong phát triển công nghiệp, Khoa Kỹ thuật và Công nghệ (KT&CN) được thành lập theo quyết định số: 179/QĐ-ĐHTV ngày 20/10/2006 của Hiệu trưởng trường Đại học Trà Vinh với 5 đơn vị:",
+            "text_4": "Hiện tại, đội ngũ của Khoa có 80 viên chức, tất cả họ đều trẻ, năng động và ham học hỏi. Vì thế, Khoa tạo nhiều cơ hội để họ được bồi dưỡng và nâng cao nghề nghiệp. Hằng năm, Khoa tuyển mới trên 500 sinh viên. Đặc biệt, số lượng sinh viên tìm được việc làm sau 1 năm tốt nghiệp là trên 90%.",
+            "text_5": "Tuyển sinh",
+            "text_6": "Tìm hiểu thêm"
+        }
+    }
+}

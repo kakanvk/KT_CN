@@ -1,0 +1,121 @@
+{
+    "header": {
+        "left_text_tvu": "Tra Vinh University",
+        "left_text_1": "Student Portal",
+        "left_text_2": "Academic Affairs Office",
+        "left_text_3": "Testing Office",
+        "left_text_4": "Learning Resource Center",
+        "tooltip_text": "Language",
+        "login_button_text": "Login"
+    },
+    "menu": {
+        "SET_name": "School of Engineering & Technology",
+        "text_link_1": "Home",
+        "text_link_2": {
+            "title": "About us",
+            "sub1": "About us",
+            "sub2": "Organization"
+        },
+        "text_link_3": {
+            "title": "News",
+            "sub1": "TVU Activities",
+            "sub2": "Admissions"
+        },
+        "text_link_4": {
+            "title": "Units",
+            "sub1": "Admin Office",
+            "sub2": "Department of Information Technology",
+            "sub3": "Department of Mechanical Engineering",
+            "sub4": "Department of Electrical and Electronic Engineering",
+            "sub5": "Department of Civil Engineering",
+            "sub6": "Others"
+        },
+        "text_link_5": "Admissions",
+        "text_link_6": {
+            "title": "Study Programs",
+            "sub1": "Higher Education",
+            "sub2": "Undergraduate"
+        },
+        "text_link_7": {
+            "title": "Researchs",
+            "sub1": "Projects",
+            "sub2": "International Projects",
+            "sub3": "RET Conference",
+            "sub4": "RET6's Scientific Articles"
+        },
+        "text_link_8": {
+            "title": "Students",
+            "sub1": "Undergraduate Students",
+            "sub2": "Graduate Students",
+            "sub3": "PhD Students"
+        },
+        "text_link_9": "Alumni",
+        "section_text_1": "About TVU",
+        "section_text_2": "Orther"
+    },
+    "footer": {
+        "address": "126 Nguyen Thien Thanh, Hamlet 4, Ward 5, Tra Vinh city",
+        "copyright": "Copyright © 2024 School of Engineering and Technology, Tra Vinh University",
+        "explore_text": "Explore"
+    },
+    "about": {
+        "text_about_1": "ABOUT US",
+        "text_about_2": "SCHOOL OF ENGINEERING AND TECHNOLOGY, ACHIEVEMENT AND ORIENTED DEVELOPMENT",
+        "text_about_summary": "It is obvious that Engineering and Technology play a very important role in the industrial development. Tra Vinh University has established the School of Engineering and Technology with four departments, including Information Technology, Electrical and Electronics Engineering, Civil Engineering, and Mechanical Engineering and an Administration Office. The school has 80  fulltime faculty members and staffs who are young, active and inquisitive. Strategically, the school has been carrying out plans for fostering, studying in order to improve its profession. Every year, the school enrolls over 500 new students. Especially, 90% of graduated students were able to find jobs after one year graduation.",
+        "text_about_body_1": "It is obvious that Engineering and Technology play a very important role in the industrial development. Tra Vinh University has established the School of Engineering and Technology with four departments, including Information Technology, Electrical and Electronics Engineering, Civil Engineering, and Mechanical Engineering and an Administration Office. The school has 80  fulltime faculty members and staffs who are young, active and inquisitive. Strategically, the school has been carrying out plans for fostering, studying in order to improve its profession. Every year, the school enrolls over 500 new students. Especially, 90% of graduated students were able to find jobs after one year graduation.",
+        "text_about_body_2": "To achieve an effective and quality education service that meets all society’s demands, the school has build up close relationships with enterprises. As a result,  Co-op programs are the first priority in the process of training and education. Recently, the school has cooperated with 8 enterprises for training in Co-op programs and has contracted with 30 businesses and recruiters from inside and outside of Tra Vinh province.",
+        "text_about_body_3": "Led by nationally and globally recognized researchers, students have been engaging in research projects that address some of the most important challenges over the world today. Research areas include optimal using and management of energy, renewable energy, construction project management, automation applications in agriculture and aquaculture, automobile engineering, image processing and machine learning, natural language processing, network and information security. From 2012 to 2016, the school has published 40 journal papers (25 ISI and Scopus papers) and 15 conference papers. In addition, the school has also obtained numerous individual and collective honours and awards.",
+        "text_about_body_4": "The Faculty of Engineering and Technology has outlined a strategy for developing its teaching staff, improving in accordance with the ISO 9001:2015 work process of the University. The Faculty also updates its training programs to meet practical needs, especially in the field of Cooperative Education (Co-op) following the Win-Win-Win model (Students - University - Enterprises), and aims towards training according to AUN and ABET standards. We continue to enhance the learning and research environment to conduct impactful and influential research, and strive to educate talented students in engineering and technology. Over the next 10 years, the Faculty of Engineering and Technology aims to be one of the leading faculties in technical professions nationwide, making it into the top 100 technical training faculties in Asia.",
+        "Button": "View More"
+    },
+    "admissions": {
+        "title": "ADMISSIONS",
+        "type1": "Higher education",
+        "type2": "Under graduate"
+    },
+    "News": {
+        "text_new_1": "News",
+        "text_new_2": "View more",
+        "text_new_3": "Event",
+        "text_new_4": "Our partner",
+        "text_new_5": "Department as Engineering and Technology"
+    },
+    "NewsDetail": {
+        "related": "Related news",
+        "latest": "The latest stories",
+        "popular": "Most popular"
+    },
+    "StudentSet": {
+        "tital": {
+            "title1": "UNDERGRADUATE STUDENTS",
+            "title2": "TEST SCHEDULE",
+            "title3": "LEARN BURNS",
+            "title4": "TUITION",
+            "title5": "NOTIFICATION",
+            "title6": "STUDENT HANDBOOK",
+            "title7": "RECRUITMENT",
+            "title8": "SEARCHING ANSWERS",
+            "title9": "SYLLABUS",
+            "title10": "FORM",
+            "title11": "RULES"
+        },
+        "button": {
+            "watch": "Read more",
+            "label1": "Selecting a department",
+            "label2": "Selecting a class",
+            "placeholder1": "Selecting a department",
+            "placeholder2": "Selecting a class"
+        }
+    },
+    "home": {
+        "title_1": "Departments as Engineering and Technology",
+        "introduce": {
+            "text_1": "Introduce",
+            "text_2": "Achievement and development orientation",
+            "text_3": "It is obvious that Engineering and Technology play a very important role in the industrial development. Tra Vinh University has established the School of Engineering and Technology with four departments, including:",
+            "text_4": "The school has 80  fulltime faculty members and staffs who are young, active and inquisitive. Strategically, the school has been carrying out plans for fostering, studying in order to improve its profession. Every year, the school enrolls over 500 new students. Especially, 90% of graduated students were able to find jobs after one year graduation.",
+            "text_5": "Admissions",
+            "text_6": "Learn more"
+        }
+    }
+}

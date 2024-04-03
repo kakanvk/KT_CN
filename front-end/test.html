@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capture HTML Element Screenshot</title>
+<style>
+  #captureElement {
+    width: 200px;
+    height: 200px;
+    background-color: lightblue;
+  }
+</style>
+</head>
+<body>
+
+<div id="captureElement">
+  <!-- Your HTML content to capture -->
+  This is the content of the element to capture.
+</div>
+
+<button onclick="captureElement()">Capture Element</button>
+
+<script>
+function captureElement() {
+  // Lấy phần tử HTML cần chụp màn hình
+  const element = document.getElementById('captureElement');
+
+  // Tạo một canvas để vẽ nội dung của phần tử
+  const canvas = document.createElement('canvas');
+  canvas.width = element.offsetWidth;
+  canvas.height = element.offsetHeight;
+  const context = canvas.getContext('2d');
+
+  // Tạo hình ảnh từ phần tử HTML
+  const image = new Image();
+  image.src = 'data:image/svg+xml;base64,' + window.btoa(new XMLSerializer().serializeToString(element));
+
+  // Chờ hình ảnh được tải hoàn toàn trước khi vẽ nó lên canvas
+  image.onload = function() {
+    // Vẽ hình ảnh lên canvas
+    context.drawImage(image, 0, 0, element.offsetWidth, element.offsetHeight);
+
+    // Chuyển đổi canvas thành URL hình ảnh
+    const dataURL = canvas.toDataURL('front-end/image/png');
+
+    // Tạo một đường dẫn cho hình ảnh và tải xuống
+    const link = document.createElement('a');
+    link.download = 'screenshot.png';
+    link.href = dataURL;
+    link.click();
+  };
+}
+</script>
+
+</body>
+</html>
