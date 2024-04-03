@@ -1,4 +1,3 @@
-
 import { axiosInstance } from "./AxiosCofig";
 
 const getAllWorkProcess = () => {
@@ -10,16 +9,24 @@ const getWorkProcessByID = (id) => {
 };
 
 const postWorkProcess = (data) => {
-    return axiosInstance.post(`/admin/work-process`,data);
+    return axiosInstance.post(`/admin/work-process`, data);
 };
 
-const updateWorkProcess = (id,data) => {
-    return axiosInstance.put(`/admin/work-process/${id}`,data);
+const updateWorkProcess = (id, data) => {
+    return axiosInstance.put(`/admin/work-process/${id}`, data);
 };
 
 const deleteWorkProcessList = (data) => {
-    console.log('delete', data);
-    return axiosInstance.delete(`admin/work-process/soft-list/delete`, {params: data });
+    console.log("delete", data);
+    return axiosInstance.delete(`admin/work-process/soft-list/delete`, {
+        params: data,
+    });
 };
 
-export { getAllWorkProcess, getWorkProcessByID, postWorkProcess, updateWorkProcess, deleteWorkProcessList};
+export {
+    getAllWorkProcess,
+    getWorkProcessByID,
+    postWorkProcess,
+    updateWorkProcess,
+    deleteWorkProcessList,
+};

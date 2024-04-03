@@ -1,72 +1,119 @@
-import { getWorkProcessByID, updateWorkProcess }
-    from "../../../../service/WorkProcessService";
-import dayjs from "dayjs";
-
 import React, { useState, useEffect } from "react";
-import {
-    Breadcrumbs,
-    BreadcrumbItem,
-    Button,
-    Input,
-} from "@nextui-org/react";
-import { Tooltip } from "antd";
-import { DatePicker, Space } from 'antd';
+import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
+import { Select, Tooltip } from "antd";
+import { DatePicker, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
-
+import { getAllTeacher } from "../../../../service/TeacherService";
+import "./css.css";
+import {
+    getWorkProcessByID,
+    postWorkProcess,
+    updateWorkProcess,
+} from "../../../../service/WorkProcessService";
+import {
+    getDetailWorkProcessById,
+    postDetailWorkProcess,
+    putDetailWorkProcess,
+} from "../../../../service/DetailWorkProcessServe";
+const { Option } = Select;
 const UpdateWorkProcess = (props) => {
     const { id } = useParams();
     const { successNoti, errorNoti, setCollapsedNav } = props;
-    const [Academic_Institution, setAcademicInstitution] = useState("");
-    const [Address, setAddress] = useState("");
-    const [Position, setPosition] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
+    const [teacherData, setTeacherData] = useState([]);
+    const [academic_institution, setAcademicInstitution] = useState("");
+    const [address, setAddress] = useState("");
+    const [time, setTime] = useState("");
+    const [position, setPosition] = useState("");
+    const [selectedKeys, setSelectedKeys] = useState([]);
+
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
-
-    const onChangeYear = (date, dateString) => {
-        setSelectedDate(dateString);
-    };
     //hangle database
 
-    const UpdateData = async () => {
+    const getTeachers = async () => {
         try {
-            if (!Academic_Institution || !Address || !Position || !selectedDate) {
+            const response = await getAllTeacher();
+            const filteredTeacherData = response.data.map((teacher) => ({
+                ...teacher,
+                id_teacher: teacher.id_teacher,
+            }));
+            setTeacherData(filteredTeacherData);
+            const responseDetails = await getDetailWorkProcessById(id);
+            setSelectedKeys(responseDetails.data.id_teacher_array);
+            console.log(responseDetails.data);
+        } catch (error) {
+            console.error("Error getAllTeacher:", error);
+        }
+    };
+
+    const Update = async () => {
+        try {
+            if (
+                !address ||
+                !position ||
+                !academic_institution ||
+                !time ||
+                selectedKeys.length === 0
+            ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
             const data = {
-                time: selectedDate,
-                academic_institution: Academic_Institution,
-                address: Address,
-                position: Position,
-            }
-            await updateWorkProcess(id, data)
-            console.table(data);
-            successNoti("cập nhật thành công");
+                time: time,
+                academic_institution: academic_institution,
+                address: address,
+                position: position,
+            };
+
+            updateWorkProcess(id, data)
+                .then((response) => {
+                    const id_work_process =
+                        response.data.work_process.id_work_process;
+
+                    const DataDetailWorkProcess = {
+                        id_work_process: id_work_process,
+                        id_teacher: selectedKeys,
+                    };
+                    console.log(DataDetailWorkProcess);
+                    if (id_work_process) {
+                        putDetailWorkProcess(id, DataDetailWorkProcess)
+                            .then(() => {
+                                successNoti("Cập nhật thành công");
+                            })
+                            .catch((error) => {
+                                console.error(
+                                    "Error save Detail Scientific Article:",
+                                    error
+                                );
+                                errorNoti("Cập nhật thất bại");
+                            });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error save Scientific Article:", error);
+                });
         } catch (error) {
-            console.error("Error save Work Process:", error);
+            console.error("Error save Scientific Article:", error);
         }
     };
 
-    const GetWorkProcessByID = async () => {
+    const getWorkProcess = async () => {
         try {
             const response = await getWorkProcessByID(id);
-            const {
-                time,
-                academic_institution,
-                address,
-                position
-            } = response.data.work_process;
-            setSelectedDate(time);
-            setAcademicInstitution(academic_institution);
-            setAddress(address);
-            setPosition(position);
+
+            setAcademicInstitution(
+                response.data.work_process.academic_institution
+            );
+            setAddress(response.data.work_process.address);
+            setTime(response.data.work_process.time);
+            setPosition(response.data.work_process.position);
         } catch (error) {
             console.error("Error fetching subject:", error);
         }
-    }
+    };
     useEffect(() => {
-        GetWorkProcessByID();
+        getWorkProcess();
+        getTeachers();
         const handleResize = () => {
             if (window.innerWidth < 1024) {
                 setLayout("col");
@@ -83,6 +130,11 @@ const UpdateWorkProcess = (props) => {
         };
     }, []);
 
+    const handleTeacherChange = (value, option) => {
+        setSelectedKeys(value);
+    };
+
+    //hangle Layout
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
         if (_layout === "col") {
@@ -98,9 +150,11 @@ const UpdateWorkProcess = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/work-process">Quản lý quá trình</Link>
+                            <Link to="/admin/work-process">
+                                Quản lý nơi làm việc
+                            </Link>
                         </BreadcrumbItem>
-                        <BreadcrumbItem>Thêm quá trình</BreadcrumbItem>
+                        <BreadcrumbItem>Thêm nơi làm việc</BreadcrumbItem>
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">
@@ -130,12 +184,12 @@ const UpdateWorkProcess = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
                                 <p>
-                                    Nhập cơ sở giáo dục đại học{" "}
+                                    Nơi là việc{" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
@@ -143,17 +197,15 @@ const UpdateWorkProcess = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
-                            value={Academic_Institution}
+                            value={academic_institution}
                             onValueChange={setAcademicInstitution}
                         />
-
                         <Input
                             label={
                                 <p>
-                                    Nhập tên địa chỉ{" "}
+                                    Địa chỉ làm việc (Address){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
@@ -161,17 +213,15 @@ const UpdateWorkProcess = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
-                            value={Address}
+                            value={address}
                             onValueChange={setAddress}
-
                         />
                         <Input
                             label={
                                 <p>
-                                    Nhập chức vụ{" "}
+                                    Vị trí làm việc (position){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
@@ -179,35 +229,56 @@ const UpdateWorkProcess = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
-                            value={Position}
+                            value={position}
                             onValueChange={setPosition}
                         />
-
-                    </div>
-                    <div className="flex flex-1 flex-col gap-[20px] w-full">
+                        <Input
+                            label={
+                                <p>
+                                    Thời gian làm việc{" "}
+                                    <span className="text-red-500 font-bold">
+                                        *
+                                    </span>
+                                </p>
+                            }
+                            placeholder=" "
+                            labelPlacement="outside"
+                            isClearable
+                            radius="sm"
+                            value={time}
+                            onValueChange={setTime}
+                        />
                         <div>
                             <p className="text-sm">
-                                Nhập thời gian{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                Chọn giáo viên{" "}
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
-                            <Space direction="vertical">
-
-                                <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
-                                    onChange={onChangeYear}
-                                    value={dayjs(selectedDate)}
-                                />
-                            </Space>
+                            <Select
+                                mode="multiple"
+                                className="w-[400px] mt-1"
+                                placeholder="Select one or more teachers"
+                                value={selectedKeys}
+                                onChange={handleTeacherChange}
+                            >
+                                {teacherData.map((teacher) => (
+                                    <Option
+                                        key={teacher.id_teacher}
+                                        value={teacher.id_teacher}
+                                    >
+                                        {teacher.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
-
                     </div>
                 </div>
 
-                <Button onClick={UpdateData} color="primary" radius="sm">
-                    <span className="font-medium">Chỉnh sửa</span>
+                <Button onClick={Update} color="primary" radius="sm">
+                    <span className="font-medium">Tạo bài báo khoa học</span>
                 </Button>
             </div>
         </div>

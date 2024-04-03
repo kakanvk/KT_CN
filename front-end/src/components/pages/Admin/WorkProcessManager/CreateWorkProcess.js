@@ -1,53 +1,88 @@
-import { getAllWorkProcess, getWorkProcessByID, postWorkProcess,updateWorkProcess, deleteWorkProcessList} 
-from "../../../../service/WorkProcessService";
-
-
 import React, { useState, useEffect } from "react";
-import {
-    Breadcrumbs,
-    BreadcrumbItem,
-    Button,
-    Input,
-} from "@nextui-org/react";
-import { Tooltip } from "antd";
-import { DatePicker, Space } from 'antd';
+import { Breadcrumbs, BreadcrumbItem, Button, Input } from "@nextui-org/react";
+import { Select, Tooltip } from "antd";
+import { DatePicker, Space } from "antd";
 import { Link } from "react-router-dom";
-
+import { getAllTeacher } from "../../../../service/TeacherService";
+import { postScientificArticle } from "../../../../service/ScientificAricleService";
+import { postDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
+import "./css.css";
+import { postWorkProcess } from "../../../../service/WorkProcessService";
+import { postDetailWorkProcess } from "../../../../service/DetailWorkProcessServe";
+const { Option } = Select;
 const CreateWorkProcess = (props) => {
-    const {successNoti, errorNoti, setCollapsedNav } = props;
-    const [Academic_Institution, setAcademicInstitution] = useState("");
-    const [Address, setAddress] = useState("");
-    const [Position, setPosition] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
+    const { successNoti, errorNoti, setCollapsedNav } = props;
+    const [teacherData, setTeacherData] = useState([]);
+    const [academic_institution, setAcademicInstitution] = useState("");
+    const [address, setAddress] = useState("");
+    const [time, setTime] = useState("");
+    const [position, setPosition] = useState("");
+    const [selectedKeys, setSelectedKeys] = useState([]);
+
     const [layout, setLayout] = useState("col");
     const [disableRowLayout, setDisableRowLayout] = useState(false);
-
-    const onChangeYear = (date, dateString) => {
-        setSelectedDate(dateString);
-    };
     //hangle database
+
+    const getTeachers = async () => {
+        try {
+            const response = await getAllTeacher();
+            setTeacherData(response.data);
+        } catch (error) {
+            console.error("Error getAllTeacher:", error);
+        }
+    };
 
     const SaveData = async () => {
         try {
-            if (!Academic_Institution || !Address || !Position || !selectedDate) {
+            if (
+                !address ||
+                !position ||
+                !academic_institution ||
+                !time ||
+                selectedKeys.length === 0
+            ) {
                 errorNoti("Vui lòng điền đầy đủ thông tin.");
                 return;
             }
-
             const data = {
-                time: selectedDate,
-                academic_institution: Academic_Institution,
-                address: Address,
-                position: Position,
-            }
-            await postWorkProcess(data)
-            console.table(data);
-            successNoti("Tạo quá trình thành công");
+                time: time,
+                academic_institution: academic_institution,
+                address: address,
+                position: position,
+            };
+
+            postWorkProcess(data)
+                .then((response) => {
+                    const id_work_process =
+                        response.data.workProcess.id_work_process;
+
+                    const DataDetailWorkProcess = {
+                        id_work_process: id_work_process,
+                        id_teacher: selectedKeys,
+                    };
+                    console.log(DataDetailWorkProcess);
+                    if (id_work_process) {
+                        postDetailWorkProcess(DataDetailWorkProcess)
+                            .then(() => {
+                                successNoti("Tạo bài báo khoa học thành công");
+                            })
+                            .catch((error) => {
+                                console.error(
+                                    "Error save Detail Scientific Article:",
+                                    error
+                                );
+                            });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error save Scientific Article:", error);
+                });
         } catch (error) {
-            console.error("Error save Work Process:", error);
+            console.error("Error save Scientific Article:", error);
         }
     };
     useEffect(() => {
+        getTeachers();
         const handleResize = () => {
             if (window.innerWidth < 1024) {
                 setLayout("col");
@@ -64,6 +99,11 @@ const CreateWorkProcess = (props) => {
         };
     }, []);
 
+    const handleTeacherChange = (value, option) => {
+        setSelectedKeys(value);
+    };
+
+    //hangle Layout
     const handleToggleLayout = (_layout) => {
         setLayout(_layout);
         if (_layout === "col") {
@@ -79,9 +119,11 @@ const CreateWorkProcess = (props) => {
                     <Breadcrumbs underline="hover">
                         <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
                         <BreadcrumbItem>
-                            <Link to="/admin/work-process">Quản lý quá trình</Link>
+                            <Link to="/admin/work-process">
+                                Quản lý nơi làm việc
+                            </Link>
                         </BreadcrumbItem>
-                        <BreadcrumbItem>Thêm quá trình</BreadcrumbItem>
+                        <BreadcrumbItem>Thêm nơi làm việc</BreadcrumbItem>
                     </Breadcrumbs>
                     <div className="flex gap-2">
                         <Tooltip title="Chế độ 1 cột">
@@ -111,12 +153,12 @@ const CreateWorkProcess = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="flex w-full gap-8">
+                <div className="flex flex-col w-full gap-8 lg:flex-row">
                     <div className="flex flex-1 flex-col gap-[20px] w-full">
                         <Input
                             label={
                                 <p>
-                                    Nhập cơ sở giáo dục đại học{" "}
+                                    Nơi là việc{" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
@@ -124,19 +166,15 @@ const CreateWorkProcess = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
-                            value={Academic_Institution}
+                            value={academic_institution}
                             onValueChange={setAcademicInstitution}
                         />
-
-
-
                         <Input
                             label={
                                 <p>
-                                    Nhập tên địa chỉ{" "}
+                                    Địa chỉ làm việc (Address){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
@@ -144,17 +182,15 @@ const CreateWorkProcess = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
-                            value={Address}
+                            value={address}
                             onValueChange={setAddress}
-
                         />
                         <Input
                             label={
                                 <p>
-                                    Nhập chức vụ{" "}
+                                    Vị trí làm việc (position){" "}
                                     <span className="text-red-500 font-bold">
                                         *
                                     </span>
@@ -162,34 +198,56 @@ const CreateWorkProcess = (props) => {
                             }
                             placeholder=" "
                             labelPlacement="outside"
-
                             isClearable
                             radius="sm"
-                            value={Position}
+                            value={position}
                             onValueChange={setPosition}
                         />
-
-                    </div>
-                    <div className="flex flex-1 flex-col gap-[20px] w-full">
+                        <Input
+                            label={
+                                <p>
+                                    Thời gian làm việc{" "}
+                                    <span className="text-red-500 font-bold">
+                                        *
+                                    </span>
+                                </p>
+                            }
+                            placeholder=" "
+                            labelPlacement="outside"
+                            isClearable
+                            radius="sm"
+                            value={time}
+                            onValueChange={setTime}
+                        />
                         <div>
                             <p className="text-sm">
-                                Nhập thời gian{" "}
-                                <span className="text-red-500 font-bold">*</span>
+                                Chọn giáo viên{" "}
+                                <span className="text-red-500 font-bold">
+                                    *
+                                </span>
                             </p>
-                            <Space direction="vertical">
-
-                                <DatePicker
-                                    className="w-[300px] h-[42px] mt-1"
-                                    onChange={onChangeYear}
-                                />
-                            </Space>
+                            <Select
+                                mode="multiple"
+                                className="w-[400px] mt-1"
+                                placeholder="Select one or more teachers"
+                                value={selectedKeys}
+                                onChange={handleTeacherChange}
+                            >
+                                {teacherData.map((teacher) => (
+                                    <Option
+                                        key={teacher.id_teacher}
+                                        value={teacher.id_teacher}
+                                    >
+                                        {teacher.name_teacher}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
-
                     </div>
                 </div>
 
                 <Button onClick={SaveData} color="primary" radius="sm">
-                    <span className="font-medium">Tạo quá trình</span>
+                    <span className="font-medium">Tạo bài báo khoa học</span>
                 </Button>
             </div>
         </div>

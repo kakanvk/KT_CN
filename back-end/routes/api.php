@@ -6,12 +6,12 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DetailResearchProjectController;
 use App\Http\Controllers\DetailScientificArticleController;
 use App\Http\Controllers\DetailSubjectController;
+use App\Http\Controllers\DetailWorkProcessController;
 use App\Http\Controllers\ResearchProjectController;
 use App\Http\Controllers\ScientificArticleController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\WorkProcessController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsController;
@@ -193,12 +193,6 @@ Route::post('/admin/majors', [MajorsController::class, 'create']);
 Route::put('/admin/majors/{id}', [MajorsController::class, 'update']);
 Route::delete('/admin/majors/soft-list/delete', [MajorsController::class, 'checkDeleteMany']); //not ok
 
-//teacher
-Route::post('/teacher', [TeacherController::class, 'create']);
-Route::get('/teacher', [TeacherController::class, 'getAll']);
-Route::get('/teacher/{id}', [TeacherController::class, 'getdetail']);
-Route::put('/teacher/{id}', [TeacherController::class, 'update']);
-
 //subject
 Route::get('/subjects', [SubjectController::class, 'getSubjects']);
 Route::get('/subjects/{id}', [SubjectController::class, 'getSubjectById']);
@@ -231,16 +225,27 @@ Route::delete('/admin/detail-scientific-article/{id}', [DetailScientificArticleC
 Route::put('/admin/detail-scientific-article/scientific-article/{id}', [DetailScientificArticleController::class, 'updateByScientificArticle']);
 Route::delete('/admin/detail-scientific-article/delete', [DetailScientificArticleController::class, 'deleteManyDetailScientificArticle']);
 
+// detail scientific article
+Route::get('/detail-work-process', [DetailWorkProcessController::class, 'getAll']);
+Route::get('/detail-work-process/work-process/{id}', [DetailWorkProcessController::class, 'showByIdWorkProcess']);
+Route::get('/detail-work-process/teacher/{id}', [DetailWorkProcessController::class, 'showByIdTeacher']);
+Route::post('/admin/detail-work-process', [DetailWorkProcessController::class, 'create']);
+Route::delete('/admin/detail-work-process/{id}', [DetailWorkProcessController::class, 'deleteByWorkProcessId']);
+Route::put('/admin/detail-work-process/work-process/{id}', [DetailWorkProcessController::class, 'updateByWorkProcess']);
+Route::delete('/admin/detail-work-process/delete', [DetailWorkProcessController::class, 'updateByWorkProcess']);
+
 //teacher
 Route::post('/teacher', [TeacherController::class, 'create']);
 Route::get('/teacher', [TeacherController::class, 'getAll']);
 Route::get('/teacher/{id}', [TeacherController::class, 'getdetail']);
 Route::put('/teacher/{id}', [TeacherController::class, 'update']);
+Route::delete('/teacher', [TeacherController::class, 'deleteByIds']);
+Route::delete('/teacher/{id}', [TeacherController::class, 'deleteById']);
 
 // work process
 Route::get('work-process', [WorkProcessController::class, 'getAll']);
 Route::get('work-process/{id}', [WorkProcessController::class, 'getById']);
-Route::post('admin/work-process/', [WorkProcessController::class, 'create']);
+Route::post('admin/work-process', [WorkProcessController::class, 'create']);
 Route::put('admin/work-process/{id}', [WorkProcessController::class, 'update']);
 Route::delete('admin/work-process/soft-list/delete', [WorkProcessController::class, 'DeleteMany']);
 

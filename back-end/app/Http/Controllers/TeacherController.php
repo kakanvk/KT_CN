@@ -132,5 +132,29 @@ class TeacherController extends Controller
             return response()->json(['message' => 'Failed to update teacher', 'error' => $e->getMessage()], 500);
         }
     }
+    public function deleteById($id)
+    {
+        try {
+            $teacher = Teacher::findOrFail($id);
+            $teacher->delete();
+            return response()->json(['message' => 'Teacher deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete teacher', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteByIds(Request $request)
+    {
+        $validatedData = $request->validate([
+            'ids' => 'required|array',
+        ]);
+
+        try {
+            Teacher::whereIn('id_teacher', $validatedData['ids'])->delete();
+            return response()->json(['message' => 'Teachers deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete teachers', 'error' => $e->getMessage()], 500);
+        }
+    }
 
 }

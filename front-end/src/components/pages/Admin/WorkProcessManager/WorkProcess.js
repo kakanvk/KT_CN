@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Table, Tooltip } from "antd";
@@ -11,58 +10,43 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    useDisclosure
+    useDisclosure,
 } from "@nextui-org/react";
 
-import { getAllWorkProcess, deleteWorkProcessList }
-    from "../../../../service/WorkProcessService";
+import { deleteListDetailScientificArticle } from "../../../../service/DetailScientificArticleService";
+import {
+    deleteWorkProcessList,
+    getAllWorkProcess,
+} from "../../../../service/WorkProcessService";
+import { deleteListDetailWorkProcess } from "../../../../service/DetailWorkProcessServe";
+
 const WorkProcess = (props) => {
     const { successNoti, setSpinning } = props;
-    const [workProcessData, setWorkProcessData] = useState([]);
+    const [workProcess, setWorkProcess] = useState([]);
     const [selectedRow, setSelectedRow] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [deleteId, setDeleteId] = useState(null);
     const columns = [
         {
-            title:
-                <p className="flex gap-2">Cơ sở giáo dục đại học
-
-                </p>,
+            title: <p className="flex gap-2">Nơi làm việt</p>,
             dataIndex: "academic_institution",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">Thời gian làm việc
-
-                </p>,
-            dataIndex: "time",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
-        },
-        {
-            title:
-                <p className="flex gap-2">Địa chỉ
-
-                </p>,
+            title: <p className="flex gap-2">Địa chỉ</p>,
             dataIndex: "address",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
-            title:
-                <p className="flex gap-2">Chức vụ
-
-                </p>,
+            title: <p className="flex gap-2">Chức vụ</p>,
             dataIndex: "position",
-            render: (text) => (
-                <p className="font-medium">{text}</p>
-            ),
+            render: (text) => <p className="font-medium">{text}</p>,
+        },
+        {
+            title: <p className="flex gap-2">thời gian làm việc</p>,
+            dataIndex: "time",
+            render: (text) => <p className="font-medium">{text}</p>,
         },
         {
             title: (
@@ -85,8 +69,6 @@ const WorkProcess = (props) => {
                         >
                             <i className="fa-solid fa-pen"></i>
                         </Button>
-
-
                     </Tooltip>
                     <Tooltip title="Xoá">
                         <Button
@@ -94,7 +76,10 @@ const WorkProcess = (props) => {
                             variant="light"
                             radius="full"
                             size="sm"
-                            onClick={() => { onOpen(); setDeleteId(_id); }}
+                            onClick={() => {
+                                onOpen();
+                                setDeleteId(_id);
+                            }}
                         >
                             <i className="fa-solid fa-trash-can"></i>
                         </Button>
@@ -122,11 +107,15 @@ const WorkProcess = (props) => {
         setSpinning(true);
         const putData = {
             id_work_process: selectedRowKeys,
-        }
+        };
+        const id_list_data = {
+            id_list: selectedRowKeys,
+        };
         try {
+            await deleteListDetailWorkProcess(id_list_data);
             await deleteWorkProcessList(putData);
             setSpinning(false);
-            getWorkProcess();
+            getAllWorkProcess();
             successNoti("Xoá thành công");
             handleUnSelect();
         } catch (error) {
@@ -140,12 +129,17 @@ const WorkProcess = (props) => {
         setSpinning(true);
         const putData = {
             id_work_process: [_id],
-        }
+        };
+        const id_list_data = {
+            id_list: [_id],
+        };
         try {
+            await deleteListDetailWorkProcess(id_list_data);
             await deleteWorkProcessList(putData);
             setSpinning(false);
-            getWorkProcess();
+            getScientificArticle();
             successNoti("Xoá thành công");
+            handleUnSelect();
         } catch (error) {
             setSpinning(false);
             successNoti("Xoá thất bại");
@@ -153,26 +147,28 @@ const WorkProcess = (props) => {
         }
     };
 
-    const getWorkProcess = async () => {
+    const getScientificArticle = async () => {
         setSpinning(true);
         try {
             const response = await getAllWorkProcess();
-            console.log(response.data);
+            console.log(response.data.work_process);
 
-            const work_process_data = response.data.work_process.map((work_process) => {
-                return {
-                    key: work_process.id_work_process,
-                    time: work_process.time,
-                    academic_institution: work_process.academic_institution,
-                    address: work_process.address,
-                    position: work_process.position,
-                    created_at: work_process.created_at,
-                    updated_at: work_process.updated_at,
-                    action: work_process.id_work_process,
-                };
-            });
+            const Scientific_Article_Data = response.data.work_process.map(
+                (items) => {
+                    return {
+                        key: items.id_work_process,
+                        time: items.time,
+                        academic_institution: items.academic_institution,
+                        address: items.address,
+                        position: items.position,
+                        created_at: items.created_at,
+                        updated_at: items.updated_at,
+                        action: items.id_work_process,
+                    };
+                }
+            );
 
-            setWorkProcessData(work_process_data);
+            setWorkProcess(Scientific_Article_Data);
 
             setSpinning(false);
         } catch (error) {
@@ -182,7 +178,7 @@ const WorkProcess = (props) => {
     };
 
     useEffect(() => {
-        getWorkProcess();
+        getScientificArticle();
     }, []);
 
     return (
@@ -203,7 +199,7 @@ const WorkProcess = (props) => {
             <div className="flex items-start justify-between w-full">
                 <Breadcrumbs underline="hover">
                     <BreadcrumbItem>Admin Dashboard</BreadcrumbItem>
-                    <BreadcrumbItem>Quản lý quá trình làm việc</BreadcrumbItem>
+                    <BreadcrumbItem>Quản lý bài báo khoa học</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="flex gap-2">
                     <Tooltip title="Làm mới">
@@ -211,21 +207,15 @@ const WorkProcess = (props) => {
                             isIconOnly
                             radius="full"
                             variant="light"
-                            onClick={() => getWorkProcess()}
+                            onClick={() => getScientificArticle()}
                         >
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-
                 </div>
             </div>
-            <Button
-                color="primary"
-                radius="sm"
-                as={Link}
-                to="create"
-            >
-                Tạo quá trình làm việc
+            <Button color="primary" radius="sm" as={Link} to="create">
+                Tạo bài báo khoa học
             </Button>
             {selectedRowKeys.length !== 0 && (
                 <div className="Quick__Option flex justify-between items-center sticky top-2 bg-[white] z-50 w-full p-4 py-3 shadow-lg rounded-md border-1 border-slate-300">
@@ -240,7 +230,12 @@ const WorkProcess = (props) => {
                                 document.querySelector(".Quick__Option")
                             }
                         >
-                            <Button isIconOnly variant="light" radius="full" onClick={onOpen}>
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                radius="full"
+                                onClick={onOpen}
+                            >
                                 <i className="fa-solid fa-trash-can"></i>
                             </Button>
                         </Tooltip>
@@ -272,7 +267,7 @@ const WorkProcess = (props) => {
                         ...rowSelection,
                     }}
                     columns={columns}
-                    dataSource={workProcessData}
+                    dataSource={workProcess}
                     className="w-full"
                 />
             </div>
@@ -283,15 +278,14 @@ const WorkProcess = (props) => {
 export default WorkProcess;
 
 function ConfirmAction(props) {
-
     const { isOpen, onOpenChange, onConfirm } = props;
 
     const handleOnOKClick = (onClose) => {
         onClose();
-        if (typeof onConfirm === 'function') {
+        if (typeof onConfirm === "function") {
             onConfirm();
         }
-    }
+    };
 
     return (
         <Modal
@@ -315,7 +309,7 @@ function ConfirmAction(props) {
                             ease: "easeIn",
                         },
                     },
-                }
+                },
             }}
         >
             <ModalContent>
@@ -331,7 +325,11 @@ function ConfirmAction(props) {
                             <Button variant="light" onPress={onClose}>
                                 Huỷ
                             </Button>
-                            <Button color="danger" className="font-medium" onPress={() => handleOnOKClick(onClose)}>
+                            <Button
+                                color="danger"
+                                className="font-medium"
+                                onPress={() => handleOnOKClick(onClose)}
+                            >
                                 Xoá
                             </Button>
                         </ModalFooter>
@@ -339,5 +337,5 @@ function ConfirmAction(props) {
                 )}
             </ModalContent>
         </Modal>
-    )
+    );
 }

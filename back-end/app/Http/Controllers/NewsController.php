@@ -110,7 +110,7 @@ class NewsController extends Controller
 
             return response()->json($responseData, 200);
         } catch (\Throwable $th) {
-            return response()->json("Error", 500);
+            return response()->json(["Error" => $th->getMessage()], 500);
         }
     }
 
@@ -244,10 +244,10 @@ class NewsController extends Controller
 
                 $newsCollection = $newsCollection->concat($news);
             }
-    
+
             $NewsAdmission = Admission_news::where('is_deleted', 0)
-            ->orderBy('created_at')
-            ->get();
+                ->orderBy('created_at')
+                ->get();
 
             $newsCollection = $newsCollection->concat($NewsAdmission);
 

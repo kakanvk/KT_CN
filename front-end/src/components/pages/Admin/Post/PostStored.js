@@ -8,13 +8,20 @@ import {
     BreadcrumbItem,
     Breadcrumbs,
     Button,
-    Modal, Chip,
+    Modal,
+    Chip,
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalFooter, useDisclosure
+    ModalFooter,
+    useDisclosure,
 } from "@nextui-org/react";
-import { getAllNewsHiddenForAdmin, forceDeleteNewsByIds, softDeleteNewsByIds, GetAllCategories} from "../../../../service/NewsService";
+import {
+    getAllNewsHiddenForAdmin,
+    forceDeleteNewsByIds,
+    softDeleteNewsByIds,
+    GetAllCategories,
+} from "../../../../service/NewsService";
 
 // forceDeleteNewsByIds
 
@@ -33,8 +40,8 @@ const PostStored = (props) => {
 
     const calculateRemainingTime = (deleteDate) => {
         const deleteMoment = moment(deleteDate);
-        const futureDate = deleteMoment.add(30, 'days');
-        const remainingMinutes = futureDate.diff(moment(), 'minutes');
+        const futureDate = deleteMoment.add(30, "days");
+        const remainingMinutes = futureDate.diff(moment(), "minutes");
 
         if (remainingMinutes < 60) {
             // Nếu còn dưới 1 giờ, tính số phút còn lại
@@ -45,7 +52,7 @@ const PostStored = (props) => {
             return { hours };
         } else {
             // Nếu còn trên 1 ngày, tính số ngày còn lại
-            const remainingDays = futureDate.diff(moment(), 'days');
+            const remainingDays = futureDate.diff(moment(), "days");
             return { days: remainingDays };
         }
     };
@@ -188,11 +195,23 @@ const PostStored = (props) => {
             render: (date) => {
                 const { days, hours, minutes } = calculateRemainingTime(date);
                 if (days) {
-                    return <p className="text-[14px]">Tự động xoá sau {days} ngày</p>;
+                    return (
+                        <p className="text-[14px]">
+                            Tự động xoá sau {days} ngày
+                        </p>
+                    );
                 } else if (hours) {
-                    return <p className="text-[14px]">Tự động xoá sau {hours} giờ</p>;
+                    return (
+                        <p className="text-[14px]">
+                            Tự động xoá sau {hours} giờ
+                        </p>
+                    );
                 } else {
-                    return <p className="text-[14px]">Tự động xoá sau {minutes} phút</p>;
+                    return (
+                        <p className="text-[14px]">
+                            Tự động xoá sau {minutes} phút
+                        </p>
+                    );
                 }
             },
         },
@@ -221,7 +240,10 @@ const PostStored = (props) => {
                             variant="light"
                             radius="full"
                             color="danger"
-                            onClick={() => { onOpen(); setDeleteId(_id);}}
+                            onClick={() => {
+                                onOpen();
+                                setDeleteId(_id);
+                            }}
                         >
                             <i className="fa-solid fa-trash-can"></i>
                         </Button>
@@ -249,15 +271,15 @@ const PostStored = (props) => {
         const putData = {
             id_new: selectedRowKeys,
             deleted: false,
-        }
+        };
         try {
-            if (TypeNews === 'News') {
+            if (TypeNews === "News") {
                 await softDeleteNewsByIds(putData);
                 await getNews();
                 setSpinning(false);
                 successNoti("Khôi phục thành công");
                 handleUnSelect();
-            } 
+            }
         } catch (error) {
             setSpinning(false);
             successNoti("Khôi phục thất bại");
@@ -270,15 +292,15 @@ const PostStored = (props) => {
         const putData = {
             id_new: [_id],
             deleted: false,
-        }
+        };
         try {
-            if (TypeNews === 'News') { 
+            if (TypeNews === "News") {
                 await softDeleteNewsByIds(putData);
                 await getNews();
                 setSpinning(false);
                 successNoti("Khôi phục thành công");
                 handleUnSelect();
-            }  
+            }
         } catch (error) {
             setSpinning(false);
             successNoti("Khôi phục thất bại");
@@ -293,22 +315,22 @@ const PostStored = (props) => {
 
         if (deleteId) {
             putData = {
-                id_new: [deleteId]
-            }
+                id_new: [deleteId],
+            };
         } else {
             putData = {
-                id_new: selectedRowKeys
-            }
+                id_new: selectedRowKeys,
+            };
         }
 
         try {
-            if (TypeNews === 'News') { 
+            if (TypeNews === "News") {
                 await forceDeleteNewsByIds(putData);
                 await getNews();
                 setSpinning(false);
                 successNoti("Cập nhật thành công");
                 handleUnSelect();
-            }  
+            }
         } catch (error) {
             setSpinning(false);
             errorNoti("Cập nhật thất bại");
@@ -339,7 +361,7 @@ const PostStored = (props) => {
         try {
             const response = await getAllNewsHiddenForAdmin();
 
-            console.log(response.data)
+            console.log(response.data);
 
             const updatedNewsData = response.data.map((news) => {
                 return {
@@ -363,7 +385,7 @@ const PostStored = (props) => {
                         create_by: {
                             email: news.user.email,
                             photoURL: news.user.photoURL,
-                            name: news.user.name
+                            name: news.user.name,
                         },
                         updated_at: moment(news.updated_at).format(
                             "DD/MM/YYYY HH:mm"
@@ -371,11 +393,11 @@ const PostStored = (props) => {
                         update_by: {
                             email: news.user_update.email,
                             photoURL: news.user_update.photoURL,
-                            name: news.user_update.name
-                        }
+                            name: news.user_update.name,
+                        },
                     },
                     action: news.id_new,
-                    auto_delete: news.updated_at
+                    auto_delete: news.updated_at,
                 };
             });
 
@@ -389,9 +411,9 @@ const PostStored = (props) => {
     };
 
     useEffect(() => {
-        if(TypeNews === "News") {
-            getNews(); 
-        } 
+        if (TypeNews === "News") {
+            getNews();
+        }
         getCategory();
     }, []);
 
@@ -425,7 +447,10 @@ const PostStored = (props) => {
                             <i className="fa-solid fa-rotate-right text-[17px]"></i>
                         </Button>
                     </Tooltip>
-                    <Tooltip title="Xoá vĩnh viễn toàn bộ bài viết" placement="left">
+                    <Tooltip
+                        title="Xoá vĩnh viễn toàn bộ bài viết"
+                        placement="left"
+                    >
                         <Button
                             isIconOnly
                             variant="light"
@@ -450,7 +475,12 @@ const PostStored = (props) => {
                                 document.querySelector(".Quick__Option")
                             }
                         >
-                            <Button isIconOnly variant="light" radius="full" onClick={() => handleRestore()}>
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                radius="full"
+                                onClick={() => handleRestore()}
+                            >
                                 <i className="fa-solid fa-clock-rotate-left"></i>
                             </Button>
                         </Tooltip>
@@ -460,7 +490,12 @@ const PostStored = (props) => {
                                 document.querySelector(".Quick__Option")
                             }
                         >
-                            <Button isIconOnly variant="light" radius="full" onClick={onOpen}>
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                radius="full"
+                                onClick={onOpen}
+                            >
                                 <i className="fa-solid fa-trash-can"></i>
                             </Button>
                         </Tooltip>
@@ -507,17 +542,15 @@ const PostStored = (props) => {
 
 export default PostStored;
 
-
 function ConfirmAction(props) {
-
     const { isOpen, onOpenChange, onConfirm } = props;
 
     const handleOnOKClick = (onClose) => {
         onClose();
-        if (typeof onConfirm === 'function') {
+        if (typeof onConfirm === "function") {
             onConfirm();
         }
-    }
+    };
 
     return (
         <Modal
@@ -541,7 +574,7 @@ function ConfirmAction(props) {
                             ease: "easeIn",
                         },
                     },
-                }
+                },
             }}
         >
             <ModalContent>
@@ -550,14 +583,28 @@ function ConfirmAction(props) {
                         <ModalHeader>Cảnh báo</ModalHeader>
                         <ModalBody>
                             <p className="text-[16px]">
-                                Bài viết sẽ bị <Chip variant="flat" radius="sm" color="danger" className="mx-[1px]">Xoá vĩnh viễn<i class="fa-solid fa-circle-xmark ml-2"></i></Chip> và không thể khôi phục, tiếp tục thao tác?
+                                Bài viết sẽ bị{" "}
+                                <Chip
+                                    variant="flat"
+                                    radius="sm"
+                                    color="danger"
+                                    className="mx-[1px]"
+                                >
+                                    Xoá vĩnh viễn
+                                    <i class="fa-solid fa-circle-xmark ml-2"></i>
+                                </Chip>{" "}
+                                và không thể khôi phục, tiếp tục thao tác?
                             </p>
                         </ModalBody>
                         <ModalFooter>
                             <Button variant="light" onPress={onClose}>
                                 Huỷ
                             </Button>
-                            <Button color="danger" className="font-medium" onPress={() => handleOnOKClick(onClose)}>
+                            <Button
+                                color="danger"
+                                className="font-medium"
+                                onPress={() => handleOnOKClick(onClose)}
+                            >
                                 Xoá vĩnh viễn
                             </Button>
                         </ModalFooter>
@@ -565,5 +612,5 @@ function ConfirmAction(props) {
                 )}
             </ModalContent>
         </Modal>
-    )
+    );
 }
