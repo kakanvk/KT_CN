@@ -71,6 +71,10 @@ function Client() {
                             path="/scientific-records/:id"
                             element={<ScientificRecords />}
                         />
+                        <Route
+                            path="/test"
+                            element={<Test />}
+                        />
                     </Routes>
                 </div>
             </div>
